@@ -4,6 +4,10 @@ A pretty nice way to expose your translated messages to your JavaScript.
 
 **Warning:** This bundle is a Proof of Concept and it should **NOT** be used in production at the moment.
 
+## Prerequisite
+
+The famous JavaScript framework [jQuery](http://jquery.com/) is mandatory.
+
 
 ## Installation
 
@@ -58,10 +62,11 @@ Just add this line in your layout:
 ```
 
 Now, you just have to specify which [translation files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions) to load.
-
-### Expose your translation
-
 But **how to do that ?**
+
+
+### Load translation domains
+
 Just by adding a line as below:
 
 ``` html
@@ -69,7 +74,6 @@ Just by adding a line as below:
 ```
 
 This will use the current `locale` and will provide translated messages found in each `messages.CURRENT_LOCALE.*` files of your project.
-
 
 #### Domain
 
@@ -111,6 +115,8 @@ To configure the guesser, you have to set the `defaultDomains` attribute. By def
 $.ExposeTranslation.get('key');
 // will try to find a translated message in default domains.
 ```
+
+**Note:** this will only work if default domains are previously loaded (see the _Load translation domains_ first section).
 
 #### Message placeholders
 
