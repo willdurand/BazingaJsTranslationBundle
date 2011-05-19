@@ -36,6 +36,7 @@ Register the routing in `app/config/routing.yml`:
 # app/config/routing.yml
 _bazinga_exposetranslation:
     resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.xml"
+```
 
 Publish assets:
 
@@ -48,6 +49,7 @@ Just add this line in your layout:
 
 ``` html
 <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translation.js') }}"></script>
+```
 
 Now, you just have to specify which translation files to load.
 
@@ -56,6 +58,7 @@ Just by adding a line like below:
 
 ``` html
 <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME' } }}"></script>
+```
 
 This will use the current `locale` and will provide translated message for each `DOMAIN_NAME.locale.*` files.
 
@@ -64,7 +67,9 @@ This will use the current `locale` and will provide translated message for each 
 
 You can specify a `locale`:
 
+``` html
 <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME', '_locale' : 'LOCALE' } }}"></script>
+```
 
 
 #### JavaScript side
@@ -73,6 +78,7 @@ You can specify a `locale`:
 $.ExposeTranslation.has('DOMAIN_NAME:key');
 
 $.ExposeTranslation.get('DOMAIN_NAME:key');
+```
 
 
 #### Example
@@ -82,10 +88,12 @@ Consider the following translation file:
 ``` yaml
 # app/Resources/translations/Hello.fr.yml
 foo: "Bar"
+```
 
 ``` javascript
 $.ExposeTranslation.get('Hello:foo');
 // will return 'Bar' if the current locale is set to 'fr', undefined otherwise.
+```
 
 
 ## Credits
