@@ -11,40 +11,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
 (function(Translation, $, undefined) {
   // now register our routing methods
   $.extend(Translation, (function() {
-    var _messages = {},
-        rescregexp = /[-[\]{}()*+?.,\\^$|#\s]/g;
-
-    /**
-     * @api private
-     * prepare a regexp part with several caracters/parts
-     * having to be escaped.
-     *
-     *    regexify('a'); // returns 'a'
-     *    regexify(['a', '.']); // returns 'a|\.'
-     *    regexify(['a', '.'], '$'); // returns 'a|\.|$'
-     *
-     * @param {Array|string} separators  A list of separators.
-     * @param {String}       unescaped   A meta character to use in regexp.
-     * @return {String}                  The regexp part, ready to use.
-     */
-    function regexify(separators, unescaped) {
-      var _i, _separators = [];
-      // make sure separator is an array
-      if (!$.isArray(separators)) {
-        separators = [separators];
-      }
-      // escape every separator
-      for (_i in separators) {
-        _separators[_i] = separators[_i].replace(rescregexp, '\\$&');
-      }
-      // add unescaped caracters
-      if (unescaped) { _separators.push(unescaped); }
-
-      // return in a or
-      if (_separators.length > 1) {return _separators.join('|')}
-      else if(_separators.length) {return _separators[0];}
-      return '';
-    };
+    var _messages = {};
 
     /**
      * replace placeholders in given message.
