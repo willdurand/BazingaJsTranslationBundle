@@ -54,18 +54,18 @@ Just add this line in your layout:
 Now, you just have to specify which translation files to load.
 
 But _how to do that ?_
-Just by adding a line like below:
+Just by adding a line as below:
 
 ``` html
 <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME' } }}"></script>
 ```
 
-This will use the current `locale` and will provide translated message for each `DOMAIN_NAME.locale.*` files.
+This will use the current `locale` and will provide translated messages for each `DOMAIN_NAME.locale.*` files of your project.
 
 
 #### Locale
 
-You can specify a `locale`:
+You can specify a `locale` if you want, just add the `_locale` parameter:
 
 ``` html
 <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME', '_locale' : 'LOCALE' } }}"></script>
@@ -76,8 +76,10 @@ You can specify a `locale`:
 
 ``` javascript
 $.ExposeTranslation.has('DOMAIN_NAME:key');
+// true or false
 
 $.ExposeTranslation.get('DOMAIN_NAME:key');
+// The translated message or undefined
 ```
 
 
