@@ -16,12 +16,6 @@ $.ExposeTranslation = $.ExposeTranslation || {};
 
     return {
       /**
-       * Translation messages.
-       *
-       * @api public
-       */
-      messages: {},
-      /**
        * The current locale.
        *
        * @api public
