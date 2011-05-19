@@ -57,10 +57,16 @@ But _how to do that ?_
 Just by adding a line as below:
 
 ``` html
+<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js' }}"></script>
+```
+
+This will use the current `locale` and will provide translated messages for each `messages.LOCALE.*` files of your project.
+
+``` html
 <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME' } }}"></script>
 ```
 
-This will use the current `locale` and will provide translated messages for each `DOMAIN_NAME.locale.*` files of your project.
+This will use the current `locale` and will provide translated messages for each `DOMAIN_NAME.CURRENT_LOCALE.*` files of your project.
 
 
 #### Locale
@@ -68,8 +74,10 @@ This will use the current `locale` and will provide translated messages for each
 You can specify a `locale` if you want, just add the `_locale` parameter:
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME', '_locale' : 'LOCALE' } }}"></script>
+<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME', '_locale' : 'MY_LOCALE' } }}"></script>
 ```
+
+This will use the current `locale` and will provide translated messages for each `DOMAIN_NAME.MY_LOCALE.*` files of your project.
 
 
 #### JavaScript side
@@ -79,7 +87,7 @@ $.ExposeTranslation.has('DOMAIN_NAME:key');
 // true or false
 
 $.ExposeTranslation.get('DOMAIN_NAME:key');
-// The translated message or undefined
+// whe translated message or undefined
 ```
 
 
