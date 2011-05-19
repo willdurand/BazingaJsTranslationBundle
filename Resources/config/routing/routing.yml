@@ -1,5 +1,5 @@
 bazinga_exposetranslation_js:
     pattern:  /i18n/{domain_name}/{_locale}.{_format}
-    defaults: { _controller: bazinga.exposetranslation.controller:exposeTranslationAction, _format: js }
+    defaults: { _controller: bazinga.exposetranslation.controller:exposeTranslationAction, domain_name: "messages", _format: "js" }
     requirements:
         _format: js
