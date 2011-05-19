@@ -131,6 +131,46 @@ $.ExposeTranslation.get('DOMAIN_NAME:key', { "foo" : "bar" });
 
 You can override the placeholder delimiters by setting the `placeHolderSuffix` and `placeHolderPrefix` attributes.
 
+#### Pluralization
+
+Probably the best feature provided in this bundle ! It allows you to use pluralization exactly like you can do in Symfony2.
+
+Read the official doc about [pluralization](http://symfony.com/doc/current/book/translation.html#pluralization).
+
+A third parameter can be added to the `get()` method, it's the **number** of objects being described. Here is an example:
+
+``` yaml
+# app/Resources/messages.en.yml
+apples:    "{0} There is no apples|{1} There is one apple|]1,19] There are %count% apples|[20,Inf] There are many apples"
+```
+
+``` javascript
+$.ExposeTranslation.locale = 'en';
+
+$.ExposeTranslation.get('apples', {"count" : 0}, 0);
+// will return "There is no apples"
+
+$.ExposeTranslation.get('apples', {"count" : 1}, 1);
+// will return "There is one apple"
+
+$.ExposeTranslation.get('apples', {"count" : 2}, 2);
+// will return "There are 2 apples"
+
+$.ExposeTranslation.get('apples', {"count" : 10}, 10);
+// will return "There are 10 apples"
+
+$.ExposeTranslation.get('apples', {"count" : 19}, 19);
+// will return "There are 19 apples"
+
+$.ExposeTranslation.get('apples', {"count" : 20}, 20);
+// will return "There are many apples"
+
+$.ExposeTranslation.get('apples', {"count" : 100}, 100);
+// will return "There are many apples"
+```
+
+**Note:** This is not tested at the moment. It works fine for english/french translations.
+
 #### Get the locale
 
 You can get the current locale by accessing the `locale` attribute:
