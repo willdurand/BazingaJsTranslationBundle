@@ -3,6 +3,7 @@
  * MIT Licensed
  */
 
+
 /**
  * Define Translation class.
  */
@@ -13,7 +14,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
   $.extend(Translation, (function() {
     var _messages = {},
         _sPluralRegex = /^\w+\: +(.+)$/,
-        _cPluralRegex = /^(({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s+(.+?)$/;
+        _cPluralRegex = /^(({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s+(.+?)$/,
         _iPluralRegex = /^({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/;
 
     /**
@@ -26,21 +27,21 @@ $.ExposeTranslation = $.ExposeTranslation || {};
      * @api private
      */
     function replace_placeholders(message, placeholders) {
-        var _i,
-            _message = message,
-            _prefix = Translation.placeHolderPrefix,
-            _suffix = Translation.placeHolderSuffix;
+      var _i,
+          _message = message,
+          _prefix = Translation.placeHolderPrefix,
+          _suffix = Translation.placeHolderSuffix;
 
-        for (_i in placeholders) {
-          var _r = new RegExp(_prefix + _i + _suffix, 'g');
+      for (_i in placeholders) {
+        var _r = new RegExp(_prefix + _i + _suffix, 'g');
 
-          if (_r.test(_message)) {
-            _message = _message.replace(_r, placeholders[_i]);
-            delete(placeholders[_i]);
-          }
+        if (_r.test(_message)) {
+          _message = _message.replace(_r, placeholders[_i]);
+          delete(placeholders[_i]);
         }
+      }
 
-        return _message;
+      return _message;
     }
 
     /**
@@ -49,6 +50,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
      *
      * @param {String} key  A message key.
      * @return {String}     The message if found, undefined otherwise.
+     * @api private
      */
     function guess_domain(key) {
       var _k,
@@ -69,6 +71,8 @@ $.ExposeTranslation = $.ExposeTranslation || {};
     }
 
     /**
+     * Comes from the Symfony2 PHP Framework.
+     *
      * Given a message with different plural translations separated by a
      * pipe (|), this method returns the correct portion of the message based
      * on the given number, the current locale and the pluralization rules
@@ -89,70 +93,74 @@ $.ExposeTranslation = $.ExposeTranslation || {};
      * @param {String} message  The message.
      * @param {Int} number      The number.
      * @return {String}         The message part to use for translation.
+     * @api private
      */
     function pluralize(message, number) {
-        var _p,
-            _r,
-            _explicitRules = [],
-            _standardRules = [],
-            _parts = message.split(Translation.pluralSeparator);
+      var _p,
+          _r,
+          _explicitRules = [],
+          _standardRules = [],
+          _parts = message.split(Translation.pluralSeparator);
 
-        for (_p in _parts) {
-            var _part = _parts[_p];
-            var _rc = new RegExp(_cPluralRegex);
-            var _rs = new RegExp(_sPluralRegex);
+      for (_p in _parts) {
+        var _part = _parts[_p];
+        var _rc = new RegExp(_cPluralRegex);
+        var _rs = new RegExp(_sPluralRegex);
 
-            if (_rc.test(_part)) {
-                var _matches = _part.match(_rc);
-                _explicitRules[_matches[0]] = _matches[_matches.length - 1];
-            } else if (_rs.test(_part)) {
-                var _matches = _part.match(_rs);
-                _standardRules.push(_matches[1]);
-            } else {
-                _standardRules.push(_part);
-            }
+        if (_rc.test(_part)) {
+          var _matches = _part.match(_rc);
+          _explicitRules[_matches[0]] = _matches[_matches.length - 1];
+        } else if (_rs.test(_part)) {
+          var _matches = _part.match(_rs);
+          _standardRules.push(_matches[1]);
+        } else {
+          _standardRules.push(_part);
         }
+      }
 
-        for (_e in _explicitRules) {
-          var _r = new RegExp(_iPluralRegex);
+      for (_e in _explicitRules) {
+        var _r = new RegExp(_iPluralRegex);
 
-          if (_r.test(_e)) {
-            var _matches = _e.match(_r);
+        if (_r.test(_e)) {
+          var _matches = _e.match(_r);
 
-            if (_matches[1]) {
-              var _ns = _matches[2].split(',');
-              for (_n in _ns) {
-                if (number == _ns[_n]) {
-                  return _explicitRules[_e];
-                }
-              }
-            } else {
-              var _leftNumber = convert_number(_matches[4]);
-              var _rightNumber = convert_number(_matches[5]);
-
-              if (("[" === _matches[3] ? number >= _leftNumber : number > _leftNumber)
-                && ("]" === _matches[6] ? number <= _rightNumber : number < _rightNumber))
-              {
+          if (_matches[1]) {
+            var _ns = _matches[2].split(',');
+            for (_n in _ns) {
+              if (number == _ns[_n]) {
                 return _explicitRules[_e];
               }
             }
+          } else {
+            var _leftNumber = convert_number(_matches[4]);
+            var _rightNumber = convert_number(_matches[5]);
+
+            if (('[' === _matches[3] ? number >= _leftNumber : number > _leftNumber) &&
+                    (']' === _matches[6] ? number <= _rightNumber : number < _rightNumber))
+            {
+              return _explicitRules[_e];
+            }
           }
         }
+      }
 
-        return _standardRules[plural_position(number)] || undefined;
+      return _standardRules[plural_position(number)] || undefined;
     }
 
     /**
+     * Comes from the Symfony2 PHP Framework.
+     *
      * Convert number as String, "Inf" and "-Inf"
      * values to number values.
      *
      * @param {String} number   A litteral number.
      * @return {Int}            The int value of the number.
+     * @api private
      */
     function convert_number(number) {
-      if ("-Inf" === number) {
+      if ('-Inf' === number) {
         return Math.log(0);
-      } else if ("+Inf" === number || "Inf" === number) {
+      } else if ('+Inf' === number || 'Inf' === number) {
         return -Math.log(0);
       }
 
@@ -160,15 +168,17 @@ $.ExposeTranslation = $.ExposeTranslation || {};
     }
 
     /**
+     * Comes from the Symfony2 PHP Framework.
      * Returns the plural position to use for the given locale and number.
      *
      * @param {Int} number  A number.
      * @return {Int}        The plural position.
+     * @api private
      */
     function plural_position(number) {
       var _locale = Translation.locale;
 
-      switch(_locale) {
+      switch (_locale) {
         case 'bo':
         case 'dz':
         case 'id':
@@ -303,30 +313,35 @@ $.ExposeTranslation = $.ExposeTranslation || {};
     return {
       /**
        * The current locale.
+       *
        * @type {String}
        * @api public
        */
       locale: '',
       /**
        * Placeholder prefix.
+       *
        * @type {String}
        * @api public
        */
       placeHolderPrefix: '%',
       /**
        * Placeholder suffix.
+       *
        * @type {String}
        * @api public
        */
       placeHolderSuffix: '%',
       /**
        * Default domains.
+       *
        * @type {String|Array}
        * @api public
        */
       defaultDomains: [],
       /**
        * Plurar separator.
+       *
        * @type {String}
        * @api public
        */
@@ -346,7 +361,9 @@ $.ExposeTranslation = $.ExposeTranslation || {};
       /**
        * Get the translated message for the given key.
        *
-       * @param {String} key    A translation key.
+       * @param {String} key            A translation key.
+       * @param {Object} placeholders   Placeholders.
+       * @param {Int} number            A number of objects being described.
        * @return {String}       The corresponding message if the key exists.
        */
       get: function(key, placeholders, number) {
