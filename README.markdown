@@ -134,9 +134,10 @@ $.ExposeTranslation.locale;
 // will return the current locale.
 ```
 
-#### Example
 
-Consider the following translation file:
+## Example
+
+Consider the following translation files:
 
 ``` yaml
 # app/Resources/translations/Hello.fr.yml
@@ -151,6 +152,8 @@ placeholder: "Hello %username% !"
 # app/Resources/translations/messages.fr.yml
 placeholder: "Hello %username%, how are you ?"
 ```
+
+You can do:
 
 ``` javascript
 $.ExposeTranslation.get('Hello:foo');
