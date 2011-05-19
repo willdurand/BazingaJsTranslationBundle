@@ -86,8 +86,9 @@ class Controller
         }
 
         return new Response($this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
-            'messages'  => $messages,
-            'locale'    => $_locale,
+            'messages'        => $messages,
+            'locale'          => $_locale,
+            'default_domain'  => 'messages',
         )));
     }
 }
