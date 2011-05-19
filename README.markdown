@@ -2,7 +2,7 @@
 
 [Symfony2] A pretty nice way to expose your translation messages to your JavaScript.
 
-**Warning:** This bundle is a Prood of Concept and it should **NOT** be used in production at the moment.
+**Warning:** This bundle is a Proof of Concept and it should **NOT** be used in production at the moment.
 
 
 ## Installation
@@ -87,7 +87,7 @@ $.ExposeTranslation.has('DOMAIN_NAME:key');
 // true or false
 
 $.ExposeTranslation.get('DOMAIN_NAME:key');
-// whe translated message or undefined
+// the translated message or undefined
 ```
 
 
