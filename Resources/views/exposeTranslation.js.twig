@@ -1,5 +1,5 @@
 $.ExposeTranslation.locale = '{{ locale }}';
-$.ExposeTranslation.defaultDomains = '{{ default_domain }}';
+$.ExposeTranslation.defaultDomains = [{% for domain in defaultDomains %}{{ domain }},{% endfor %}];
 {% for domain, translations in messages %}
 {% for key, message in translations %}
 $.ExposeTranslation.add({{ (domain~":"~key)|json_encode|raw }}, {{ message|json_encode|raw }});
