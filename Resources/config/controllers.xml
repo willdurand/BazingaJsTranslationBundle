@@ -11,7 +11,8 @@
         <service id="bazinga.exposetranslation.controller" class="%bazinga.exposetranslation.controller.class%">
             <argument type="service" id="translator" />
             <argument type="service" id="templating" />
-            <argument type="service" id="kernel" />
+            <argument type="service" id="bazinga.exposetranslation.service.translation_finder" />
+            <argument></argument>
         </service>
     </services>
 

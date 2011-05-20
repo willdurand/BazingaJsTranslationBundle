@@ -4,8 +4,8 @@ namespace Bazinga\ExposeTranslationBundle\Controller;
 
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
+use Bazinga\ExposeTranslationBundle\Service\TranslationFinder;
 
 /**
  * Controller class.
@@ -25,24 +25,34 @@ class Controller
      */
     protected $engine;
     /**
+     * @var \Bazinga\ExposeTranslationBundle\Service\TranslationFinder
+     */
+    protected $translationFinder;
+    /**
      * @var array
      */
     protected $loaders;
-
-    protected $kernel;
+    /**
+     * @var array
+     */
+    protected $defaultDomains;
 
     /**
      * Default constructor.
      *
-     * @param \Symfony\Component\Translation\TranslatorInterface $translator    The translator.
-     * @param \Symfony\Component\Templating\EngineInterface $engine             The engine.
+     * @param \Symfony\Component\Translation\TranslatorInterface $translator                The translator.
+     * @param \Symfony\Component\Templating\EngineInterface $engine                         The engine.
+     * @param \Bazinga\ExposeTranslationBundle\Service\TranslationFinder $translationFinder The translation finder.
+     * @param array $defaultDomains     An array of default domain names.
      */
-    public function __construct(TranslatorInterface $translator, EngineInterface $engine, $kernel)
+    public function __construct(TranslatorInterface $translator, EngineInterface $engine,
+        TranslationFinder $translationFinder, array $defaultDomains = array())
     {
-        $this->translator = $translator;
-        $this->engine     = $engine;
-        $this->kernel     = $kernel;
-        $this->loaders    = array();
+        $this->translator        = $translator;
+        $this->engine            = $engine;
+        $this->translationFinder = $translationFinder;
+        $this->defaultDomains    = $defaultDomains;
+        $this->loaders           = array();
     }
 
     /**
@@ -63,15 +73,7 @@ class Controller
      */
     public function exposeTranslationAction($domain_name, $_locale, $_format)
     {
-        $finder = new Finder();
-
-        $locations = array();
-        foreach ($this->kernel->getBundles() as $bundle) {
-            $locations[] = $bundle->getPath() . '/Resources';
-        }
-        $locations[] = $this->kernel->getRootDir() . '/Resources';
-
-        $files = $finder->files()->name($domain_name . '.' . $_locale . '.*')->followLinks()->in($locations);
+        $files = $this->translationFinder->getResources($domain_name, $_locale);
 
         $catalogues = array();
         foreach ($files as $file) {
@@ -88,7 +90,7 @@ class Controller
         return new Response($this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
             'messages'        => $messages,
             'locale'          => $_locale,
-            'default_domain'  => 'messages',
+            'defaultDomains'  => $this->defaultDomains,
         )));
     }
 }
