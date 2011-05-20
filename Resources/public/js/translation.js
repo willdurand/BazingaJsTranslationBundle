@@ -3,7 +3,6 @@
  * MIT Licensed
  */
 
-
 /**
  * Define Translation class.
  */
@@ -91,7 +90,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
      *     {0} There is no apples|one: There is one apple|more: There is %count% apples
      *
      * @param {String} message  The message.
-     * @param {Int} number      The number.
+     * @param {Number} number   The number.
      * @return {String}         The message part to use for translation.
      * @api private
      */
@@ -154,7 +153,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
      * values to number values.
      *
      * @param {String} number   A litteral number.
-     * @return {Int}            The int value of the number.
+     * @return {Number}            The int value of the number.
      * @api private
      */
     function convert_number(number) {
@@ -171,8 +170,8 @@ $.ExposeTranslation = $.ExposeTranslation || {};
      * Comes from the Symfony2 PHP Framework.
      * Returns the plural position to use for the given locale and number.
      *
-     * @param {Int} number  A number.
-     * @return {Int}        The plural position.
+     * @param {Number} number  A number.
+     * @return {Number}        The plural position.
      * @api private
      */
     function plural_position(number) {
@@ -363,7 +362,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
        *
        * @param {String} key            A translation key.
        * @param {Object} placeholders   Placeholders.
-       * @param {Int} number            A number of objects being described.
+       * @param {Number} number         A number of objects being described.
        * @return {String}       The corresponding message if the key exists.
        */
       get: function(key, placeholders, number) {
