@@ -70,7 +70,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
     }
 
     /**
-     * Comes from the Symfony2 PHP Framework.
+     * The logic comes from the Symfony2 PHP Framework.
      *
      * Given a message with different plural translations separated by a
      * pipe (|), this method returns the correct portion of the message based
@@ -97,6 +97,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
     function pluralize(message, number) {
       var _p,
           _r,
+          _number = number,
           _explicitRules = [],
           _standardRules = [],
           _parts = message.split(Translation.pluralSeparator);
@@ -126,16 +127,16 @@ $.ExposeTranslation = $.ExposeTranslation || {};
           if (_matches[1]) {
             var _ns = _matches[2].split(',');
             for (_n in _ns) {
-              if (number == _ns[_n]) {
+              if (_number == _ns[_n]) {
                 return _explicitRules[_e];
               }
             }
           } else {
-            var _leftNumber = convert_number(_matches[4]);
+            var _leftNumber  = convert_number(_matches[4]);
             var _rightNumber = convert_number(_matches[5]);
 
-            if (('[' === _matches[3] ? number >= _leftNumber : number > _leftNumber) &&
-                    (']' === _matches[6] ? number <= _rightNumber : number < _rightNumber))
+            if (('[' === _matches[3] ? _number >= _leftNumber : _number > _leftNumber) &&
+                    (']' === _matches[6] ? _number <= _rightNumber : _number < _rightNumber))
             {
               return _explicitRules[_e];
             }
@@ -147,7 +148,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
     }
 
     /**
-     * Comes from the Symfony2 PHP Framework.
+     * The logic comes from the Symfony2 PHP Framework.
      *
      * Convert number as String, "Inf" and "-Inf"
      * values to number values.
@@ -167,7 +168,8 @@ $.ExposeTranslation = $.ExposeTranslation || {};
     }
 
     /**
-     * Comes from the Symfony2 PHP Framework.
+     * The logic comes from the Symfony2 PHP Framework.
+     *
      * Returns the plural position to use for the given locale and number.
      *
      * @param {Number} number  A number.
@@ -175,7 +177,7 @@ $.ExposeTranslation = $.ExposeTranslation || {};
      * @api private
      */
     function plural_position(number) {
-      var _locale = Translation.locale;
+      var _locale = Translation.locale || Translation.fallback;
 
       switch (_locale) {
         case 'bo':
@@ -317,6 +319,13 @@ $.ExposeTranslation = $.ExposeTranslation || {};
        * @api public
        */
       locale: '',
+      /**
+       * Fallback locale.
+       *
+       * @type {String}
+       * @api public
+       */
+      fallback: 'en',
       /**
        * Placeholder prefix.
        *
