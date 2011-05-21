@@ -25,7 +25,7 @@ test('add/has methods', function() {
 });
 
 test('get method', function() {
-  expect(21);
+  expect(25);
 
   $.ExposeTranslation.add('Foo:foo', 'bar');
   $.ExposeTranslation.add('Foo:foo.with.arg', 'This is Ba %arg%');
@@ -34,6 +34,7 @@ test('get method', function() {
   $.ExposeTranslation.add('Foo:foo.plural', '{0} Nothing|[1,Inf[ Many things');
   $.ExposeTranslation.add('Foo:foo.plural.with.args', '{0} Nothing|{1} One thing|[2,Inf[ %count% things');
   $.ExposeTranslation.add('Foo:foo.plural.with.inf', ']-Inf,0[ Underground|{0} Ground 0|{1} First level|[2,Inf[ High level');
+  $.ExposeTranslation.add('Foo:complex.plural', '{0} There is no apples|[20,Inf] There are many apples|There is one apple|a_few: There are %count% apples');
 
   // Basic
   equal($.ExposeTranslation.get('Foo:foo'), 'bar',
@@ -85,6 +86,15 @@ test('get method', function() {
     'number = 1 returns the {1} part of the message');
   equal($.ExposeTranslation.get('Foo:foo.plural.with.inf', {}, 10000), 'High level',
     'number = 1000 returns the [2,Inf[ part of the message');
+
+  equal($.ExposeTranslation.get('Foo:complex.plural', {}, 0), 'There is no apples',
+    'number = 0 returns the {0} part of the message');
+  equal($.ExposeTranslation.get('Foo:complex.plural', {}, 1), 'There is one apple',
+    'number = 1 returns the standard rule');
+  equal($.ExposeTranslation.get('Foo:complex.plural', { count: 9 }, 9), 'There are 9 apples',
+    'number = 10 returns the "a_few" part of the message');
+  equal($.ExposeTranslation.get('Foo:complex.plural', {}, 20), 'There are many apples',
+    'number = 20 returns the [20,Inf] part of the message');
 });
 
 test('guesser', function() {
