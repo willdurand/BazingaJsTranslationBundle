@@ -1,0 +1,318 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>DocBlox Documentation</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta><link rel="stylesheet" href="css/black-tie/jquery-ui-1.8.2.custom.css" type="text/css"></link><link rel="stylesheet" href="css/jquery.treeview.css" type="text/css"></link><link rel="stylesheet" href="css/theme.css" type="text/css"></link><script type="text/javascript" src="js/jquery-1.4.2.min.js"></script><script type="text/javascript" src="js/jquery-ui-1.8.2.custom.min.js"></script><script type="text/javascript" src="js/jquery.cookie.js"></script><script type="text/javascript" src="js/jquery.treeview.js"></script><script type="text/javascript">
+            $(document).ready(function() {
+                $(".filetree").treeview({
+                    collapsed: true,
+                    persist: "cookie"
+                });
+
+                $("#accordion").accordion({
+                    collapsible: true,
+                    autoHeight:  false,
+                    fillSpace:   true
+                });
+
+                $(".tabs").tabs();
+            });
+        </script></head><body><div xmlns="" id="content">
+<script>
+      $(document).ready(function() {
+        $('dl.function-info, dl.constant-info, dl.property-info').prev().css('cursor', 'pointer');
+        $('dl.function-info, dl.constant-info, dl.property-info').prev().click(function() {
+          if ($(this).next().is(':hidden'))
+          {
+            $(this).children('img')[0].src = 'images/arrow_down.gif';
+          } else
+          {
+            $(this).children('img')[0].src = 'images/arrow_right.gif';
+          }
+          $(this).next().slideToggle();
+        });
+      $('dl.function-info, dl.constant-info, dl.property-info').hide();
+      $('dl.function-info img, dl.constant-info img, dl.property-info img').show();
+      });
+    </script><a name="top"></a><h1 class="file">Controller/Controller.php</h1>
+<div class="file_menu">
+<a href="#classes">Classes</a> </div>
+<dl class="file-info">
+<dt>Classes</dt>
+<dd><a class="class" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController">Controller</a></dd>
+</dl>
+<a name="classes"></a><a id="Bazinga\ExposeTranslationBundle\Controller\Controller"></a><h2 class="class">Bazinga\ExposeTranslationBundle\Controller\Controller<div class="to-top"><a href="#top">jump to top</a></div>
+</h2>
+<div class="class">
+<dl class="class-info">
+<dt>author</dt>
+<dd>William DURAND &lt;william.durand1@gmail.com&gt;</dd>
+<dt>package</dt>
+<dd>ExposeTranslationBundle</dd>
+<dt>subpackage</dt>
+<dd>Controller</dd>
+<dt>Properties</dt>
+<dd><a class="property" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController::%24translator">$translator</a></dd>
+<dd><a class="property" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController::%24engine">$engine</a></dd>
+<dd><a class="property" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController::%24translationFinder">$translationFinder</a></dd>
+<dd><a class="property" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController::%24loaders">$loaders</a></dd>
+<dd><a class="property" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController::%24defaultDomains">$defaultDomains</a></dd>
+<dt>Methods</dt>
+<dd><a class="method" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController::__construct()">__construct</a></dd>
+<dd><a class="method" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController::addLoader()">addLoader</a></dd>
+<dd><a class="method" href="#Bazinga%5CExposeTranslationBundle%5CController%5CController::exposeTranslationAction()">exposeTranslationAction</a></dd>
+</dl>
+<h3>Description</h3>
+<p class="short-description">Controller class.</p>
+<div class="long-description">
+</div>
+<h3>Properties</h3>
+<div>
+<a id="Bazinga\ExposeTranslationBundle\Controller\Controller::$defaultDomains"></a><h4 class="property">$defaultDomains<div class="to-top"><a href="#Bazinga%5CExposeTranslationBundle%5CController%5CController">jump to class</a></div>
+</h4>
+<div class="property">
+<code>array <span class="highlight">$defaultDomains</span> = ''</code><p class="short-description"></p>
+<div class="long-description">
+</div>
+<div class="api-section">
+<h4 class="info">
+<img src="images/arrow_right.gif"> Details</h4>
+<dl class="property-info">
+<dt>$defaultDomains</dt>
+<dd>array<br><em></em>
+</dd>
+<dt>visibility</dt>
+<dd>protected</dd>
+<dt>default</dt>
+<dd></dd>
+<dt>final</dt>
+<dd>false</dd>
+<dt>static</dt>
+<dd>false</dd>
+</dl>
+<div class="clear"></div>
+</div>
+</div>
+<a id="Bazinga\ExposeTranslationBundle\Controller\Controller::$engine"></a><h4 class="property">$engine<div class="to-top"><a href="#Bazinga%5CExposeTranslationBundle%5CController%5CController">jump to class</a></div>
+</h4>
+<div class="property">
+<code>\Symfony\Component\Templating\EngineInterface <span class="highlight">$engine</span> = ''</code><p class="short-description"></p>
+<div class="long-description">
+</div>
+<div class="api-section">
+<h4 class="info">
+<img src="images/arrow_right.gif"> Details</h4>
+<dl class="property-info">
+<dt>$engine</dt>
+<dd>\Symfony\Component\Templating\EngineInterface<br><em></em>
+</dd>
+<dt>visibility</dt>
+<dd>protected</dd>
+<dt>default</dt>
+<dd></dd>
+<dt>final</dt>
+<dd>false</dd>
+<dt>static</dt>
+<dd>false</dd>
+</dl>
+<div class="clear"></div>
+</div>
+</div>
+<a id="Bazinga\ExposeTranslationBundle\Controller\Controller::$loaders"></a><h4 class="property">$loaders<div class="to-top"><a href="#Bazinga%5CExposeTranslationBundle%5CController%5CController">jump to class</a></div>
+</h4>
+<div class="property">
+<code>array <span class="highlight">$loaders</span> = ''</code><p class="short-description"></p>
+<div class="long-description">
+</div>
+<div class="api-section">
+<h4 class="info">
+<img src="images/arrow_right.gif"> Details</h4>
+<dl class="property-info">
+<dt>$loaders</dt>
+<dd>array<br><em></em>
+</dd>
+<dt>visibility</dt>
+<dd>protected</dd>
+<dt>default</dt>
+<dd></dd>
+<dt>final</dt>
+<dd>false</dd>
+<dt>static</dt>
+<dd>false</dd>
+</dl>
+<div class="clear"></div>
+</div>
+</div>
+<a id="Bazinga\ExposeTranslationBundle\Controller\Controller::$translationFinder"></a><h4 class="property">$translationFinder<div class="to-top"><a href="#Bazinga%5CExposeTranslationBundle%5CController%5CController">jump to class</a></div>
+</h4>
+<div class="property">
+<code>\Bazinga\ExposeTranslationBundle\Service\TranslationFinder <span class="highlight">$translationFinder</span> = ''</code><p class="short-description"></p>
+<div class="long-description">
+</div>
+<div class="api-section">
+<h4 class="info">
+<img src="images/arrow_right.gif"> Details</h4>
+<dl class="property-info">
+<dt>$translationFinder</dt>
+<dd>\Bazinga\ExposeTranslationBundle\Service\TranslationFinder<br><em></em>
+</dd>
+<dt>visibility</dt>
+<dd>protected</dd>
+<dt>default</dt>
+<dd></dd>
+<dt>final</dt>
+<dd>false</dd>
+<dt>static</dt>
+<dd>false</dd>
+</dl>
+<div class="clear"></div>
+</div>
+</div>
+<a id="Bazinga\ExposeTranslationBundle\Controller\Controller::$translator"></a><h4 class="property">$translator<div class="to-top"><a href="#Bazinga%5CExposeTranslationBundle%5CController%5CController">jump to class</a></div>
+</h4>
+<div class="property">
+<code>\Symfony\Component\Translation\TranslatorInterface <span class="highlight">$translator</span> = ''</code><p class="short-description"></p>
+<div class="long-description">
+</div>
+<div class="api-section">
+<h4 class="info">
+<img src="images/arrow_right.gif"> Details</h4>
+<dl class="property-info">
+<dt>$translator</dt>
+<dd>\Symfony\Component\Translation\TranslatorInterface<br><em></em>
+</dd>
+<dt>visibility</dt>
+<dd>protected</dd>
+<dt>default</dt>
+<dd></dd>
+<dt>final</dt>
+<dd>false</dd>
+<dt>static</dt>
+<dd>false</dd>
+</dl>
+<div class="clear"></div>
+</div>
+</div>
+</div>
+<h3>Methods</h3>
+<div>
+<a id="Bazinga\ExposeTranslationBundle\Controller\Controller::__construct()"></a><h4 class="method">__construct<div class="to-top"><a href="#Controller">jump to class</a></div>
+</h4>
+<div class="method">
+<code><span class="highlight">__construct</span><span class="nb-faded-text">(
+          \Symfony\Component\Translation\TranslatorInterface $translator, \Symfony\Component\Templating\EngineInterface $engine, \Bazinga\ExposeTranslationBundle\Service\TranslationFinder $translationFinder, array $defaultDomains
+              =
+              array
+          )
+        </span>
+        :
+        </code><p class="short-description">Default constructor.</p>
+<div class="long-description">
+</div>
+<div class="api-section">
+<h5 class="arguments">Arguments</h5>
+<dl class="argument-info">
+<dt>$translator</dt>
+<dd>\Symfony\Component\Translation\TranslatorInterface<br><em>The translator.</em>
+</dd>
+<dt>$engine</dt>
+<dd>\Symfony\Component\Templating\EngineInterface<br><em>The engine.</em>
+</dd>
+<dt>$translationFinder</dt>
+<dd>\Bazinga\ExposeTranslationBundle\Service\TranslationFinder<br><em>The translation finder.</em>
+</dd>
+<dt>$defaultDomains</dt>
+<dd>array<br><em>An array of default domain names.</em>
+</dd>
+</dl>
+<div class="clear"></div>
+</div>
+<div class="api-section">
+<h5 class="info">
+<img src="images/arrow_right.gif"> Details</h5>
+<dl class="function-info">
+<dt>visibility</dt>
+<dd>public</dd>
+<dt>final</dt>
+<dd>false</dd>
+<dt>static</dt>
+<dd>false</dd>
+</dl>
+<div class="clear"></div>
+</div>
+</div>
+<a id="Bazinga\ExposeTranslationBundle\Controller\Controller::addLoader()"></a><h4 class="method">addLoader<div class="to-top"><a href="#Controller">jump to class</a></div>
+</h4>
+<div class="method">
+<code><span class="highlight">addLoader</span><span class="nb-faded-text">(
+          string $id, \Symfony\Component\Translation\Loader\LoaderInterface $loader
+          )
+        </span>
+        :
+        </code><p class="short-description">Add a translation loader if it does not exist.</p>
+<div class="long-description">
+</div>
+<div class="api-section">
+<h5 class="arguments">Arguments</h5>
+<dl class="argument-info">
+<dt>$id</dt>
+<dd>string<br><em>The loader id.</em>
+</dd>
+<dt>$loader</dt>
+<dd>\Symfony\Component\Translation\Loader\LoaderInterface<br><em>A translation loader.</em>
+</dd>
+</dl>
+<div class="clear"></div>
+</div>
+<div class="api-section">
+<h5 class="info">
+<img src="images/arrow_right.gif"> Details</h5>
+<dl class="function-info">
+<dt>visibility</dt>
+<dd>public</dd>
+<dt>final</dt>
+<dd>false</dd>
+<dt>static</dt>
+<dd>false</dd>
+</dl>
+<div class="clear"></div>
+</div>
+</div>
+<a id="Bazinga\ExposeTranslationBundle\Controller\Controller::exposeTranslationAction()"></a><h4 class="method">exposeTranslationAction<div class="to-top"><a href="#Controller">jump to class</a></div>
+</h4>
+<div class="method">
+<code><span class="highlight">exposeTranslationAction</span><span class="nb-faded-text">(
+           $domain_name,  $_locale,  $_format
+          )
+        </span>
+        :
+        </code><p class="short-description">exposeTranslationAction action.</p>
+<div class="long-description">
+</div>
+<div class="api-section">
+<h5 class="arguments">Arguments</h5>
+<dl class="argument-info">
+<dt>$domain_name</dt>
+<dd><em></em></dd>
+<dt>$_locale</dt>
+<dd><em></em></dd>
+<dt>$_format</dt>
+<dd><em></em></dd>
+</dl>
+<div class="clear"></div>
+</div>
+<div class="api-section">
+<h5 class="info">
+<img src="images/arrow_right.gif"> Details</h5>
+<dl class="function-info">
+<dt>visibility</dt>
+<dd>public</dd>
+<dt>final</dt>
+<dd>false</dd>
+<dt>static</dt>
+<dd>false</dd>
+</dl>
+<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<small xmlns="" class="footer">Documentation was generated by <a href="http://docblox-project.org">DocBlox 0.10.0</a>.
+    </small></body></html>
