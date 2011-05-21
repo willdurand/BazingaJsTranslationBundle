@@ -8,7 +8,8 @@ use Symfony\Component\Finder\Finder;
 /**
  * TranslationFinder class.
  *
- * @package Service
+ * @package ExposeTranslationBundle
+ * @subpackage Service
  * @author William DURAND <william.durand1@gmail.com>
  */
 class TranslationFinder
