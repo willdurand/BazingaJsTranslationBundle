@@ -185,7 +185,7 @@ given default domains.</p>
 </tr>
 <tr class="code">
 <td class="docs">
-<p>Comes from the Symfony2 PHP Framework.</p>
+<p>The logic comes from the Symfony2 PHP Framework.</p>
 
 <p>Given a message with different plural translations separated by a
 pipe (|), this method returns the correct portion of the message based
@@ -206,12 +206,13 @@ affect the functionality.</p>
 
 <h2></h2>
 
-<ul><li><p><strong>param</strong>: <em>String</em>  message  The message.</p></li><li><p><strong>param</strong>: <em>Int</em>  number      The number.</p></li><li><p><strong>return</strong>: <em>String</em>          The message part to use for translation.</p></li><li><p><strong>api</strong>: <em>private</em></p><p> </p></li></ul>
+<ul><li><p><strong>param</strong>: <em>String</em>  message  The message.</p></li><li><p><strong>param</strong>: <em>Number</em>  number   The number.</p></li><li><p><strong>return</strong>: <em>String</em>          The message part to use for translation.</p></li><li><p><strong>api</strong>: <em>private</em></p><p> </p></li></ul>
 </td>
 <td class="code">
 <pre><code><span class="keyword">function</span> <span class="variable">pluralize</span>(<span class="variable">message</span>, <span class="variable">number</span>) {
       <span class="keyword">var</span> <span class="variable">_p</span>,
           <span class="variable">_r</span>,
+          <span class="variable">_number</span> = <span class="variable">number</span>,
           <span class="variable">_explicitRules</span> = [],
           <span class="variable">_standardRules</span> = [],
           <span class="variable">_parts</span> = <span class="variable">message</span>.<span class="variable">split</span>(<span class="class">Translation</span>.<span class="variable">pluralSeparator</span>);
@@ -241,16 +242,16 @@ affect the functionality.</p>
           <span class="keyword">if</span> (<span class="variable">_matches</span>[<span class="number integer">1</span>]) {
             <span class="keyword">var</span> <span class="variable">_ns</span> = <span class="variable">_matches</span>[<span class="number integer">2</span>].<span class="variable">split</span>(<span class="string">','</span>);
             <span class="keyword">for</span> (<span class="variable">_n</span> <span class="keyword">in</span> <span class="variable">_ns</span>) {
-              <span class="keyword">if</span> (<span class="variable">number</span> == <span class="variable">_ns</span>[<span class="variable">_n</span>]) {
+              <span class="keyword">if</span> (<span class="variable">_number</span> == <span class="variable">_ns</span>[<span class="variable">_n</span>]) {
                 <span class="keyword">return</span> <span class="variable">_explicitRules</span>[<span class="variable">_e</span>];
               }
             }
           } <span class="keyword">else</span> {
-            <span class="keyword">var</span> <span class="variable">_leftNumber</span> = <span class="variable">convert_number</span>(<span class="variable">_matches</span>[<span class="number integer">4</span>]);
+            <span class="keyword">var</span> <span class="variable">_leftNumber</span>  = <span class="variable">convert_number</span>(<span class="variable">_matches</span>[<span class="number integer">4</span>]);
             <span class="keyword">var</span> <span class="variable">_rightNumber</span> = <span class="variable">convert_number</span>(<span class="variable">_matches</span>[<span class="number integer">5</span>]);
 
-            <span class="keyword">if</span> ((<span class="string">'['</span> === <span class="variable">_matches</span>[<span class="number integer">3</span>] ? <span class="variable">number</span> &<span class="variable">gt</span>;= <span class="variable">_leftNumber</span> : <span class="variable">number</span> &<span class="variable">gt</span>; <span class="variable">_leftNumber</span>) &<span class="variable">amp</span>;&<span class="variable">amp</span>;
-                    (<span class="string">']'</span> === <span class="variable">_matches</span>[<span class="number integer">6</span>] ? <span class="variable">number</span> &<span class="variable">lt</span>;= <span class="variable">_rightNumber</span> : <span class="variable">number</span> &<span class="variable">lt</span>; <span class="variable">_rightNumber</span>))
+            <span class="keyword">if</span> ((<span class="string">'['</span> === <span class="variable">_matches</span>[<span class="number integer">3</span>] ? <span class="variable">_number</span> &<span class="variable">gt</span>;= <span class="variable">_leftNumber</span> : <span class="variable">_number</span> &<span class="variable">gt</span>; <span class="variable">_leftNumber</span>) &<span class="variable">amp</span>;&<span class="variable">amp</span>;
+                    (<span class="string">']'</span> === <span class="variable">_matches</span>[<span class="number integer">6</span>] ? <span class="variable">_number</span> &<span class="variable">lt</span>;= <span class="variable">_rightNumber</span> : <span class="variable">_number</span> &<span class="variable">lt</span>; <span class="variable">_rightNumber</span>))
             {
               <span class="keyword">return</span> <span class="variable">_explicitRules</span>[<span class="variable">_e</span>];
             }
@@ -264,14 +265,14 @@ affect the functionality.</p>
 </tr>
 <tr class="code">
 <td class="docs">
-<p>Comes from the Symfony2 PHP Framework.</p>
+<p>The logic comes from the Symfony2 PHP Framework.</p>
 
 <p>Convert number as String, "Inf" and "-Inf"
 values to number values.</p>
 
 <h2></h2>
 
-<ul><li><p><strong>param</strong>: <em>String</em>  number   A litteral number.</p></li><li><p><strong>return</strong>: <em>Int</em>             The int value of the number.</p></li><li><p><strong>api</strong>: <em>private</em></p><p> </p></li></ul>
+<ul><li><p><strong>param</strong>: <em>String</em>  number   A litteral number.</p></li><li><p><strong>return</strong>: <em>Number</em>             The int value of the number.</p></li><li><p><strong>api</strong>: <em>private</em></p><p> </p></li></ul>
 </td>
 <td class="code">
 <pre><code><span class="keyword">function</span> <span class="variable">convert_number</span>(<span class="variable">number</span>) {
@@ -287,16 +288,17 @@ values to number values.</p>
 </tr>
 <tr class="code">
 <td class="docs">
-<p>Comes from the Symfony2 PHP Framework.
-Returns the plural position to use for the given locale and number.</p>
+<p>The logic comes from the Symfony2 PHP Framework.</p>
+
+<p>Returns the plural position to use for the given locale and number.</p>
 
 <h2></h2>
 
-<ul><li><p><strong>param</strong>: <em>Int</em>  number  A number.</p></li><li><p><strong>return</strong>: <em>Int</em>         The plural position.</p></li><li><p><strong>api</strong>: <em>private</em></p><p> </p></li></ul>
+<ul><li><p><strong>param</strong>: <em>Number</em>  number  A number.</p></li><li><p><strong>return</strong>: <em>Number</em>         The plural position.</p></li><li><p><strong>api</strong>: <em>private</em></p><p> </p></li></ul>
 </td>
 <td class="code">
 <pre><code><span class="keyword">function</span> <span class="variable">plural_position</span>(<span class="variable">number</span>) {
-      <span class="keyword">var</span> <span class="variable">_locale</span> = <span class="class">Translation</span>.<span class="variable">locale</span>;
+      <span class="keyword">var</span> <span class="variable">_locale</span> = <span class="class">Translation</span>.<span class="variable">locale</span> || <span class="class">Translation</span>.<span class="variable">fallback</span>;
 
       <span class="keyword">switch</span> (<span class="variable">_locale</span>) {
         <span class="keyword">case</span> <span class="string">'bo'</span>:
@@ -447,6 +449,18 @@ Returns the plural position to use for the given locale and number.</p>
 </tr>
 <tr class="code">
 <td class="docs">
+<p>Fallback locale.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>type</strong>: <em>String</em> </p></li><li><p><strong>api</strong>: <em>public</em></p><p>   </p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">fallback</span>: <span class="string">'en'</span>,</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
 <p>Placeholder prefix.</p>
 
 <h2></h2>
@@ -514,7 +528,7 @@ Returns the plural position to use for the given locale and number.</p>
 
 <h2></h2>
 
-<ul><li><p><strong>param</strong>: <em>String</em>  key            A translation key.</p></li><li><p><strong>param</strong>: <em>Object</em>  placeholders   Placeholders.</p></li><li><p><strong>param</strong>: <em>Int</em>  number            A number of objects being described.</p></li><li><p><strong>return</strong>: <em>String</em>        The corresponding message if the key exists.</p><p>   </p></li></ul>
+<ul><li><p><strong>param</strong>: <em>String</em>  key            A translation key.</p></li><li><p><strong>param</strong>: <em>Object</em>  placeholders   Placeholders.</p></li><li><p><strong>param</strong>: <em>Number</em>  number         A number of objects being described.</p></li><li><p><strong>return</strong>: <em>String</em>        The corresponding message if the key exists.</p><p>   </p></li></ul>
 </td>
 <td class="code">
 <pre><code><span class="variable">get</span>: <span class="keyword">function</span>(<span class="variable">key</span>, <span class="variable">placeholders</span>, <span class="variable">number</span>) {
