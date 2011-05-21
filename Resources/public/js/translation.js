@@ -179,6 +179,14 @@ $.ExposeTranslation = $.ExposeTranslation || {};
     function plural_position(number) {
       var _locale = Translation.locale || Translation.fallback;
 
+      if ('pt_BR' === _locale) {
+          _locale = 'xbr';
+      }
+
+      if (_locale.length > 3) {
+        _locale = _locale.split('_')[0];
+      }
+
       switch (_locale) {
         case 'bo':
         case 'dz':
