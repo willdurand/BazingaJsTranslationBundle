@@ -73,7 +73,7 @@ But **how to do that ?**
 Just by adding a line as below:
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js' }}"></script>
+<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 ```
 
 This will use the current `locale` and will provide translated messages found in each `messages.CURRENT_LOCALE.*` files of your project.
@@ -81,7 +81,7 @@ This will use the current `locale` and will provide translated messages found in
 #### Domain
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME' } }}"></script>
+<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME' }) }}"></script>
 ```
 
 This will use the current `locale` and will provide translated messages found in each `DOMAIN_NAME.CURRENT_LOCALE.*` files of your project.
@@ -91,7 +91,7 @@ This will use the current `locale` and will provide translated messages found in
 You can specify a `locale` to use for translation if you want, just add the `_locale` parameter:
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME', '_locale' : 'MY_LOCALE' } }}"></script>
+<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME', '_locale' : 'MY_LOCALE' }) }}"></script>
 ```
 
 This will provide translated messages found in each `DOMAIN_NAME.MY_LOCALE.*` files of your project.
@@ -144,7 +144,7 @@ A third parameter can be added to the `get()` method, it's the **number** of obj
 
 ``` yaml
 # app/Resources/messages.en.yml
-apples:    "{0} There is no apples|{1} There is one apple|]1,19] There are %count% apples|[20,Inf] There are many apples"
+apples: "{0} There is no apples|{1} There is one apple|]1,19] There are %count% apples|[20,Inf] There are many apples"
 ```
 
 ``` javascript
