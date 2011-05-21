@@ -4,10 +4,7 @@ A pretty nice way to expose your translated messages to your JavaScript.
 
 **Warning:**
 
-* This bundle is a Proof of Concept and it should **NOT** be used in production at the moment.
-* This bundle is not unit tested, so don't use it or provides tests if you want to contribute.
-* I plan to add tests soon, it's really important. Mainly qUnit tests !
-* I also plan to add an easy way to declare more default domains in `app/config/config*.yml`.
+* The PHP code of this bundle is not unit tested, so don't use it or provides tests if you want to contribute.
 
 
 ## Prerequisite
@@ -226,6 +223,18 @@ $.ExposeTranslation.get('placeholder', { "username" : "will" });
 $.ExposeTranslation.get('placeholder');
 // will return 'Hello %username%, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 ```
+
+
+## More configuration
+
+You can easily add your own default domains by adding these lines in your `app/config/config*.yml` files:
+
+``` yaml
+bazinga_expose_translation:
+    default_domains: [ messages ]
+```
+
+**Note:** You still have to include a `<script>` tag to expose messages but you avoid writing domain names before each of your keys.
 
 
 ## Credits
