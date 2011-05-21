@@ -300,6 +300,14 @@ values to number values.</p>
 <pre><code><span class="keyword">function</span> <span class="variable">plural_position</span>(<span class="variable">number</span>) {
       <span class="keyword">var</span> <span class="variable">_locale</span> = <span class="class">Translation</span>.<span class="variable">locale</span> || <span class="class">Translation</span>.<span class="variable">fallback</span>;
 
+      <span class="keyword">if</span> (<span class="string">'pt_BR'</span> === <span class="variable">_locale</span>) {
+          <span class="variable">_locale</span> = <span class="string">'xbr'</span>;
+      }
+
+      <span class="keyword">if</span> (<span class="variable">_locale</span>.<span class="variable">length</span> &<span class="variable">gt</span>; <span class="number integer">3</span>) {
+        <span class="variable">_locale</span> = <span class="variable">_locale</span>.<span class="variable">split</span>(<span class="string">'_'</span>)[<span class="number integer">0</span>];
+      }
+
       <span class="keyword">switch</span> (<span class="variable">_locale</span>) {
         <span class="keyword">case</span> <span class="string">'bo'</span>:
         <span class="keyword">case</span> <span class="string">'dz'</span>:
