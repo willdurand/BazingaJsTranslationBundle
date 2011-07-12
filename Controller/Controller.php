@@ -77,8 +77,10 @@ class Controller
 
         $catalogues = array();
         foreach ($files as $file) {
-            if (isset($this->loaders[$file->getExtension()])) {
-                $catalogues[] = $this->loaders[$file->getExtension()]->load($file, $_locale, $domain_name);
+            $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
+
+            if (isset($this->loaders[$extension])) {
+                $catalogues[] = $this->loaders[$extension]->load($file, $_locale, $domain_name);
             }
         }
 
