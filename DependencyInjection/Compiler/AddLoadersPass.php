@@ -32,7 +32,9 @@ class AddLoadersPass implements CompilerPassInterface
 
     protected function registerLoader($loaderId)
     {
-        $id = end(explode('.', $loaderId));
+        $split = explode('.', $loaderId);
+        $id    = end($split);
+
         $this->container
             ->getDefinition('bazinga.exposetranslation.controller')
             ->addMethodCall('addLoader', array($id, new Reference($loaderId)));
