@@ -48,7 +48,7 @@ Register the routing in `app/config/routing.yml`:
 ``` yaml
 # app/config/routing.yml
 _bazinga_exposetranslation:
-    resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.xml"
+    resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
 ```
 
 Publish assets:
