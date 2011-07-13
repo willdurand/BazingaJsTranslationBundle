@@ -6,7 +6,7 @@
 /**
  * Define Translation class.
  */
-$.ExposeTranslation = $.ExposeTranslation || {};
+ExposeTranslation = ExposeTranslation || {};
 
 (function(Translation, $, undefined) {
   // now register our routing methods
@@ -411,4 +411,4 @@ $.ExposeTranslation = $.ExposeTranslation || {};
       }
     };
   })());
-})($.ExposeTranslation, jQuery);
+})(ExposeTranslation, jQuery);
