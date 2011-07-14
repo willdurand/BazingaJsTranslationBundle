@@ -6,7 +6,7 @@
 /**
  * Define Translation class.
  */
-ExposeTranslation = ExposeTranslation || {};
+var ExposeTranslation = ExposeTranslation || {};
 
 (function(Translation, $, undefined) {
   // now register our routing methods
