@@ -48,7 +48,7 @@ Register the routing in `app/config/routing.yml`:
 ``` yaml
 # app/config/routing.yml
 _bazinga_exposetranslation:
-    resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.xml"
+    resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
 ```
 
 Publish assets:
@@ -102,10 +102,10 @@ This will provide translated messages found in each `DOMAIN_NAME.MY_LOCALE.*` fi
 It's quite simple:
 
 ``` javascript
-$.ExposeTranslation.has('DOMAIN_NAME:key');
+ExposeTranslation.has('DOMAIN_NAME:key');
 // true or false
 
-$.ExposeTranslation.get('DOMAIN_NAME:key');
+ExposeTranslation.get('DOMAIN_NAME:key');
 // the translated message or undefined
 ```
 
@@ -115,7 +115,7 @@ If you don't specify any **domain**, a guesser is provided to find the best tran
 To configure the guesser, you have to set the `defaultDomains` attribute. By default, the configured default domain is `messages`.
 
 ``` javascript
-$.ExposeTranslation.get('key');
+ExposeTranslation.get('key');
 // will try to find a translated message in default domains.
 ```
 
@@ -128,7 +128,7 @@ Read the official documentation about Symfony2 [message placeholders](http://sym
 The `get()` method accepts a second argument that takes placeholders without `%` delimiters:
 
 ``` javascript
-$.ExposeTranslation.get('DOMAIN_NAME:key', { "foo" : "bar" });
+ExposeTranslation.get('DOMAIN_NAME:key', { "foo" : "bar" });
 // will replace each "%foo%" in the message by "bar".
 ```
 
@@ -148,27 +148,27 @@ apples: "{0} There is no apples|{1} There is one apple|]1,19] There are %count% 
 ```
 
 ``` javascript
-$.ExposeTranslation.locale = 'en';
+ExposeTranslation.locale = 'en';
 
-$.ExposeTranslation.get('apples', {"count" : 0}, 0);
+ExposeTranslation.get('apples', {"count" : 0}, 0);
 // will return "There is no apples"
 
-$.ExposeTranslation.get('apples', {"count" : 1}, 1);
+ExposeTranslation.get('apples', {"count" : 1}, 1);
 // will return "There is one apple"
 
-$.ExposeTranslation.get('apples', {"count" : 2}, 2);
+ExposeTranslation.get('apples', {"count" : 2}, 2);
 // will return "There are 2 apples"
 
-$.ExposeTranslation.get('apples', {"count" : 10}, 10);
+ExposeTranslationExposeTranslation.get('apples', {"count" : 10}, 10);
 // will return "There are 10 apples"
 
-$.ExposeTranslation.get('apples', {"count" : 19}, 19);
+ExposeTranslation.get('apples', {"count" : 19}, 19);
 // will return "There are 19 apples"
 
-$.ExposeTranslation.get('apples', {"count" : 20}, 20);
+ExposeTranslation.get('apples', {"count" : 20}, 20);
 // will return "There are many apples"
 
-$.ExposeTranslation.get('apples', {"count" : 100}, 100);
+ExposeTranslation.get('apples', {"count" : 100}, 100);
 // will return "There are many apples"
 ```
 
@@ -179,7 +179,7 @@ $.ExposeTranslation.get('apples', {"count" : 100}, 100);
 You can get the current locale by accessing the `locale` attribute:
 
 ``` javascript
-$.ExposeTranslation.locale;
+ExposeTranslation.locale;
 // will return the current locale.
 ```
 
@@ -205,22 +205,22 @@ placeholder: "Hello %username%, how are you ?"
 You can do:
 
 ``` javascript
-$.ExposeTranslation.get('Hello:foo');
+ExposeTranslation.get('Hello:foo');
 // will return 'Bar' if the current locale is set to 'fr', undefined otherwise.
 
-$.ExposeTranslation.get('Hello:ba.bar');
+ExposeTranslation.get('Hello:ba.bar');
 // will return 'Hello world' if the current locale is set to 'fr', undefined otherwise.
 
-$.ExposeTranslation.get('Hello:placeholder');
+ExposeTranslation.get('Hello:placeholder');
 // will return 'Hello %username% !' if the current locale is set to 'fr', undefined otherwise.
 
-$.ExposeTranslation.get('Hello:placeholder', { "username" : "will" });
+ExposeTranslation.get('Hello:placeholder', { "username" : "will" });
 // will return 'Hello will !' if the current locale is set to 'fr', undefined otherwise.
 
-$.ExposeTranslation.get('placeholder', { "username" : "will" });
+ExposeTranslation.get('placeholder', { "username" : "will" });
 // will return 'Hello will, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 
-$.ExposeTranslation.get('placeholder');
+ExposeTranslation.get('placeholder');
 // will return 'Hello %username%, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 ```
 
@@ -239,4 +239,6 @@ bazinga_expose_translation:
 
 ## Credits
 
-* William DURAND (Bazinga).
+* William DURAND (Bazinga) as main author.
+* Jan Sorgalla as contributor.
+* Stan Chollet as contributor.

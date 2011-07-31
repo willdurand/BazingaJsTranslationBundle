@@ -239,4 +239,6 @@ bazinga_expose_translation:
 
 ## Credits
 
-* William DURAND (Bazinga).
+* William DURAND (Bazinga) as main author.
+* Jan Sorgalla as contributor.
+* Stan Chollet as contributor.
