@@ -87,7 +87,7 @@ class Controller
         $messages = array();
         $messages[$domain_name] = array();
         foreach ($catalogues as $catalogue) {
-            $cat = $catalogue->all;
+            $cat = $catalogue->all();
             $messages[$domain_name] = array_merge($messages[$domain_name], $cat[$domain_name]);
         }
 
