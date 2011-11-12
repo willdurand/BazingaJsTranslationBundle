@@ -85,8 +85,10 @@ class Controller
         }
 
         $messages = array();
+        $messages[$domain_name] = array();
         foreach ($catalogues as $catalogue) {
-            $messages = array_merge($messages, $catalogue->all());
+            $cat = $catalogue->all();
+            $messages[$domain_name] = array_merge($messages[$domain_name], $cat[$domain_name]);
         }
 
         return new Response($this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
