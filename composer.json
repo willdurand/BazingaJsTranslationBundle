@@ -1,0 +1,20 @@
+{
+  "name": "willdurand/expose-translation-bundle",
+  "description": "A pretty nice way to expose your translation messages to your JavaScript.",
+  "keywords": ["translation", "javascript"],
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "William Durand",
+      "email": "william.durand1@gmail.com"
+    }
+  ],
+  "require": {
+    "symfony/framework-bundle": "2.*"
+  },
+  "autoload": {
+    "psr-0": { "Bazinga\\ExposeTranslationBundle": "" }
+  },
+  "target-dir": "Bazinga/ExposeTranslationBundle"
+}
