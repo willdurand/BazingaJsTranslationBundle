@@ -86,7 +86,7 @@ class Controller
 
         $messages = array();
         foreach ($catalogues as $catalogue) {
-            $messages = array_merge($messages, $catalogue->all());
+            $messages = array_merge_recursive($messages, $catalogue->all());
         }
 
         return new Response($this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
