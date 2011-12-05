@@ -16,7 +16,7 @@ The famous JavaScript framework [jQuery](http://jquery.com/) is mandatory.
 
 As usual, add this bundle to your submodules:
 
-    git submodule add git://github.com/Bazinga/BazingaExposeTranslationBundle.git vendor/bundles/Bazinga/ExposeTranslationBundle
+    git submodule add git://github.com/willdurand/BazingaExposeTranslationBundle.git vendor/bundles/Bazinga/ExposeTranslationBundle
 
 Register the namespace in `app/autoload.php`:
 
