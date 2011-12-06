@@ -14,11 +14,32 @@ The famous JavaScript framework [jQuery](http://jquery.com/) is mandatory.
 
 ## Installation
 
-As usual, add this bundle to your submodules:
+### Step 1) Get the bundle
 
-    git submodule add git://github.com/willdurand/BazingaExposeTranslationBundle.git vendor/bundles/Bazinga/ExposeTranslationBundle
+First, grab the BazingaExposeTranslationBundle. There are two different ways
+to do this:
 
+#### Method a) Using the `deps` file
+
+Add the following lines to your  `deps` file and then run `php bin/vendors
+install`:
+
+```
+[BazingaExposeTranslationBundle]
+    git=https://github.com/willdurand/BazingaExposeTranslationBundle.git
+    target=bundles/Bazinga/ExposeTranslationBundle
+```
+
+#### Method b) Using submodules
+
+Run the following commands to bring in the needed libraries as submodules.
+
+```bash
+git submodule add git://github.com/willdurand/BazingaExposeTranslationBundle.git vendor/bundles/Bazinga/ExposeTranslationBundle
+```
 Register the namespace in `app/autoload.php`:
+
+### Step 2) Register the namespaces
 
 ``` php
 <?php
@@ -28,6 +49,8 @@ $loader->registerNamespaces(array(
     'Bazinga' => __DIR__.'/../vendor/bundles',
 ));
 ```
+
+### Step 3) Register the bundle
 
 Register the bundle in `app/AppKernel.php`:
 
@@ -43,7 +66,7 @@ public function registerBundles()
 }
 ```
 
-Register the routing in `app/config/routing.yml`:
+### Step 4) Register the routing in `app/config/routing.yml`:
 
 ``` yaml
 # app/config/routing.yml
