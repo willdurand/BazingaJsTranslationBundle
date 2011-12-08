@@ -7,11 +7,6 @@ A pretty nice way to expose your translated messages to your JavaScript.
 * The PHP code of this bundle is not unit tested, so don't use it or provides tests if you want to contribute.
 
 
-## Prerequisite
-
-The famous JavaScript framework [jQuery](http://jquery.com/) is mandatory.
-
-
 ## Installation
 
 As usual, add this bundle to your submodules:
