@@ -9,9 +9,17 @@ A pretty nice way to expose your translated messages to your JavaScript.
 
 ## Installation
 
-As usual, add this bundle to your submodules:
+Install the bundle:
 
-    git submodule add git://github.com/willdurand/BazingaExposeTranslationBundle.git vendor/bundles/Bazinga/ExposeTranslationBundle
+#### a) using Git submodules:
+
+    git submodule add http://github.com/willdurand/BazingaExposeTranslationBundle.git vendor/bundles/Bazinga/ExposeTranslationBundle
+
+#### b) using the Symfony2 vendor management system:
+
+    [ExposeTranslationBundle]
+        git=http://github.com/willdurand/BazingaExposeTranslationBundle.git
+        target=/bundles/Bazinga/ExposeTranslationBundle
 
 Register the namespace in `app/autoload.php`:
 
