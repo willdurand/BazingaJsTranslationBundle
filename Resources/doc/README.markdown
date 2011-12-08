@@ -162,7 +162,7 @@ ExposeTranslation.get('apples', {"count" : 1}, 1);
 ExposeTranslation.get('apples', {"count" : 2}, 2);
 // will return "There are 2 apples"
 
-ExposeTranslationExposeTranslation.get('apples', {"count" : 10}, 10);
+ExposeTranslation.get('apples', {"count" : 10}, 10);
 // will return "There are 10 apples"
 
 ExposeTranslation.get('apples', {"count" : 19}, 19);
