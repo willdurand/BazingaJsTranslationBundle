@@ -6,7 +6,7 @@
 /**
  * Define ExposeTranslation singleton class.
  */
-ExposeTranslation = new function () {
+var ExposeTranslation = new function () {
   var _messages = {},
       _sPluralRegex = /^\w+\: +(.+)$/,
       _cPluralRegex = /^(({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s+(.+?)$/,
