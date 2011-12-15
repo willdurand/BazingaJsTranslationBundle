@@ -9,8 +9,8 @@
 var ExposeTranslation = new function () {
   var _messages = {},
       _sPluralRegex = /^\w+\: +(.+)$/,
-      _cPluralRegex = /^(({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|\s*([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s+(.+?)$/,
-      _iPluralRegex = /^({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|\s*([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/;
+      _cPluralRegex = /^\s*(({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s+(.+?)$/,
+      _iPluralRegex = /^\s*({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/;
 
   /**
    * replace placeholders in given message.
