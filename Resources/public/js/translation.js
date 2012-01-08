@@ -379,15 +379,19 @@ var ExposeTranslation = new function () {
      * @return {String}       The corresponding message if the key exists.
      */
     get: function(key, placeholders, number) {
-      var _message = _messages[key] || guess_domain(key),
+      var _message = _messages[key],
           _number = parseInt(number),
           _placeholders = placeholders || {};
+
+      if (_message == undefined) {
+        _message = guess_domain(key);
+      }
 
       if (_message && !isNaN(_number)) {
         _message = pluralize(_message, _number);
       }
 
-      if (!_message) {
+      if (_message == undefined) {
         return key;
       }
 
