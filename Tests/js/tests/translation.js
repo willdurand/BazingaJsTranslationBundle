@@ -25,7 +25,7 @@ test('add/has methods', function() {
 });
 
 test('get method', function() {
-  expect(28);
+  expect(29);
 
   ExposeTranslation.add('Foo:foo', 'bar');
   ExposeTranslation.add('Foo:foo.with.arg', 'This is Ba %arg%');
@@ -36,6 +36,7 @@ test('get method', function() {
   ExposeTranslation.add('Foo:foo.plural.with.inf', ']-Inf,0[ Underground|{0} Ground 0|{1} First level|[2,Inf[ High level');
   ExposeTranslation.add('Foo:complex.plural', '{0} There is no apples|[20,Inf] There are many apples|There is one apple|a_few: There are %count% apples');
   ExposeTranslation.add('Foo:foo.plural.space.before.interval', ' {0} Nothing| [1,Inf[ Many things');
+  ExposeTranslation.add('Foo:empty', '');
 
   // Basic
   equal(ExposeTranslation.get('Foo:foo'), 'bar',
@@ -104,6 +105,10 @@ test('get method', function() {
     'number = 1 returns the [1,Inf[ part of the message');
   equal(ExposeTranslation.get('Foo:foo.plural.space.before.interval', {}, 100), 'Many things',
     'number = 100 returns the [1,Inf[ part of the message');
+
+  // Empty string translations
+  equal(ExposeTranslation.get('Foo:empty'), '',
+    'An empty string translation should return the empty string and not the key.');
 });
 
 test('guesser', function() {
