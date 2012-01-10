@@ -42,10 +42,11 @@ var ExposeTranslation = new function () {
    * Guess the domain if you don't specify it, based on
    * given default domains.
    *
+   * @param {String} key  A message key.
    * @return {String}     The message if found, undefined otherwise.
    * @api private
    */
-  function guess_domain() {
+  function guess_domain(key) {
     var _k,
         _defaultDomains = ExposeTranslation.defaultDomains;
 
@@ -54,8 +55,8 @@ var ExposeTranslation = new function () {
     }
 
     for (_k in _defaultDomains) {
-      if (ExposeTranslation.has(_defaultDomains[_k] + ':' + _key)) {
-        return ExposeTranslation.get(_defaultDomains[_k] + ':' + _key);
+      if (ExposeTranslation.has(_defaultDomains[_k] + ':' + key)) {
+        return ExposeTranslation.get(_defaultDomains[_k] + ':' + key);
       }
     }
 
