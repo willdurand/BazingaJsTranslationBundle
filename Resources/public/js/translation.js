@@ -23,33 +23,30 @@ var ExposeTranslation = new function () {
    */
   function replace_placeholders(message, placeholders) {
     var _i,
-        _message = message,
         _prefix = ExposeTranslation.placeHolderPrefix,
         _suffix = ExposeTranslation.placeHolderSuffix;
 
     for (_i in placeholders) {
       var _r = new RegExp(_prefix + _i + _suffix, 'g');
 
-      if (_r.test(_message)) {
-        _message = _message.replace(_r, placeholders[_i]);
+      if (_r.test(message)) {
+        message = message.replace(_r, placeholders[_i]);
         delete(placeholders[_i]);
       }
     }
 
-    return _message;
+    return message;
   }
 
   /**
    * Guess the domain if you don't specify it, based on
    * given default domains.
    *
-   * @param {String} key  A message key.
    * @return {String}     The message if found, undefined otherwise.
    * @api private
    */
-  function guess_domain(key) {
+  function guess_domain() {
     var _k,
-        _key = key,
         _defaultDomains = ExposeTranslation.defaultDomains;
 
     if (ExposeTranslation.defaultDomains.constructor != Array) {
@@ -92,8 +89,6 @@ var ExposeTranslation = new function () {
    */
   function pluralize(message, number) {
     var _p,
-        _r,
-        _number = number,
         _explicitRules = [],
         _standardRules = [],
         _parts = message.split(ExposeTranslation.pluralSeparator);
@@ -123,7 +118,7 @@ var ExposeTranslation = new function () {
         if (_matches[1]) {
           var _ns = _matches[2].split(',');
           for (_n in _ns) {
-            if (_number == _ns[_n]) {
+            if (number == _ns[_n]) {
               return _explicitRules[_e];
             }
           }
@@ -131,8 +126,8 @@ var ExposeTranslation = new function () {
           var _leftNumber  = convert_number(_matches[4]);
           var _rightNumber = convert_number(_matches[5]);
 
-          if (('[' === _matches[3] ? _number >= _leftNumber : _number > _leftNumber) &&
-                  (']' === _matches[6] ? _number <= _rightNumber : _number < _rightNumber))
+          if (('[' === _matches[3] ? number >= _leftNumber : number > _leftNumber) &&
+                  (']' === _matches[6] ? number <= _rightNumber : number < _rightNumber))
           {
             return _explicitRules[_e];
           }
