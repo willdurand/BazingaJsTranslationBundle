@@ -89,9 +89,11 @@ var ExposeTranslation = new function () {
    */
   function pluralize(message, number) {
     var _p,
+        _e,
         _explicitRules = [],
         _standardRules = [],
-        _parts = message.split(ExposeTranslation.pluralSeparator);
+        _parts = message.split(ExposeTranslation.pluralSeparator),
+        _matches = [];
 
     for (_p in _parts) {
       var _part = _parts[_p];
@@ -99,10 +101,10 @@ var ExposeTranslation = new function () {
       var _rs = new RegExp(_sPluralRegex);
 
       if (_rc.test(_part)) {
-        var _matches = _part.match(_rc);
+        _matches = _part.match(_rc);
         _explicitRules[_matches[0]] = _matches[_matches.length - 1];
       } else if (_rs.test(_part)) {
-        var _matches = _part.match(_rs);
+        _matches = _part.match(_rs);
         _standardRules.push(_matches[1]);
       } else {
         _standardRules.push(_part);
@@ -113,7 +115,7 @@ var ExposeTranslation = new function () {
       var _r = new RegExp(_iPluralRegex);
 
       if (_r.test(_e)) {
-        var _matches = _e.match(_r);
+        _matches = _e.match(_r);
 
         if (_matches[1]) {
           var _ns = _matches[2].split(',');
