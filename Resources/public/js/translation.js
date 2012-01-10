@@ -23,20 +23,19 @@ var ExposeTranslation = new function () {
    */
   function replace_placeholders(message, placeholders) {
     var _i,
-        _message = message,
         _prefix = ExposeTranslation.placeHolderPrefix,
         _suffix = ExposeTranslation.placeHolderSuffix;
 
     for (_i in placeholders) {
       var _r = new RegExp(_prefix + _i + _suffix, 'g');
 
-      if (_r.test(_message)) {
-        _message = _message.replace(_r, placeholders[_i]);
+      if (_r.test(message)) {
+        message = message.replace(_r, placeholders[_i]);
         delete(placeholders[_i]);
       }
     }
 
-    return _message;
+    return message;
   }
 
   /**
@@ -49,7 +48,6 @@ var ExposeTranslation = new function () {
    */
   function guess_domain(key) {
     var _k,
-        _key = key,
         _defaultDomains = ExposeTranslation.defaultDomains;
 
     if (ExposeTranslation.defaultDomains.constructor != Array) {
@@ -57,8 +55,8 @@ var ExposeTranslation = new function () {
     }
 
     for (_k in _defaultDomains) {
-      if (ExposeTranslation.has(_defaultDomains[_k] + ':' + _key)) {
-        return ExposeTranslation.get(_defaultDomains[_k] + ':' + _key);
+      if (ExposeTranslation.has(_defaultDomains[_k] + ':' + key)) {
+        return ExposeTranslation.get(_defaultDomains[_k] + ':' + key);
       }
     }
 
@@ -92,11 +90,11 @@ var ExposeTranslation = new function () {
    */
   function pluralize(message, number) {
     var _p,
-        _r,
-        _number = number,
+        _e,
         _explicitRules = [],
         _standardRules = [],
-        _parts = message.split(ExposeTranslation.pluralSeparator);
+        _parts = message.split(ExposeTranslation.pluralSeparator),
+        _matches = [];
 
     for (_p in _parts) {
       var _part = _parts[_p];
@@ -104,10 +102,10 @@ var ExposeTranslation = new function () {
       var _rs = new RegExp(_sPluralRegex);
 
       if (_rc.test(_part)) {
-        var _matches = _part.match(_rc);
+        _matches = _part.match(_rc);
         _explicitRules[_matches[0]] = _matches[_matches.length - 1];
       } else if (_rs.test(_part)) {
-        var _matches = _part.match(_rs);
+        _matches = _part.match(_rs);
         _standardRules.push(_matches[1]);
       } else {
         _standardRules.push(_part);
@@ -118,12 +116,12 @@ var ExposeTranslation = new function () {
       var _r = new RegExp(_iPluralRegex);
 
       if (_r.test(_e)) {
-        var _matches = _e.match(_r);
+        _matches = _e.match(_r);
 
         if (_matches[1]) {
           var _ns = _matches[2].split(',');
           for (_n in _ns) {
-            if (_number == _ns[_n]) {
+            if (number == _ns[_n]) {
               return _explicitRules[_e];
             }
           }
@@ -131,8 +129,8 @@ var ExposeTranslation = new function () {
           var _leftNumber  = convert_number(_matches[4]);
           var _rightNumber = convert_number(_matches[5]);
 
-          if (('[' === _matches[3] ? _number >= _leftNumber : _number > _leftNumber) &&
-                  (']' === _matches[6] ? _number <= _rightNumber : _number < _rightNumber))
+          if (('[' === _matches[3] ? number >= _leftNumber : number > _leftNumber) &&
+                  (']' === _matches[6] ? number <= _rightNumber : number < _rightNumber))
           {
             return _explicitRules[_e];
           }
@@ -376,7 +374,7 @@ var ExposeTranslation = new function () {
      * @param {String} key            A translation key.
      * @param {Object} placeholders   Placeholders.
      * @param {Number} number         A number of objects being described.
-     * @return {String}       The corresponding message if the key exists.
+     * @return {String}       The corresponding message if the key exists otherwise the key will be returned.
      */
     get: function(key, placeholders, number) {
       var _message = _messages[key],
