@@ -376,7 +376,7 @@ var ExposeTranslation = new function () {
      * @param {String} key            A translation key.
      * @param {Object} placeholders   Placeholders.
      * @param {Number} number         A number of objects being described.
-     * @return {String}       The corresponding message if the key exists.
+     * @return {String}       The corresponding message if the key exists otherwise the key will be returned.
      */
     get: function(key, placeholders, number) {
       var _message = _messages[key],
