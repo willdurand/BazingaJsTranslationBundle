@@ -9,7 +9,7 @@
 var ExposeTranslation = new function () {
   var _messages = {},
       _sPluralRegex = /^\w+\: +(.+)$/,
-      _cPluralRegex = /^\s*(({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s+(.+?)$/,
+      _cPluralRegex = /^\s*(({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/,
       _iPluralRegex = /^\s*({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/;
 
   /**
