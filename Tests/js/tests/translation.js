@@ -25,7 +25,7 @@ test('add/has methods', function() {
 });
 
 test('get method', function() {
-  expect(29);
+  expect(32);
 
   ExposeTranslation.add('Foo:foo', 'bar');
   ExposeTranslation.add('Foo:foo.with.arg', 'This is Ba %arg%');
@@ -36,6 +36,7 @@ test('get method', function() {
   ExposeTranslation.add('Foo:foo.plural.with.inf', ']-Inf,0[ Underground|{0} Ground 0|{1} First level|[2,Inf[ High level');
   ExposeTranslation.add('Foo:complex.plural', '{0} There is no apples|[20,Inf] There are many apples|There is one apple|a_few: There are %count% apples');
   ExposeTranslation.add('Foo:foo.plural.space.before.interval', ' {0} Nothing| [1,Inf[ Many things');
+  ExposeTranslation.add('Foo:foo.plural.without.space', '{0}Nothing|[1,Inf[Many things');
   ExposeTranslation.add('Foo:empty', '');
 
   // Basic
@@ -104,6 +105,14 @@ test('get method', function() {
   equal(ExposeTranslation.get('Foo:foo.plural.space.before.interval', {}, 1), 'Many things',
     'number = 1 returns the [1,Inf[ part of the message');
   equal(ExposeTranslation.get('Foo:foo.plural.space.before.interval', {}, 100), 'Many things',
+    'number = 100 returns the [1,Inf[ part of the message');
+
+  // Translations witout spaces
+  equal(ExposeTranslation.get('Foo:foo.plural.without.space', {}, 0), 'Nothing',
+    'number = 0 returns the {0} part of the message');
+  equal(ExposeTranslation.get('Foo:foo.plural.without.space', {}, 1), 'Many things',
+    'number = 1 returns the [1,Inf[ part of the message');
+  equal(ExposeTranslation.get('Foo:foo.plural.without.space', {}, 100), 'Many things',
     'number = 100 returns the [1,Inf[ part of the message');
 
   // Empty string translations
