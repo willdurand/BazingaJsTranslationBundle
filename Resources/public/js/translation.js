@@ -385,12 +385,12 @@ var ExposeTranslation = new function () {
         _message = guess_domain(key);
       }
 
-      if (_message && !isNaN(_number)) {
-        _message = pluralize(_message, _number);
+      if (_message == undefined) {
+        _message = key;
       }
 
-      if (_message == undefined) {
-        return key;
+      if (_message && !isNaN(_number)) {
+        _message = pluralize(_message, _number);
       }
 
       _message = replace_placeholders(_message, _placeholders);

@@ -25,7 +25,7 @@ test('add/has methods', function() {
 });
 
 test('get method', function() {
-  expect(32);
+  expect(34);
 
   ExposeTranslation.add('Foo:foo', 'bar');
   ExposeTranslation.add('Foo:foo.with.arg', 'This is Ba %arg%');
@@ -118,6 +118,14 @@ test('get method', function() {
   // Empty string translations
   equal(ExposeTranslation.get('Foo:empty'), '',
     'An empty string translation should return the empty string and not the key.');
+
+  // Message not in a domain with replaces
+  equal(ExposeTranslation.get('Message not in the domain with %arg%',{arg: 'Bar'}), 'Message not in the domain with Bar',
+    'Message not in the domain with args returns the processed message');
+
+  // Message not in a domain with pluralization
+  equal(ExposeTranslation.get('{0} Nothing|[1,Inf[ Many things', {}, 0), 'Nothing',
+    'number = 0 returns the {0} part of the message');
 });
 
 test('guesser', function() {
