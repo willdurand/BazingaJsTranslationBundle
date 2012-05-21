@@ -408,4 +408,4 @@ var ExposeTranslation = new function () {
       return (_messages[key] ? true : false);
     }
   };
-}
+};
