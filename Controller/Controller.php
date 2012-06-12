@@ -6,6 +6,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Bazinga\ExposeTranslationBundle\Service\TranslationFinder;
+use Symfony\Component\Config\ConfigCache;
 
 /**
  * Controller class.
@@ -38,21 +39,35 @@ class Controller
     protected $defaultDomains;
 
     /**
+     * @var string
+     */
+    protected $cacheDir;
+
+    /**
+     * @var bool
+     */
+    protected $debug;
+
+    /**
      * Default constructor.
      *
      * @param \Symfony\Component\Translation\TranslatorInterface $translator                The translator.
      * @param \Symfony\Component\Templating\EngineInterface $engine                         The engine.
      * @param \Bazinga\ExposeTranslationBundle\Service\TranslationFinder $translationFinder The translation finder.
+     * @param string $cacheDir
+     * @param boolean debug
      * @param array $defaultDomains     An array of default domain names.
      */
     public function __construct(TranslatorInterface $translator, EngineInterface $engine,
-        TranslationFinder $translationFinder, array $defaultDomains = array())
+        TranslationFinder $translationFinder, $cacheDir, $debug = false, array $defaultDomains = array())
     {
         $this->translator        = $translator;
         $this->engine            = $engine;
         $this->translationFinder = $translationFinder;
         $this->defaultDomains    = $defaultDomains;
         $this->loaders           = array();
+        $this->cacheDir          = $cacheDir;
+        $this->debug             = $debug;
     }
 
     /**
@@ -73,26 +88,37 @@ class Controller
      */
     public function exposeTranslationAction($domain_name, $_locale, $_format)
     {
-        $files = $this->translationFinder->getResources($domain_name, $_locale);
+        $request = $this->getRequest();
+        $cache = new ConfigCache($this->cacheDir.'/bazingaExposeTranslation.'.$_locale.".".$_format);
 
-        $catalogues = array();
-        foreach ($files as $file) {
-            $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
+        if (!$cache->isFresh()) {
+            $files = $this->translationFinder->getResources($domain_name, $_locale);
 
-            if (isset($this->loaders[$extension])) {
-                $catalogues[] = $this->loaders[$extension]->load($file, $_locale, $domain_name);
+            $catalogues = array();
+            foreach ($files as $file) {
+                $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
+
+                if (isset($this->loaders[$extension])) {
+                    $catalogues[] = $this->loaders[$extension]->load($file, $_locale, $domain_name);
+                }
             }
+
+            $messages = array();
+            foreach ($catalogues as $catalogue) {
+                $messages = array_merge_recursive($messages, $catalogue->all());
+            }
+
+            $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
+                                            'messages'        => $messages,
+                                            'locale'          => $_locale,
+                                            'defaultDomains'  => $this->defaultDomains,
+                                        ));
+
+            $cache->write($content, $this->exposedRoutesExtractor->getResources());
         }
 
-        $messages = array();
-        foreach ($catalogues as $catalogue) {
-            $messages = array_merge_recursive($messages, $catalogue->all());
-        }
+        $content = file_get_contents((string) $cache);
 
-        return new Response($this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
-            'messages'        => $messages,
-            'locale'          => $_locale,
-            'defaultDomains'  => $this->defaultDomains,
-        )));
+        return new Response($content, 200, array('Content-Type' => $request->getMimeType($_format)));
     }
 }
