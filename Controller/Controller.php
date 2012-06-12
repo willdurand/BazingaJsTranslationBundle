@@ -5,6 +5,7 @@ namespace Bazinga\ExposeTranslationBundle\Controller;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Bazinga\ExposeTranslationBundle\Service\TranslationFinder;
 use Symfony\Component\Config\ConfigCache;
 
@@ -55,11 +56,11 @@ class Controller
      * @param \Symfony\Component\Templating\EngineInterface $engine                         The engine.
      * @param \Bazinga\ExposeTranslationBundle\Service\TranslationFinder $translationFinder The translation finder.
      * @param string $cacheDir
-     * @param boolean debug
+     * @param boolean $debug
      * @param array $defaultDomains     An array of default domain names.
      */
     public function __construct(TranslatorInterface $translator, EngineInterface $engine,
-        TranslationFinder $translationFinder, $cacheDir, $debug = false, array $defaultDomains = array())
+                                TranslationFinder $translationFinder, $cacheDir, $debug = false, array $defaultDomains = array())
     {
         $this->translator        = $translator;
         $this->engine            = $engine;
@@ -86,10 +87,9 @@ class Controller
     /**
      * exposeTranslationAction action.
      */
-    public function exposeTranslationAction($domain_name, $_locale, $_format)
+    public function exposeTranslationAction(Request $request, $domain_name, $_locale, $_format)
     {
-        $request = $this->getRequest();
-        $cache = new ConfigCache($this->cacheDir.'/bazingaExposeTranslation.'.$_locale.".".$_format);
+        $cache = new ConfigCache($this->cacheDir.'/bazingaExposeTranslation.'.$_locale.".".$_format, $this->debug);
 
         if (!$cache->isFresh()) {
             $files = $this->translationFinder->getResources($domain_name, $_locale);
@@ -109,12 +109,12 @@ class Controller
             }
 
             $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
-                                            'messages'        => $messages,
-                                            'locale'          => $_locale,
-                                            'defaultDomains'  => $this->defaultDomains,
-                                        ));
+                'messages'        => $messages,
+                'locale'          => $_locale,
+                'defaultDomains'  => $this->defaultDomains,
+            ));
 
-            $cache->write($content, $this->exposedRoutesExtractor->getResources());
+            $cache->write($content);
         }
 
         $content = file_get_contents((string) $cache);
