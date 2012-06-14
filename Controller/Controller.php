@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Bazinga\ExposeTranslationBundle\Service\TranslationFinder;
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Config\Resource\FileResource;
 
 /**
  * Controller class.
@@ -94,11 +95,14 @@ class Controller
         if (!$cache->isFresh()) {
             $files = $this->translationFinder->getResources($domain_name, $_locale);
 
+            $resources = array();
+
             $catalogues = array();
             foreach ($files as $file) {
                 $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
 
                 if (isset($this->loaders[$extension])) {
+                    $resources[] = new FileResource($file->getPath());
                     $catalogues[] = $this->loaders[$extension]->load($file, $_locale, $domain_name);
                 }
             }
@@ -114,7 +118,7 @@ class Controller
                 'defaultDomains'  => $this->defaultDomains,
             ));
 
-            $cache->write($content);
+            $cache->write($content, $resources);
         }
 
         $content = file_get_contents((string) $cache);
