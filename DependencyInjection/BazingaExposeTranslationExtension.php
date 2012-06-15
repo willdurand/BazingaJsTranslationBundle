@@ -35,6 +35,6 @@ class BazingaExposeTranslationExtension extends Extension
 
         $container
             ->getDefinition('bazinga.exposetranslation.controller')
-            ->replaceArgument(3, $defaultDomains);
+            ->replaceArgument(5, $defaultDomains);
     }
 }
