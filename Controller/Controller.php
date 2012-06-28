@@ -90,7 +90,7 @@ class Controller
      */
     public function exposeTranslationAction(Request $request, $domain_name, $_locale, $_format)
     {
-        $cache = new ConfigCache($this->cacheDir.'/bazingaExposeTranslation.'.$_locale.".".$_format, $this->debug);
+        $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.".".$_format, $this->debug);
 
         if (!$cache->isFresh()) {
             $files = $this->translationFinder->getResources($domain_name, $_locale);
