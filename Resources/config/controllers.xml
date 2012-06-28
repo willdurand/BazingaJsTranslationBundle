@@ -12,7 +12,7 @@
             <argument type="service" id="translator" />
             <argument type="service" id="templating" />
             <argument type="service" id="bazinga.exposetranslation.service.translation_finder" />
-            <argument>%kernel.cache_dir%</argument>
+            <argument>%kernel.cache_dir%/bazinga_expose_translation</argument>
             <argument>%kernel.debug%</argument>
             <argument></argument>
         </service>
