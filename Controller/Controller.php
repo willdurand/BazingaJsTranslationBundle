@@ -98,7 +98,7 @@ class Controller
             $resources = array();
 
             $catalogues = array();
-            foreach ($files as $file) {
+            foreach (iterator_to_array($files) as $file) {
                 $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
 
                 if (isset($this->loaders[$extension])) {
