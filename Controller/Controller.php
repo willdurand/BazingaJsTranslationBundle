@@ -112,16 +112,17 @@ class Controller
                 $messages = array_merge_recursive($messages, $catalogue->all());
             }
 
-            $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
+            $content =array(
                 'messages'        => $messages,
                 'locale'          => $_locale,
                 'defaultDomains'  => $this->defaultDomains,
-            ));
+            );
 
-            $cache->write($content, $resources);
+            $cache->write(serialize($content), $resources);
         }
 
-        $content = file_get_contents((string) $cache);
+        $content = unserialize(file_get_contents((string) $cache));
+        $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', $content);
 
         return new Response($content, 200, array('Content-Type' => $request->getMimeType($_format)));
     }
