@@ -103,11 +103,10 @@ class Controller
             $files = $this->translationFinder->getResources($domain_name, $_locale);
             $files = iterator_to_array($files);
 
-            if( $this->localeFallback && $_locale !== $this->localeFallback )
-            {
-              $fallbackFiles = $this->translationFinder->getResources($domain_name, $this->localeFallback);
-              $fallbackFiles = iterator_to_array($fallbackFiles);
-              $files = array_merge($fallbackFiles, $files);
+            if ($this->localeFallback && $_locale !== $this->localeFallback) {
+                $fallbackFiles = $this->translationFinder->getResources($domain_name, $this->localeFallback);
+                $fallbackFiles = iterator_to_array($fallbackFiles);
+                $files = array_merge($fallbackFiles, $files);
             }
 
             $resources = array();
@@ -127,8 +126,9 @@ class Controller
                 $messages = array_merge_recursive($messages, $catalogue->all());
             }
 
-            foreach($messages as &$domain )
-              $domain = array_map(function($m){ return is_array($m) ? end($m) : $m; }, $domain);
+            foreach ($messages as &$domain) {
+                $domain = array_map(function($m){ return is_array($m) ? end($m) : $m; }, $domain);
+            }
 
             $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
                 'messages'        => $messages,
