@@ -35,6 +35,7 @@ class BazingaExposeTranslationExtension extends Extension
 
         $container
             ->getDefinition('bazinga.exposetranslation.controller')
-            ->replaceArgument(5, $defaultDomains);
+            ->replaceArgument(5, $config["locale_fallback"])
+            ->replaceArgument(6, $defaultDomains);
     }
 }
