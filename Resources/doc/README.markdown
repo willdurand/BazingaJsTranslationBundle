@@ -230,6 +230,8 @@ ExposeTranslation.get('placeholder');
 
 ## More configuration
 
+#### Custom default domains
+
 You can easily add your own default domains by adding these lines in your `app/config/config*.yml` files:
 
 ``` yaml
@@ -239,9 +241,18 @@ bazinga_expose_translation:
 
 **Note:** You still have to include a `<script>` tag to expose messages but you avoid writing domain names before each of your keys.
 
+#### Locale fallback
+
+In a similar way, if some of your translations are not complete you can enable a fallback for untranslated messages:
+``` yaml
+bazinga_expose_translation:
+  locale_fallback: "en" # put here locale code of some complete translation, I recommend the value used for translator fallback
+```
+
 
 ## Credits
 
 * William DURAND (Bazinga) as main author.
 * Jan Sorgalla as contributor.
 * Stan Chollet as contributor.
+* Kamil Kaproń as contributor.

@@ -15,6 +15,7 @@
             <argument>%kernel.cache_dir%/bazinga_expose_translation</argument>
             <argument>%kernel.debug%</argument>
             <argument></argument>
+            <argument></argument>
         </service>
     </services>
 
