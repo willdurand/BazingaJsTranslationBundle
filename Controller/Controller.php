@@ -51,6 +51,11 @@ class Controller
     protected $debug;
 
     /**
+     * @var string
+     */
+    protected $localeFallback;
+
+    /**
      * Default constructor.
      *
      * @param \Symfony\Component\Translation\TranslatorInterface $translator                The translator.
@@ -58,10 +63,11 @@ class Controller
      * @param \Bazinga\ExposeTranslationBundle\Service\TranslationFinder $translationFinder The translation finder.
      * @param string $cacheDir
      * @param boolean $debug
+     * @param string $localeFallback
      * @param array $defaultDomains     An array of default domain names.
      */
     public function __construct(TranslatorInterface $translator, EngineInterface $engine,
-                                TranslationFinder $translationFinder, $cacheDir, $debug = false, array $defaultDomains = array())
+                                TranslationFinder $translationFinder, $cacheDir, $debug = false, $localeFallback = "", array $defaultDomains = array())
     {
         $this->translator        = $translator;
         $this->engine            = $engine;
@@ -70,6 +76,7 @@ class Controller
         $this->loaders           = array();
         $this->cacheDir          = $cacheDir;
         $this->debug             = $debug;
+        $this->localeFallback    = $localeFallback;
     }
 
     /**
@@ -94,11 +101,18 @@ class Controller
 
         if (!$cache->isFresh()) {
             $files = $this->translationFinder->getResources($domain_name, $_locale);
+            $files = iterator_to_array($files);
+
+            if ($this->localeFallback && $_locale !== $this->localeFallback) {
+                $fallbackFiles = $this->translationFinder->getResources($domain_name, $this->localeFallback);
+                $fallbackFiles = iterator_to_array($fallbackFiles);
+                $files = array_merge($fallbackFiles, $files);
+            }
 
             $resources = array();
 
             $catalogues = array();
-            foreach (iterator_to_array($files) as $file) {
+            foreach ($files as $file) {
                 $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
 
                 if (isset($this->loaders[$extension])) {
@@ -110,6 +124,10 @@ class Controller
             $messages = array();
             foreach ($catalogues as $catalogue) {
                 $messages = array_merge_recursive($messages, $catalogue->all());
+            }
+
+            foreach ($messages as &$domain) {
+                $domain = array_map(function($m){ return is_array($m) ? end($m) : $m; }, $domain);
             }
 
             $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
