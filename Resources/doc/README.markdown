@@ -99,6 +99,17 @@ You can specify a `locale` to use for translation if you want, just add the `_lo
 
 This will provide translated messages found in each `DOMAIN_NAME.MY_LOCALE.*` files of your project.
 
+#### Loading via JSON
+
+Alternatively, you can load your translated messages via JSON (e.g. using jQuery's `ajax()` or RequireJS's text plugin).
+Just amend the above mentioned URLs to also contain the `'_format': 'json'` parameter like so:
+
+``` html
+{{ url('bazinga_exposetranslation_js', { '_format': 'json' }) }}
+```
+
+Then, feed the translator via `ExposeTranslation.fromJSON(myRetrievedJSONString)`.
+
 
 ### The JavaScript side
 
