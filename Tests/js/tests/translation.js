@@ -149,3 +149,26 @@ test('guesser', function() {
   equal(ExposeTranslation.get('boo.baz'), 'boo.baz',
     'Returns the key as the key cannot be guessed');
 });
+
+
+test('fromJson', function () {
+    expect(6);
+
+    // accepts valid JSON string
+    ExposeTranslation.fromJSON('{"locale":"en","defaultDomains":["messages"],"messages": {"messages:foo":"bar"}}');
+    equal(ExposeTranslation.locale, 'en',
+        'JSON parser processes locale from valid JSON string');
+    deepEqual(ExposeTranslation.defaultDomains, ['messages'],
+        'JSON parser processes defaultDomains from valid JSON string');
+    equal(ExposeTranslation.get('messages:foo'), 'bar',
+        'JSON parser processes messages from valid JSON string');
+
+    // accepts object literal
+    ExposeTranslation.fromJSON({"locale":"pt","defaultDomains":["more_messages"],"messages": {"more_messages:moo":"mar"}});
+    equal(ExposeTranslation.locale, 'pt',
+        'JSON parser processes locale from valid object literal');
+    deepEqual(ExposeTranslation.defaultDomains, ['more_messages'],
+        'JSON parser processes defaultDomains from valid object literal');
+    equal(ExposeTranslation.get('more_messages:moo'), 'mar',
+        'JSON parser processes messages from valid object literal');
+});
