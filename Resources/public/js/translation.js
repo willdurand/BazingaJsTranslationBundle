@@ -406,6 +406,36 @@ var ExposeTranslation = new function () {
      */
     has: function(key) {
       return (_messages[key] ? true : false);
+    },
+
+    /**
+     * Accepts a JSON string to feed translations
+     *
+     * @param {String} data     A JSON string or object literal
+     * @return {Object}         ExposeTranslation
+     */
+    fromJSON: function (data) {
+      if(typeof data === "string") {
+        data = JSON.parse(data);
+      }
+
+      if(data.locale) {
+        this.locale = data.locale;
+      }
+
+      if(data.defaultDomains) {
+        this.defaultDomains = data.defaultDomains;
+      }
+
+      if(data.messages) {
+        var key;
+        for(key in data.messages) {
+          var message = data.messages[key];
+          this.add(key, message);
+        }
+      }
+
+      return this;
     }
   };
 };

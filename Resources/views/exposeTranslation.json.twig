@@ -1,0 +1,12 @@
+{
+"locale": "{{ locale }}",
+"defaultDomains": [{% if defaultDomains %}"{{ defaultDomains|join('", "')|raw }}"{% endif %}],
+"messages": {
+{% for domain, translations in messages %}
+    {% for key, message in translations %}
+        {{ (domain~":"~key)|json_encode|raw }}: {{ message|json_encode|raw }}{% if not loop.last %},{% endif %}
+    {% endfor %}
+{% endfor %}
+}
+}
+
