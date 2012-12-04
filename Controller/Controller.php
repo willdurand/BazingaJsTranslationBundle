@@ -109,6 +109,16 @@ class Controller
                 $files = array_merge($fallbackFiles, $files);
             }
 
+            // Fallback for locales using area
+            if (strpos($_locale, '_') === 2 && strlen($_locale) === 5) {
+                $areaFallback = substr($_locale, 0, 2);
+                if ($areaFallback !== $this->localeFallback) {
+                    $fallbackFiles = $this->translationFinder->getResources($domain_name, $areaFallback);
+                    $fallbackFiles = iterator_to_array($fallbackFiles);
+                    $files = array_merge($fallbackFiles, $files);
+                }
+            }
+
             $resources = array();
 
             $catalogues = array();
