@@ -6,7 +6,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Bazinga\ExposeTranslationBundle\Service\TranslationFinder;
+use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 
@@ -28,7 +28,7 @@ class Controller
      */
     protected $engine;
     /**
-     * @var \Bazinga\ExposeTranslationBundle\Service\TranslationFinder
+     * @var \Bazinga\ExposeTranslationBundle\Finder\TranslationFinder
      */
     protected $translationFinder;
     /**
@@ -60,7 +60,7 @@ class Controller
      *
      * @param \Symfony\Component\Translation\TranslatorInterface $translator                The translator.
      * @param \Symfony\Component\Templating\EngineInterface $engine                         The engine.
-     * @param \Bazinga\ExposeTranslationBundle\Service\TranslationFinder $translationFinder The translation finder.
+     * @param \Bazinga\ExposeTranslationBundle\Finder\TranslationFinder $translationFinder The translation finder.
      * @param string $cacheDir
      * @param boolean $debug
      * @param string $localeFallback
@@ -100,13 +100,13 @@ class Controller
         $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.".".$_format, $this->debug);
 
         if (!$cache->isFresh()) {
-            $files = $this->translationFinder->getResources($domain_name, $_locale);
-            $files = iterator_to_array($files);
+            $locales = $this->translationFinder->createLocalesArray(array($_locale, $this->localeFallback));
+            $files = array();
 
-            if ($this->localeFallback && $_locale !== $this->localeFallback) {
-                $fallbackFiles = $this->translationFinder->getResources($domain_name, $this->localeFallback);
-                $fallbackFiles = iterator_to_array($fallbackFiles);
-                $files = array_merge($fallbackFiles, $files);
+            foreach ($locales as $l) {
+                $localeFiles = $this->translationFinder->getResources($domain_name, $l);
+                $localeFiles = iterator_to_array($localeFiles);
+                $files = array_merge($localeFiles, $files);
             }
 
             $resources = array();
