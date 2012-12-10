@@ -100,13 +100,13 @@ class Controller
         $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.".".$_format, $this->debug);
 
         if (!$cache->isFresh()) {
-            $files = $this->translationFinder->getResources($domain_name, $_locale);
-            $files = iterator_to_array($files);
+            $locales = $this->translationFinder->createLocalesArray($_locale, $this->localeFallback);
+            $files = array();
 
-            if ($this->localeFallback && $_locale !== $this->localeFallback) {
-                $fallbackFiles = $this->translationFinder->getResources($domain_name, $this->localeFallback);
-                $fallbackFiles = iterator_to_array($fallbackFiles);
-                $files = array_merge($fallbackFiles, $files);
+            foreach ($locales as $l) {
+                $localeFiles = $this->translationFinder->getResources($domain_name, $l);
+                $localeFiles = iterator_to_array($localeFiles);
+                $files = array_merge($localeFiles, $files);
             }
 
             $resources = array();

@@ -52,4 +52,30 @@ class TranslationFinder
 
         return $finder->files()->name($domainName . '.' . $locale . '.*')->followLinks()->in($locations);
     }
+
+    /**
+     * Returns an array of (unique) locales and their fallback.
+     *
+     * @param array $locales  An array of locales.
+     * @return array          An array of unique locales.
+     * @author Markus Poerschke (markus@eluceo.de)
+     */
+    public function createLocalesArray(array $locales)
+    {
+        $returnLocales = array();
+
+        foreach ($locales as $locale) {
+            if (empty($locale)) {
+                continue;
+            }
+
+            $returnLocales[] = $locale;
+
+            if (strpos($locale, '_') === 2 && strlen($locale) === 5) {
+                $returnLocales[] = substr($locale, 0, 2);
+            }
+        }
+
+        return array_unique($returnLocales);
+    }
 }
