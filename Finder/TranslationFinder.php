@@ -11,6 +11,7 @@ use Symfony\Component\Finder\Finder;
  * @package ExposeTranslationBundle
  * @subpackage Service
  * @author William DURAND <william.durand1@gmail.com>
+ * @author Markus Poerschke <markus@eluceo.de>
  */
 class TranslationFinder
 {
@@ -58,7 +59,6 @@ class TranslationFinder
      *
      * @param array $locales  An array of locales.
      * @return array          An array of unique locales.
-     * @author Markus Poerschke (markus@eluceo.de)
      */
     public function createLocalesArray(array $locales)
     {
