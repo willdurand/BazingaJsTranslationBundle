@@ -6,7 +6,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Bazinga\ExposeTranslationBundle\Service\TranslationFinder;
+use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 
@@ -28,7 +28,7 @@ class Controller
      */
     protected $engine;
     /**
-     * @var \Bazinga\ExposeTranslationBundle\Service\TranslationFinder
+     * @var \Bazinga\ExposeTranslationBundle\Finder\TranslationFinder
      */
     protected $translationFinder;
     /**
@@ -60,7 +60,7 @@ class Controller
      *
      * @param \Symfony\Component\Translation\TranslatorInterface $translator                The translator.
      * @param \Symfony\Component\Templating\EngineInterface $engine                         The engine.
-     * @param \Bazinga\ExposeTranslationBundle\Service\TranslationFinder $translationFinder The translation finder.
+     * @param \Bazinga\ExposeTranslationBundle\Finder\TranslationFinder $translationFinder The translation finder.
      * @param string $cacheDir
      * @param boolean $debug
      * @param string $localeFallback

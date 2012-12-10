@@ -11,7 +11,7 @@
         <service id="bazinga.exposetranslation.controller" class="%bazinga.exposetranslation.controller.class%">
             <argument type="service" id="translator" />
             <argument type="service" id="templating" />
-            <argument type="service" id="bazinga.exposetranslation.service.translation_finder" />
+            <argument type="service" id="bazinga.exposetranslation.finder.translation_finder" />
             <argument>%kernel.cache_dir%/bazinga_expose_translation</argument>
             <argument>%kernel.debug%</argument>
             <argument></argument>

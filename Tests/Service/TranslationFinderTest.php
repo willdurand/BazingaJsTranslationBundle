@@ -2,7 +2,7 @@
 
 namespace Bazinga\ExposeTranslationBundle\Tests\Service;
 
-use Bazinga\ExposeTranslationBundle\Service\TranslationFinder;
+use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 
 class TranslationFinderTest extends \PHPUnit_Framework_TestCase
 {
