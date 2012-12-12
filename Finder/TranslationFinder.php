@@ -6,23 +6,19 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
- * TranslationFinder class.
- *
- * @package ExposeTranslationBundle
- * @subpackage Service
  * @author William DURAND <william.durand1@gmail.com>
  * @author Markus Poerschke <markus@eluceo.de>
  */
 class TranslationFinder
 {
     /**
-     * @var \Symfony\Component\HttpKernel\KernelInterface
+     * @var KernelInterface
      */
     protected $kernel;
 
     /**
      * Default constructor.
-     * @param \Symfony\Component\HttpKernel\KernelInterface $kernel             The kernel.
+     * @param KernelInterface $kernel The kernel.
      */
     public function __construct(KernelInterface $kernel)
     {
@@ -32,9 +28,9 @@ class TranslationFinder
     /**
      * Returns an array of translation files for a given domain and a given locale.
      *
-     * @param string $domainName    A domain translation name.
-     * @param string $locale        A locale.
-     * @return array                An array of translation files.
+     * @param  string $domainName A domain translation name.
+     * @param  string $locale     A locale.
+     * @return array  An array of translation files.
      */
     public function getResources($domainName, $locale)
     {
@@ -57,8 +53,8 @@ class TranslationFinder
     /**
      * Returns an array of (unique) locales and their fallback.
      *
-     * @param array $locales  An array of locales.
-     * @return array          An array of unique locales.
+     * @param  array $locales An array of locales.
+     * @return array An array of unique locales.
      */
     public function createLocalesArray(array $locales)
     {

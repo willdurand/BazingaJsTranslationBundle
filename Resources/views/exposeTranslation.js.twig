@@ -5,4 +5,3 @@ ExposeTranslation.defaultDomains = [{% if defaultDomains %}"{{ defaultDomains|jo
 ExposeTranslation.add({{ (domain~":"~key)|json_encode|raw }}, {{ message|json_encode|raw }});
 {% endfor %}
 {% endfor %}
-

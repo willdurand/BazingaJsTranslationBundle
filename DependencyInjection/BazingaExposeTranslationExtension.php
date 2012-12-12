@@ -9,11 +9,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Definition\Processor;
 
 /**
- * BazingaExposeTranslationExtension class.
- * Load configuration.
- *
- * @package ExposeTranslationBundle
- * @subpackage DependencyInjection
  * @author William DURAND <william.durand1@gmail.com>
  */
 class BazingaExposeTranslationExtension extends Extension

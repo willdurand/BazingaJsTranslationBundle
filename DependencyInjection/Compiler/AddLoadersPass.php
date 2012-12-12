@@ -7,10 +7,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * AddLoadersPass.
- *
- * @package ExposeTranslationBundle
- * @subpackage DependencyInjection
  * @author William DURAND <william.durand1@gmail.com>
  */
 class AddLoadersPass implements CompilerPassInterface
