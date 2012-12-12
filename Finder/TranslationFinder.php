@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Service;
+namespace Bazinga\ExposeTranslationBundle\Finder;
 
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Finder\Finder;
@@ -11,6 +11,7 @@ use Symfony\Component\Finder\Finder;
  * @package ExposeTranslationBundle
  * @subpackage Service
  * @author William DURAND <william.durand1@gmail.com>
+ * @author Markus Poerschke <markus@eluceo.de>
  */
 class TranslationFinder
 {
@@ -51,5 +52,30 @@ class TranslationFinder
         }
 
         return $finder->files()->name($domainName . '.' . $locale . '.*')->followLinks()->in($locations);
+    }
+
+    /**
+     * Returns an array of (unique) locales and their fallback.
+     *
+     * @param array $locales  An array of locales.
+     * @return array          An array of unique locales.
+     */
+    public function createLocalesArray(array $locales)
+    {
+        $returnLocales = array();
+
+        foreach ($locales as $locale) {
+            if (empty($locale)) {
+                continue;
+            }
+
+            $returnLocales[] = $locale;
+
+            if (strpos($locale, '_') === 2 && strlen($locale) === 5) {
+                $returnLocales[] = substr($locale, 0, 2);
+            }
+        }
+
+        return array_unique($returnLocales);
     }
 }
