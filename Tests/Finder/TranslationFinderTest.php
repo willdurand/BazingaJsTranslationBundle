@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Tests\Service;
+namespace Bazinga\ExposeTranslationBundle\Tests\Finder;
 
 use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 
