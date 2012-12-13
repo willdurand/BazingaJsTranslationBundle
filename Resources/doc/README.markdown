@@ -1,4 +1,4 @@
-# ExposeTranslationBundle
+# TranslatorBundle
 
 A pretty nice way to expose your translated messages to your JavaScript.
 
@@ -18,7 +18,7 @@ public function registerBundles()
 {
     return array(
         // ...
-        new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
+        new Bazinga\TranslatorBundle\BazingaTranslatorBundle(),
     );
 }
 ```
@@ -28,7 +28,7 @@ Register the routing in `app/config/routing.yml`:
 ``` yaml
 # app/config/routing.yml
 _bazinga_exposetranslation:
-    resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
+    resource: "@BazingaTranslatorBundle/Resources/config/routing/routing.yml"
 ```
 
 Publish assets:
@@ -41,7 +41,7 @@ Publish assets:
 Just add this line in your layout:
 
 ``` html
-<script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translation.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
 ```
 
 Now, you just have to specify which [translation
@@ -86,16 +86,16 @@ Just amend the above mentioned URLs to also contain the `'_format': 'json'` para
 {{ url('bazinga_exposetranslation_js', { '_format': 'json' }) }}
 ```
 
-Then, feed the translator via `ExposeTranslation.fromJSON(myRetrievedJSONString)`.
+Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 
 ### The JavaScript side
 
 ``` javascript
-ExposeTranslation.has('DOMAIN_NAME:key');
+Translator.has('DOMAIN_NAME:key');
 // true or false
 
-ExposeTranslation.get('DOMAIN_NAME:key');
+Translator.get('DOMAIN_NAME:key');
 // the translated message or undefined
 ```
 
@@ -107,7 +107,7 @@ If you don't specify any **domain**, a guesser is provided to find the best tran
 To configure the guesser, you have to set the `defaultDomains` attribute. By default, the configured default domain is `messages`.
 
 ``` javascript
-ExposeTranslation.get('key');
+Translator.get('key');
 // will try to find a translated message in default domains.
 ```
 
@@ -120,7 +120,7 @@ Read the official documentation about Symfony2 [message placeholders](http://sym
 The `get()` method accepts a second argument that takes placeholders without `%` delimiters:
 
 ``` javascript
-ExposeTranslation.get('DOMAIN_NAME:key', { "foo" : "bar" });
+Translator.get('DOMAIN_NAME:key', { "foo" : "bar" });
 // will replace each "%foo%" in the message by "bar".
 ```
 
@@ -140,27 +140,27 @@ apples: "{0} There is no apples|{1} There is one apple|]1,19] There are %count% 
 ```
 
 ``` javascript
-ExposeTranslation.locale = 'en';
+Translator.locale = 'en';
 
-ExposeTranslation.get('apples', {"count" : 0}, 0);
+Translator.get('apples', {"count" : 0}, 0);
 // will return "There is no apples"
 
-ExposeTranslation.get('apples', {"count" : 1}, 1);
+Translator.get('apples', {"count" : 1}, 1);
 // will return "There is one apple"
 
-ExposeTranslation.get('apples', {"count" : 2}, 2);
+Translator.get('apples', {"count" : 2}, 2);
 // will return "There are 2 apples"
 
-ExposeTranslation.get('apples', {"count" : 10}, 10);
+Translator.get('apples', {"count" : 10}, 10);
 // will return "There are 10 apples"
 
-ExposeTranslation.get('apples', {"count" : 19}, 19);
+Translator.get('apples', {"count" : 19}, 19);
 // will return "There are 19 apples"
 
-ExposeTranslation.get('apples', {"count" : 20}, 20);
+Translator.get('apples', {"count" : 20}, 20);
 // will return "There are many apples"
 
-ExposeTranslation.get('apples', {"count" : 100}, 100);
+Translator.get('apples', {"count" : 100}, 100);
 // will return "There are many apples"
 ```
 
@@ -171,7 +171,7 @@ ExposeTranslation.get('apples', {"count" : 100}, 100);
 You can get the current locale by accessing the `locale` attribute:
 
 ``` javascript
-ExposeTranslation.locale;
+Translator.locale;
 // will return the current locale.
 ```
 
@@ -197,22 +197,22 @@ placeholder: "Hello %username%, how are you ?"
 You can do:
 
 ``` javascript
-ExposeTranslation.get('Hello:foo');
+Translator.get('Hello:foo');
 // will return 'Bar' if the current locale is set to 'fr', undefined otherwise.
 
-ExposeTranslation.get('Hello:ba.bar');
+Translator.get('Hello:ba.bar');
 // will return 'Hello world' if the current locale is set to 'fr', undefined otherwise.
 
-ExposeTranslation.get('Hello:placeholder');
+Translator.get('Hello:placeholder');
 // will return 'Hello %username% !' if the current locale is set to 'fr', undefined otherwise.
 
-ExposeTranslation.get('Hello:placeholder', { "username" : "will" });
+Translator.get('Hello:placeholder', { "username" : "will" });
 // will return 'Hello will !' if the current locale is set to 'fr', undefined otherwise.
 
-ExposeTranslation.get('placeholder', { "username" : "will" });
+Translator.get('placeholder', { "username" : "will" });
 // will return 'Hello will, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 
-ExposeTranslation.get('placeholder');
+Translator.get('placeholder');
 // will return 'Hello %username%, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 ```
 
@@ -235,7 +235,7 @@ bazinga_expose_translation:
 In a similar way, if some of your translations are not complete you can enable a fallback for untranslated messages:
 ``` yaml
 bazinga_expose_translation:
-  locale_fallback: "en" # put here locale code of some complete translation, I recommend the value used for translator fallback
+    locale_fallback: "en" # put here locale code of some complete translation, I recommend the value used for translator fallback
 ```
 
 

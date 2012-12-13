@@ -3,7 +3,7 @@
  * MIT Licensed
  */
 
-var ExposeTranslation = (function () {
+var Translator = (function () {
     var _messages = {},
         _sPluralRegex = /^\w+\: +(.+)$/,
         _cPluralRegex = /^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/,
@@ -20,8 +20,8 @@ var ExposeTranslation = (function () {
      */
     function replace_placeholders(message, placeholders) {
         var _i,
-            _prefix = ExposeTranslation.placeHolderPrefix,
-            _suffix = ExposeTranslation.placeHolderSuffix;
+            _prefix = Translator.placeHolderPrefix,
+            _suffix = Translator.placeHolderSuffix;
 
         for (_i in placeholders) {
             var _r = new RegExp(_prefix + _i + _suffix, 'g');
@@ -45,15 +45,15 @@ var ExposeTranslation = (function () {
      */
     function guess_domain(key) {
         var _k,
-            _defaultDomains = ExposeTranslation.defaultDomains;
+            _defaultDomains = Translator.defaultDomains;
 
-        if (ExposeTranslation.defaultDomains.constructor != Array) {
-            _defaultDomains = [ExposeTranslation.defaultDomains];
+        if (Translator.defaultDomains.constructor != Array) {
+            _defaultDomains = [Translator.defaultDomains];
         }
 
         for (_k in _defaultDomains) {
-            if (ExposeTranslation.has(_defaultDomains[_k] + ':' + key)) {
-                return ExposeTranslation.get(_defaultDomains[_k] + ':' + key);
+            if (Translator.has(_defaultDomains[_k] + ':' + key)) {
+                return Translator.get(_defaultDomains[_k] + ':' + key);
             }
         }
 
@@ -90,7 +90,7 @@ var ExposeTranslation = (function () {
             _e,
             _explicitRules = [],
             _standardRules = [],
-            _parts = message.split(ExposeTranslation.pluralSeparator),
+            _parts = message.split(Translator.pluralSeparator),
             _matches = [];
 
         for (_p in _parts) {
@@ -169,7 +169,7 @@ var ExposeTranslation = (function () {
      * @api private
      */
     function plural_position(number) {
-        var _locale = ExposeTranslation.locale || ExposeTranslation.fallback;
+        var _locale = Translator.locale || Translator.fallback;
 
         if ('pt_BR' === _locale) {
             _locale = 'xbr';
@@ -363,7 +363,7 @@ var ExposeTranslation = (function () {
          *
          * @param {String} key      A translation key.
          * @param {String} message  A message for this key.
-         * @return {Object}         ExposeTranslation.
+         * @return {Object}         Translator.
          * @api public
          */
         add: function(key, message) {
@@ -416,7 +416,7 @@ var ExposeTranslation = (function () {
          * Accepts a JSON string to feed translations
          *
          * @param {String} data     A JSON string or object literal
-         * @return {Object}         ExposeTranslation
+         * @return {Object}         Translator
          */
         fromJSON: function (data) {
             if(typeof data === "string") {
@@ -445,7 +445,7 @@ var ExposeTranslation = (function () {
 })();
 
 if (typeof window.define === "function" && window.define.amd) {
-    window.define("ExposeTranslation", [], function () {
-        return ExposeTranslation;
+    window.define("Translator", [], function () {
+        return Translator;
     });
 }
