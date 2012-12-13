@@ -10,4 +10,4 @@ before_script:
 
 script:
   - phpunit --coverage-text
-  - phantomjs Tests/js/run-qunit.js file://`pwd`/Tests/js/index.html
+  - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index.html
