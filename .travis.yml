@@ -8,6 +8,6 @@ before_script:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar --dev install
 
-phpunit:
+script:
   - phpunit --coverage-text
   - phantomjs Tests/js/run-qunit.js file://`pwd`/Tests/js/index.html
