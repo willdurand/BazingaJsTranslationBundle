@@ -2,10 +2,6 @@
 
 A pretty nice way to expose your translated messages to your JavaScript.
 
-**Warning:**
-
-* The PHP code of this bundle is not unit tested, so don't use it or provides tests if you want to contribute.
-
 
 ## Installation
 
