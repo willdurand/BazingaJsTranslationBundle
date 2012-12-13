@@ -11,26 +11,7 @@ A pretty nice way to expose your translated messages to your JavaScript.
 
 Install the bundle:
 
-#### a) using Git submodules:
-
-    git submodule add http://github.com/willdurand/BazingaExposeTranslationBundle.git vendor/bundles/Bazinga/ExposeTranslationBundle
-
-#### b) using the Symfony2 vendor management system:
-
-    [ExposeTranslationBundle]
-        git=http://github.com/willdurand/BazingaExposeTranslationBundle.git
-        target=/bundles/Bazinga/ExposeTranslationBundle
-
-Register the namespace in `app/autoload.php`:
-
-``` php
-<?php
-// app/autoload.php
-$loader->registerNamespaces(array(
-    // ...
-    'Bazinga' => __DIR__.'/../vendor/bundles',
-));
-```
+    php composer.phar require willdurand/expose-translation-bundle
 
 Register the bundle in `app/AppKernel.php`:
 
@@ -67,8 +48,9 @@ Just add this line in your layout:
 <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translation.js') }}"></script>
 ```
 
-Now, you just have to specify which [translation files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions) to load.
-But **how to do that ?**
+Now, you just have to specify which [translation
+files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions) to load.
+But **how to do that?**
 
 
 ### Load translation domains
@@ -113,8 +95,6 @@ Then, feed the translator via `ExposeTranslation.fromJSON(myRetrievedJSONString)
 
 ### The JavaScript side
 
-It's quite simple:
-
 ``` javascript
 ExposeTranslation.has('DOMAIN_NAME:key');
 // true or false
@@ -122,6 +102,8 @@ ExposeTranslation.has('DOMAIN_NAME:key');
 ExposeTranslation.get('DOMAIN_NAME:key');
 // the translated message or undefined
 ```
+
+> **Note:** The JavaScript is AMD ready.
 
 #### Guesser
 
