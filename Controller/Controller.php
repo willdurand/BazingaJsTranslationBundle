@@ -99,10 +99,10 @@ class Controller
             $locales = $this->translationFinder->createLocalesArray(array($_locale, $this->localeFallback));
             $files = array();
 
-            foreach ($locales as $l) {
-                $localeFiles = $this->translationFinder->getResources($domain_name, $l);
-                $localeFiles = iterator_to_array($localeFiles);
-                $files = array_merge($localeFiles, $files);
+            foreach ($locales as $locale) {
+                foreach ($this->translationFinder->getResources($domain_name, $locale) as $file) {
+                    $files[] = $file;
+                }
             }
 
             $resources = array();
