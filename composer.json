@@ -17,5 +17,6 @@
   "autoload": {
     "psr-0": { "Bazinga\\ExposeTranslationBundle": "" }
   },
-  "target-dir": "Bazinga/ExposeTranslationBundle"
+  "target-dir": "Bazinga/ExposeTranslationBundle",
+  "minimum-stability": "dev"
 }
