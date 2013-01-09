@@ -18,7 +18,7 @@ public function registerBundles()
 {
     return array(
         // ...
-        new Bazinga\TranslatorBundle\BazingaTranslatorBundle(),
+        new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
     );
 }
 ```
@@ -28,7 +28,7 @@ Register the routing in `app/config/routing.yml`:
 ``` yaml
 # app/config/routing.yml
 _bazinga_exposetranslation:
-    resource: "@BazingaTranslatorBundle/Resources/config/routing/routing.yml"
+    resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
 ```
 
 Publish assets:
