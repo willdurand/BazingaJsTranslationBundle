@@ -75,7 +75,7 @@ class DumpCommand extends ContainerAwareCommand
             foreach ($domains as $domain => $messageList) {
                 foreach ($formats as $format) {
                     $content = $this->getContainer()->get('templating')->render('BazingaExposeTranslationBundle::exposeTranslation.' . $format . '.twig', array(
-                        'messages'        => $messageList,
+                        'messages'        => array($domain => $messageList),
                         'locale'          => $locale,
                         'defaultDomains'  =>  $domain,
                     ));
