@@ -21,12 +21,7 @@ class DumpCommand extends ContainerAwareCommand
     {
         $this
             ->setName('bazingaexposetranslation:dump')
-            ->setDescription('Dump all translation files')
-            ->addArgument(
-                'format',
-                InputArgument::REQUIRED,
-                'What format you want ?'
-            );
+            ->setDescription('Dump all translation files');
     }
 
     /**
@@ -102,11 +97,9 @@ class DumpCommand extends ContainerAwareCommand
                     file_put_contents($path[$format], $content);
                 }
 
-                symlink($path[$defaultFormat], $this->getContainer()->get("kernel")->getRootDir()."/../web" . strtr($route->getPattern(), array(
-                    "{domain_name}" =>  $domain,
-                    "{_locale}" => $locale,
-                    ".{_format}" => ""
-                )));
+                if(!file_exists($symlink = ($this->getContainer()->get("kernel")->getRootDir()."/../web" . strtr($route->getPattern(), array("{domain_name}" =>  $domain, "{_locale}" => $locale, ".{_format}" => "" ))))){
+                    symlink($path[$defaultFormat], $symlink);
+                }
             }
         }
     }
