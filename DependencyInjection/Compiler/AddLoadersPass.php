@@ -4,7 +4,6 @@ namespace Bazinga\ExposeTranslationBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
@@ -12,6 +11,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class AddLoadersPass implements CompilerPassInterface
 {
     protected $container;
+    protected $loaders = array();
 
     public function process(ContainerBuilder $container)
     {
@@ -30,6 +30,8 @@ class AddLoadersPass implements CompilerPassInterface
                 $this->registerLoader($attributes['legacy-alias'], $loaderId);
             }
         }
+
+        $this->container->setParameter("bazinga.exposetranslation.loaders", $this->loaders);
     }
 
     protected function registerLoader($alias, $loaderId)
