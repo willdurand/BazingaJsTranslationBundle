@@ -4,6 +4,7 @@ namespace Bazinga\ExposeTranslationBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
@@ -11,7 +12,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class AddLoadersPass implements CompilerPassInterface
 {
     protected $container;
-    protected $loaders = array();
 
     public function process(ContainerBuilder $container)
     {
@@ -24,8 +24,6 @@ class AddLoadersPass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('translation.loader') as $loaderId => $attributes) {
             $this->registerLoader($loaderId);
         }
-
-        $this->container->setParameter("bazinga.exposetranslation.loaders", $this->loaders);
     }
 
     protected function registerLoader($loaderId)
@@ -33,6 +31,12 @@ class AddLoadersPass implements CompilerPassInterface
         $split = explode('.', $loaderId);
         $id    = end($split);
 
-        $this->loaders[$id] =  $loaderId;
+        $this->container
+            ->getDefinition('bazinga.exposetranslation.controller')
+            ->addMethodCall('addLoader', array($id, new Reference($loaderId)));
+
+        $this->container
+            ->getDefinition('bazinga.exposetranslation.dumper.translation_dumper')
+            ->addMethodCall('addLoader', array($id, new Reference($loaderId)));
     }
 }
