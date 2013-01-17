@@ -16,7 +16,7 @@
             <argument>%kernel.debug%</argument>
             <argument></argument>
             <argument></argument>
-            <argument type="service" id="service_container" />
+            <argument>%bazinga.exposetranslation.loaders%</argument>
         </service>
     </services>
 

@@ -49,9 +49,9 @@ class Controller
     protected $localeFallback;
 
     /**
-     * @var ContainerInterface
+     * @var array
      */
-    protected $container;
+    protected $loaders;
 
     /**
      * Default constructor.
@@ -65,7 +65,7 @@ class Controller
      * @param array               $defaultDomains    An array of default domain names.
      */
     public function __construct(TranslatorInterface $translator, EngineInterface $engine,
-                                TranslationFinder $translationFinder, $cacheDir, $debug = false, $localeFallback = "", array $defaultDomains = array(),ContainerInterface $container)
+                                TranslationFinder $translationFinder, $cacheDir, $debug = false, $localeFallback = "", array $defaultDomains = array(), $loaders = array())
     {
         $this->translator        = $translator;
         $this->engine            = $engine;
@@ -74,7 +74,7 @@ class Controller
         $this->cacheDir          = $cacheDir;
         $this->debug             = $debug;
         $this->localeFallback    = $localeFallback;
-        $this->container         = $container;
+        $this->loaders           = $loaders;
     }
 
     /**
@@ -83,8 +83,6 @@ class Controller
     public function exposeTranslationAction(Request $request, $domain_name, $_locale, $_format)
     {
         $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.".".$_format, $this->debug);
-
-        $loaders = $this->container->getParameter("bazinga.exposetranslation.loaders");
 
         if (!$cache->isFresh()) {
             $locales = $this->translationFinder->createLocalesArray(array($_locale, $this->localeFallback));
@@ -102,9 +100,9 @@ class Controller
             foreach ($files as $file) {
                 $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
 
-                if (isset($loaders[$extension])) {
+                if (isset($this->loaders[$extension])) {
                     $resources[] = new FileResource($file->getPath());
-                    $catalogues[] = $this->container->get($loaders[$extension])->load($file, $_locale, $domain_name);
+                    $catalogues[] = $this->container->get($this->loaders[$extension])->load($file, $_locale, $domain_name);
                 }
             }
 

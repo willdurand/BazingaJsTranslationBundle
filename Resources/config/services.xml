@@ -10,9 +10,6 @@
     <services>
         <service id="bazinga.exposetranslation.finder.translation_finder" class="%bazinga.exposetranslation.finder.translation_finder.class%">
             <argument type="service" id="kernel" />
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
         </service>
     </services>
 
