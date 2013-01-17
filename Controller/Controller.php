@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
@@ -31,6 +30,10 @@ class Controller
     /**
      * @var array
      */
+    protected $loaders;
+    /**
+     * @var array
+     */
     protected $defaultDomains;
 
     /**
@@ -49,11 +52,6 @@ class Controller
     protected $localeFallback;
 
     /**
-     * @var array
-     */
-    protected $loaders;
-
-    /**
      * Default constructor.
      *
      * @param TranslatorInterface $translator        The translator.
@@ -65,16 +63,29 @@ class Controller
      * @param array               $defaultDomains    An array of default domain names.
      */
     public function __construct(TranslatorInterface $translator, EngineInterface $engine,
-                                TranslationFinder $translationFinder, $cacheDir, $debug = false, $localeFallback = "", array $defaultDomains = array(), $loaders = array())
+                                TranslationFinder $translationFinder, $cacheDir, $debug = false, $localeFallback = "", array $defaultDomains = array())
     {
         $this->translator        = $translator;
         $this->engine            = $engine;
         $this->translationFinder = $translationFinder;
         $this->defaultDomains    = $defaultDomains;
+        $this->loaders           = array();
         $this->cacheDir          = $cacheDir;
         $this->debug             = $debug;
         $this->localeFallback    = $localeFallback;
-        $this->loaders           = $loaders;
+    }
+
+    /**
+     * Add a translation loader if it does not exist.
+     *
+     * @param string          $id     The loader id.
+     * @param LoaderInterface $loader A translation loader.
+     */
+    public function addLoader($id, $loader)
+    {
+        if (!array_key_exists($id, $this->loaders)) {
+            $this->loaders[$id] = $loader;
+        }
     }
 
     /**
@@ -102,7 +113,7 @@ class Controller
 
                 if (isset($this->loaders[$extension])) {
                     $resources[] = new FileResource($file->getPath());
-                    $catalogues[] = $this->container->get($this->loaders[$extension])->load($file, $_locale, $domain_name);
+                    $catalogues[] = $this->loaders[$extension]->load($file, $_locale, $domain_name);
                 }
             }
 

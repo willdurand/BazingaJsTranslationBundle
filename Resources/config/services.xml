@@ -5,11 +5,18 @@
 
     <parameters>
         <parameter key="bazinga.exposetranslation.finder.translation_finder.class">Bazinga\ExposeTranslationBundle\Finder\TranslationFinder</parameter>
+        <parameter key="bazinga.exposetranslation.dumper.translation_dumper.class">Bazinga\ExposeTranslationBundle\Dumper\TranslationDumper</parameter>
     </parameters>
 
     <services>
         <service id="bazinga.exposetranslation.finder.translation_finder" class="%bazinga.exposetranslation.finder.translation_finder.class%">
             <argument type="service" id="kernel" />
+        </service>
+        <service id="bazinga.exposetranslation.dumper.translation_dumper" class="%bazinga.exposetranslation.dumper.translation_dumper.class%">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="templating" />
+            <argument type="service" id="bazinga.exposetranslation.finder.translation_finder" />
+            <argument type="service" id="router" />
         </service>
     </services>
 
