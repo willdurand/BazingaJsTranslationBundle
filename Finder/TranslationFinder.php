@@ -36,18 +36,19 @@ class TranslationFinder
     {
         $finder = new Finder();
 
-        $locations = array();
-        foreach ($this->kernel->getBundles() as $bundle) {
-            if (is_dir($bundle->getPath() . '/Resources/translations')) {
-                $locations[] = $bundle->getPath() . '/Resources/translations';
-            }
-        }
+        return $finder->files()->name($domainName . '.' . $locale . '.*')->followLinks()->in($this->getLocations());
+    }
 
-        if (is_dir($this->kernel->getRootDir() . '/Resources/translations')) {
-            $locations[] = $this->kernel->getRootDir() . '/Resources/translations';
-        }
+    /**
+     * Returns an array of all translation files .
+     *
+     * @return array  An array of translation files.
+     */
+    public function getAllResources()
+    {
+        $finder = new Finder();
 
-        return $finder->files()->name($domainName . '.' . $locale . '.*')->followLinks()->in($locations);
+        return $finder->files()->followLinks()->in($this->getLocations());
     }
 
     /**
@@ -73,5 +74,25 @@ class TranslationFinder
         }
 
         return array_unique($returnLocales);
+    }
+
+    /**
+     * Gets translation files location.
+     *
+     * @return array
+     */
+    private function getLocations()
+    {
+        foreach ($this->kernel->getBundles() as $bundle) {
+            if (is_dir($bundle->getPath() . '/Resources/translations')) {
+                $locations[] = $bundle->getPath() . '/Resources/translations';
+            }
+        }
+
+        if (is_dir($this->kernel->getRootDir() . '/Resources/translations')) {
+            $locations[] = $this->kernel->getRootDir() . '/Resources/translations';
+        }
+
+        return $locations;
     }
 }
