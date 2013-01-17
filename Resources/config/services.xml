@@ -17,6 +17,7 @@
             <argument type="service" id="templating" />
             <argument type="service" id="bazinga.exposetranslation.finder.translation_finder" />
             <argument type="service" id="router" />
+            <argument type="service" id="filesystem" />
         </service>
     </services>
 

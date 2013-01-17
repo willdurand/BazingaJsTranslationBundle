@@ -5,6 +5,7 @@ namespace Bazinga\ExposeTranslationBundle\Dumper;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 
@@ -39,20 +40,26 @@ class TranslationDumper
     protected $loaders;
 
     /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
      * Default constructor.
      * @param KernelInterface   $kernel            The kernel.
      * @param EngineInterface   $engine            The engine.
      * @param TranslationFinder $translationFinder The translation finder.
      * @param RouterInterface   $router            The router.
-     * @param array             $loaders           An array of loaders.
+     * @param FileSystem        $filesystem        The file system.
      */
-    public function __construct(KernelInterface $kernel, EngineInterface $engine, TranslationFinder $translationFinder, RouterInterface $router, $loaders = array())
+    public function __construct(KernelInterface $kernel, EngineInterface $engine, TranslationFinder $translationFinder, RouterInterface $router, Filesystem $filesystem)
     {
-        $this->kernel  = $kernel;
-        $this->engine  = $engine;
-        $this->finder  = $translationFinder;
-        $this->router  = $router;
-        $this->loaders = array();
+        $this->kernel     = $kernel;
+        $this->engine     = $engine;
+        $this->finder     = $translationFinder;
+        $this->router     = $router;
+        $this->loaders    = array();
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -71,22 +78,68 @@ class TranslationDumper
     /**
      * Dumps all translation files.
      *
+     * @param string  $targetDir Target directory.
+     * @param boolean $symlink   True if generate symlink
+     *
      * @return null
      */
-    public function dump()
+    public function dump($targetDir = 'web', $symlink = false)
     {
         /* Get exposeTranslationAction route */
-        $route = $this->router->getRouteCollection()->get("bazinga_exposetranslation_js");
+        $route = $this->router->getRouteCollection()->get('bazinga_exposetranslation_js');
         $routeRequirements = $route->getRequirements();
 
         /* Get all format to generate */
-        $formats = explode("|", $routeRequirements["_format"]);
+        $formats = explode('|', $routeRequirements['_format']);
 
         /* Get default format to generate symlink */
         $routeDefaults = $route->getDefaults();
-        $defaultFormat = $routeDefaults["_format"];
+        $defaultFormat = $routeDefaults['_format'];
 
-        /* Get all translation files */
+        $parts = array_filter(explode('/', $route->getPattern()));
+        $this->filesystem->remove($this->kernel->getRootDir().'/../'. $targetDir. "/" . current($parts));
+
+        foreach ($this->getTranslationMessages() as $locale => $domains) {
+            foreach ($domains as $domain => $messageList) {
+                foreach ($formats as $format) {
+                    $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $format . '.twig', array(
+                        'messages'        => array($domain => $messageList),
+                        'locale'          => $locale,
+                        'defaultDomains'  => $domain,
+                    ));
+
+                    $path[$format] = $this->kernel->getRootDir().'/../'. $targetDir . strtr($route->getPattern(), array(
+                        '{domain_name}' =>  $domain,
+                        '{_locale}' => $locale,
+                        '{_format}' => $format
+                    ));
+
+                    $this->filesystem->mkdir(dirname($path[$format]), 0777);
+
+                    if (file_exists($path[$format])) {
+                        $this->filesystem->remove($path[$format]);
+                    }
+
+                    file_put_contents($path[$format], $content);
+                }
+
+                $targetFile = $this->kernel->getRootDir() . '/../'. $targetDir . strtr($route->getPattern(), array('{domain_name}' =>  $domain, '{_locale}' => $locale, '.{_format}' => '' ));
+                if ($symlink === true) {
+                    $this->filesystem->symlink($path[$defaultFormat], $targetFile);
+                } else {
+                    $this->filesystem->copy($path[$defaultFormat], $targetFile);;
+                }
+            }
+        }
+    }
+
+    /**
+     * Get all translation messages
+     *
+     * @return array
+     */
+    private function getTranslationMessages()
+    {
         $files = $this->finder->getAllResources();
         $messages = array();
         foreach ($files as $file) {
@@ -97,7 +150,7 @@ class TranslationDumper
             while (prev($fileName)) {
                 $domain[] = current($fileName);
             }
-            $domain = implode(".", $domain);
+            $domain = implode('.', $domain);
 
             if (isset($this->loaders[$extension])) {
                 $catalogue = $this->loaders[$extension]->load($file, $locale, $domain);
@@ -110,36 +163,6 @@ class TranslationDumper
             }
         }
 
-        foreach ($messages as $locale => $domains) {
-            foreach ($domains as $domain => $messageList) {
-                foreach ($formats as $format) {
-                    $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $format . '.twig', array(
-                        'messages'        => array($domain => $messageList),
-                        'locale'          => $locale,
-                        'defaultDomains'  => $domain,
-                    ));
-
-                    $path[$format] = $this->kernel->getRootDir()."/../web" . strtr($route->getPattern(), array(
-                        "{domain_name}" =>  $domain,
-                        "{_locale}" => $locale,
-                        "{_format}" => $format
-                    ));
-
-                    if (!is_dir(dirname($path[$format]))) {
-                        mkdir(dirname($path[$format]), 0777, true);
-                    }
-
-                    if (file_exists($path[$format])) {
-                        unlink($path[$format]);
-                    }
-
-                    file_put_contents($path[$format], $content);
-                }
-
-                if (!file_exists($symlink = ($this->kernel->getRootDir()."/../web" . strtr($route->getPattern(), array("{domain_name}" =>  $domain, "{_locale}" => $locale, ".{_format}" => "" ))))) {
-                    symlink($path[$defaultFormat], $symlink);
-                }
-            }
-        }
+        return $messages;
     }
 }
