@@ -5,7 +5,6 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Config\Resource\FileResource;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
@@ -20,7 +19,7 @@ class DumpCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('bazingaexposetranslation:dump')
+            ->setName('bazinga:expose:translation:dump')
             ->setDescription('Dump all translation files');
     }
 
@@ -34,12 +33,6 @@ class DumpCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->getContainer()->has('security.acl.provider')) {
-            $output->writeln('You must setup the ACL system, see the Symfony2 documentation for how to do this.');
-
-            return;
-        }
-
         $loaders = $this->getContainer()->getParameter("bazinga.exposetranslation.loaders");
         $finder = $this->getContainer()->get("bazinga.exposetranslation.finder.translation_finder");
         $files = $finder->getAllResources();

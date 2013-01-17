@@ -5,16 +5,11 @@ namespace Bazinga\ExposeTranslationBundle\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Finder\Finder;
 
-use Symfony\Component\Translation\MessageCatalogue,
-    Symfony\Component\DependencyInjection\ContainerAwareInterface,
-    Symfony\Component\DependencyInjection\ContainerInterface;
-
-
 /**
  * @author William DURAND <william.durand1@gmail.com>
  * @author Markus Poerschke <markus@eluceo.de>
  */
-class TranslationFinder implements ContainerAwareInterface
+class TranslationFinder
 {
     /**
      * @var KernelInterface
@@ -79,26 +74,6 @@ class TranslationFinder implements ContainerAwareInterface
         }
 
         return array_values(array_unique($returnLocales));
-    }
-
-    /**
-     * Sets the Container.
-     *
-     * @param ContainerInterface $container A ContainerInterface instance
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * Gets the Container.
-     *
-     * @return ContainerInterface
-     */
-    public function getContainer()
-    {
-        return $this->container;
     }
 
     /**
