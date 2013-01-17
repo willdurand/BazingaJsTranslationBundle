@@ -8,7 +8,7 @@
     {
       "name": "William Durand",
       "email": "william.durand1@gmail.com"
-    },
+    }
   ],
   "require": {
     "symfony/framework-bundle": ">=2.0,<2.3-dev",
