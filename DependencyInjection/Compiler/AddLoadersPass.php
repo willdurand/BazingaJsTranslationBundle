@@ -22,17 +22,20 @@ class AddLoadersPass implements CompilerPassInterface
         $this->container = $container;
 
         foreach ($container->findTaggedServiceIds('translation.loader') as $loaderId => $attributes) {
-            $this->registerLoader($loaderId);
+            $attributes = array_shift($attributes);
+
+            $this->registerLoader($attributes['alias'], $loaderId);
+
+            if (isset($attributes['legacy-alias'])) {
+                $this->registerLoader($attributes['legacy-alias'], $loaderId);
+            }
         }
     }
 
-    protected function registerLoader($loaderId)
+    protected function registerLoader($alias, $loaderId)
     {
-        $split = explode('.', $loaderId);
-        $id    = end($split);
-
         $this->container
             ->getDefinition('bazinga.exposetranslation.controller')
-            ->addMethodCall('addLoader', array($id, new Reference($loaderId)));
+            ->addMethodCall('addLoader', array($alias, new Reference($loaderId)));
     }
 }
