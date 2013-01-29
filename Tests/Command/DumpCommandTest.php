@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Bazinga\ExposeTranslationBundle\Command\DumpCommand;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
+/**
+ * DumpCommandTest
+ *
+ * @author Adrien Russo <adrien.russo.qc@gmail.com>
+ */
 class DumpCommandTest extends \PHPUnit_Framework_TestCase
 {
     private $command;

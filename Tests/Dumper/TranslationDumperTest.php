@@ -4,6 +4,11 @@ namespace Bazinga\ExposeTranslationBundle\Tests\Finder;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * TranslationDumperTest
+ *
+ * @author Adrien Russo <adrien.russo.qc@gmail.com>
+ */
 class TranslationDumperTest extends WebTestCase
 {
     private $translationDumper;
