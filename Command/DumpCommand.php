@@ -26,7 +26,7 @@ class DumpCommand extends ContainerAwareCommand
             ->setDefinition(array(
                 new InputArgument('target', InputArgument::OPTIONAL, 'The target directory', 'web'),
             ))
-            ->addOption('symlink', null, InputOption::VALUE_NONE, 'Symlinks the assets instead of copying it')
+            ->addOption('symlink', null, InputOption::VALUE_NONE, 'Symlinks the translation files instead of copying it')
             ->setDescription('Dumps all translation files into a given directory.');
     }
 
@@ -47,9 +47,12 @@ class DumpCommand extends ContainerAwareCommand
             throw new \InvalidArgumentException('The symlink() function is not available on your system. You need to install the assets without the --symlink option.');
         }
 
+        $output->writeln(sprintf("Installing translation files in <comment>%s</comment> directory using the <comment>%s</comment> option", $targetArg, $input->getOption('symlink') ? 'symlink' : 'hard copy'));
+
         $this
             ->getContainer()
             ->get("bazinga.exposetranslation.dumper.translation_dumper")
             ->dump($targetArg, $input->getOption('symlink'));
+
     }
 }
