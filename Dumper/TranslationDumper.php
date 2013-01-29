@@ -83,11 +83,12 @@ class TranslationDumper
      *
      * @return null
      */
-    public function dump($targetDir = 'web', $symlink = false)
+    public function dump($targetDir = 'web', $symlink = false, $directory = null)
     {
         /* Get exposeTranslationAction route */
         $route = $this->router->getRouteCollection()->get('bazinga_exposetranslation_js');
         $routeRequirements = $route->getRequirements();
+        $directory ?: $directory = $this->kernel->getRootDir().'/../';
 
         /* Get all format to generate */
         $formats = explode('|', $routeRequirements['_format']);
@@ -97,7 +98,7 @@ class TranslationDumper
         $defaultFormat = $routeDefaults['_format'];
 
         $parts = array_filter(explode('/', $route->getPattern()));
-        $this->filesystem->remove($this->kernel->getRootDir().'/../'. $targetDir. "/" . current($parts));
+        $this->filesystem->remove($directory. $targetDir. "/" . current($parts));
 
         foreach ($this->getTranslationMessages() as $locale => $domains) {
             foreach ($domains as $domain => $messageList) {
@@ -108,7 +109,7 @@ class TranslationDumper
                         'defaultDomains'  => $domain,
                     ));
 
-                    $path[$format] = $this->kernel->getRootDir().'/../'. $targetDir . strtr($route->getPattern(), array(
+                    $path[$format] = $directory. $targetDir . strtr($route->getPattern(), array(
                         '{domain_name}' =>  $domain,
                         '{_locale}' => $locale,
                         '{_format}' => $format
@@ -123,7 +124,7 @@ class TranslationDumper
                     file_put_contents($path[$format], $content);
                 }
 
-                $targetFile = $this->kernel->getRootDir() . '/../'. $targetDir . strtr($route->getPattern(), array('{domain_name}' =>  $domain, '{_locale}' => $locale, '.{_format}' => '' ));
+                $targetFile = $directory.$targetDir.strtr($route->getPattern(), array('{domain_name}' =>  $domain, '{_locale}' => $locale, '.{_format}' => '' ));
                 if ($symlink === true) {
                     $this->filesystem->symlink($path[$defaultFormat], $targetFile);
                 } else {
