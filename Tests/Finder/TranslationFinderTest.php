@@ -21,7 +21,7 @@ class TranslationFinderTest extends \PHPUnit_Framework_TestCase
         $translationFinder = $this->createTranslationFinder();
         $result = $translationFinder->createLocalesArray(array('de_DE'));
         $this->assertEquals(
-            array('de_DE', 'de'),
+            array('de', 'de_DE'),
             $result
         );
     }
@@ -51,7 +51,7 @@ class TranslationFinderTest extends \PHPUnit_Framework_TestCase
         $translationFinder = $this->createTranslationFinder();
         $result = $translationFinder->createLocalesArray(array('de_DE', 'en_GB'));
         $this->assertEquals(
-            array('de_DE', 'de', 'en_GB', 'en'),
+            array('de', 'de_DE', 'en', 'en_GB'),
             $result
         );
     }
@@ -61,7 +61,7 @@ class TranslationFinderTest extends \PHPUnit_Framework_TestCase
         $translationFinder = $this->createTranslationFinder();
         $result = $translationFinder->createLocalesArray(array('en_US', 'en_GB'));
         $this->assertEquals(
-            array('en_US', 'en', 'en_GB'),
+            array('en', 'en_US', 'en_GB'),
             $result
         );
     }
@@ -71,7 +71,7 @@ class TranslationFinderTest extends \PHPUnit_Framework_TestCase
         $translationFinder = $this->createTranslationFinder();
         $result = $translationFinder->createLocalesArray(array('en_US', 'en'));
         $this->assertEquals(
-            array('en_US', 'en'),
+            array('en', 'en_US'),
             $result
         );
     }
@@ -81,7 +81,7 @@ class TranslationFinderTest extends \PHPUnit_Framework_TestCase
         $translationFinder = $this->createTranslationFinder();
         $result = $translationFinder->createLocalesArray(array('en_US', null));
         $this->assertEquals(
-            array('en_US', 'en'),
+            array('en', 'en_US'),
             $result
         );
     }

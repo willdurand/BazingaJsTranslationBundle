@@ -96,7 +96,7 @@ class Controller
         $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.".".$_format, $this->debug);
 
         if (!$cache->isFresh()) {
-            $locales = $this->translationFinder->createLocalesArray(array($_locale, $this->localeFallback));
+            $locales = $this->translationFinder->createLocalesArray(array($this->localeFallback, $_locale));
             $files = array();
 
             foreach ($locales as $locale) {
