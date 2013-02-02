@@ -22,7 +22,7 @@ class DumpCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('bazinga:expose:translation:dump')
+            ->setName('bazinga:expose-translation:dump')
             ->setDefinition(array(
                 new InputArgument('target', InputArgument::OPTIONAL, 'The target directory', 'web'),
             ))

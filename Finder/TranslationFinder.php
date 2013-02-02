@@ -42,7 +42,7 @@ class TranslationFinder
     /**
      * Returns an array of all translation files .
      *
-     * @return array  An array of translation files.
+     * @return array An array of translation files.
      */
     public function getAllResources()
     {
