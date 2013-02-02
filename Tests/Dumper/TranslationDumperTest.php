@@ -17,7 +17,8 @@ class TranslationDumperTest extends WebTestCase
     private $filesystem;
     private $target;
 
-    protected function setUp() {
+    protected function setUp()
+    {
         $client = static::createClient();
 
         $this->target = sys_get_temp_dir()."/bazinga/";
@@ -87,8 +88,8 @@ class TranslationDumperTest extends WebTestCase
      *
      * @return string
      */
-    protected function getTestPath($format){
-
+    protected function getTestPath($format)
+    {
          return $this->target. 'web' . strtr($this->route->getPattern(), array(
              '{domain_name}' =>  'message',
              '{_locale}' => 'en',

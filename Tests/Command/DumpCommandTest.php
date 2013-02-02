@@ -3,7 +3,6 @@
 namespace Bazinga\ExposeTranslationBundle\Tests\Finder;
 
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Bazinga\ExposeTranslationBundle\Command\DumpCommand;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
@@ -16,7 +15,8 @@ class DumpCommandTest extends \PHPUnit_Framework_TestCase
 {
     private $command;
 
-    protected function setUp() {
+    protected function setUp()
+    {
         $this->command = new DumpCommand();
     }
 
