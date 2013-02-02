@@ -2,7 +2,7 @@
 
 namespace Bazinga\ExposeTranslationBundle\Tests\Finder;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Bazinga\ExposeTranslationBundle\Tests\WebTestCase;
 
 /**
  * TranslationDumperTest
@@ -17,15 +17,16 @@ class TranslationDumperTest extends WebTestCase
     private $filesystem;
     private $target;
 
-    protected function setUp()
+    public function setUp()
     {
-        $client = static::createClient();
+        $client    = static::createClient();
+        $container = $client->getContainer();
 
-        $this->target = sys_get_temp_dir()."/bazinga/";
-        $this->translationDumper = $client->getContainer()->get('bazinga.exposetranslation.dumper.translation_dumper');
-        $this->translationFinder = $client->getContainer()->get('bazinga.exposetranslation.finder.translation_finder');
-        $this->route = $client->getContainer()->get('router')->getRouteCollection()->get('bazinga_exposetranslation_js');
-        $this->filesystem = $client->getContainer()->get('filesystem');
+        $this->target            = sys_get_temp_dir()."/bazinga/";
+        $this->translationDumper = $container->get('bazinga.exposetranslation.dumper.translation_dumper');
+        $this->translationFinder = $container->get('bazinga.exposetranslation.finder.translation_finder');
+        $this->route             = $container->get('router')->getRouteCollection()->get('bazinga_exposetranslation_js');
+        $this->filesystem        = $container->get('filesystem');
 
         if (function_exists('symlink')) {
             $this->translationDumper->dump('web', true, $this->target);
@@ -41,8 +42,8 @@ class TranslationDumperTest extends WebTestCase
      */
     public function testRoute()
     {
-        $routeRequirements = $this->route->getRequirements();
-        $this->assertArrayHasKey('_format', $routeRequirements);
+        $requirements = $this->route->getRequirements();
+        $this->assertArrayHasKey('_format', $requirements);
 
         $routeDefaults = $this->route->getDefaults();
         $this->assertArrayHasKey('_format', $routeDefaults);
@@ -55,8 +56,9 @@ class TranslationDumperTest extends WebTestCase
      */
     public function testFileExistFormat()
     {
-        $routeRequirements = $this->route->getRequirements();
-        $formats = explode('|', $routeRequirements['_format']);
+        $requirements = $this->route->getRequirements();
+        $formats      = explode('|', $requirements['_format']);
+
         foreach ($formats as $format) {
             $this->assertFileExists($this->getTestPath($format));
         }
@@ -70,9 +72,9 @@ class TranslationDumperTest extends WebTestCase
     public function testLinkExist()
     {
         $link = $this->target. 'web' . strtr($this->route->getPattern(), array(
-            '{domain_name}' =>  'message',
-            '{_locale}' => 'en',
-            '.{_format}' => ""
+            '{domain_name}' => 'messages',
+            '{_locale}'     => 'en',
+            '.{_format}'    => ''
         ));
 
         if (function_exists('symlink')) {
@@ -90,11 +92,11 @@ class TranslationDumperTest extends WebTestCase
      */
     protected function getTestPath($format)
     {
-         return $this->target. 'web' . strtr($this->route->getPattern(), array(
-             '{domain_name}' =>  'message',
-             '{_locale}' => 'en',
-             '{_format}' => $format
-         ));
+        return $this->target. 'web' . strtr($this->route->getPattern(), array(
+            '{domain_name}' => 'messages',
+            '{_locale}'     => 'en',
+            '{_format}'     => $format
+        ));
     }
 
     protected function tearDown()

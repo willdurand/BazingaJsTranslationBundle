@@ -37,22 +37,29 @@ class DumpCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $targetArg = rtrim($input->getArgument('target'), '/');
+        $target = rtrim($input->getArgument('target'), '/');
 
-        if (!is_dir($targetArg)) {
-            throw new \InvalidArgumentException(sprintf('The target directory "%s" does not exist.', $input->getArgument('target')));
+        if (!is_dir($target)) {
+            throw new \InvalidArgumentException(
+                sprintf('The target directory "%s" does not exist.', $input->getArgument('target'))
+            );
         }
 
         if (!function_exists('symlink') && $input->getOption('symlink')) {
-            throw new \InvalidArgumentException('The symlink() function is not available on your system. You need to install the assets without the --symlink option.');
+            throw new \InvalidArgumentException(
+                'The symlink() function is not available on your system. You need to install the assets without the --symlink option.'
+            );
         }
 
-        $output->writeln(sprintf("Installing translation files in <comment>%s</comment> directory using the <comment>%s</comment> option", $targetArg, $input->getOption('symlink') ? 'symlink' : 'hard copy'));
+        $output->writeln(sprintf(
+            'Installing translation files in <comment>%s</comment> directory using the <comment>%s</comment> option',
+            $target,
+            $input->getOption('symlink') ? 'symlink' : 'hard copy')
+        );
 
         $this
             ->getContainer()
-            ->get("bazinga.exposetranslation.dumper.translation_dumper")
-            ->dump($targetArg, $input->getOption('symlink'));
-
+            ->get('bazinga.exposetranslation.dumper.translation_dumper')
+            ->dump($target, $input->getOption('symlink'));
     }
 }

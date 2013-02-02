@@ -52,8 +52,9 @@ class TranslationDumper
      * @param RouterInterface   $router            The router.
      * @param FileSystem        $filesystem        The file system.
      */
-    public function __construct(KernelInterface $kernel, EngineInterface $engine, TranslationFinder $translationFinder, RouterInterface $router, Filesystem $filesystem)
-    {
+    public function __construct(KernelInterface $kernel, EngineInterface $engine,
+        TranslationFinder $translationFinder, RouterInterface $router, Filesystem $filesystem
+    ) {
         $this->kernel     = $kernel;
         $this->engine     = $engine;
         $this->finder     = $translationFinder;
@@ -85,15 +86,12 @@ class TranslationDumper
      */
     public function dump($targetDir = 'web', $symlink = false, $directory = null)
     {
-        /* Get exposeTranslationAction route */
-        $route = $this->router->getRouteCollection()->get('bazinga_exposetranslation_js');
-        $routeRequirements = $route->getRequirements();
-        $directory ?: $directory = $this->kernel->getRootDir().'/../';
+        $route         = $this->router->getRouteCollection()->get('bazinga_exposetranslation_js');
+        $directory     = null === $directory ? $this->kernel->getRootDir() . '/../' : $directory;
 
-        /* Get all format to generate */
-        $formats = explode('|', $routeRequirements['_format']);
+        $requirements  = $route->getRequirements();
+        $formats       = explode('|', $requirements['_format']);
 
-        /* Get default format to generate symlink */
         $routeDefaults = $route->getDefaults();
         $defaultFormat = $routeDefaults['_format'];
 
@@ -124,11 +122,13 @@ class TranslationDumper
                     file_put_contents($path[$format], $content);
                 }
 
-                $targetFile = $directory.$targetDir.strtr($route->getPattern(), array('{domain_name}' =>  $domain, '{_locale}' => $locale, '.{_format}' => '' ));
-                if ($symlink === true) {
+                $targetFile  = $directory . $targetDir;
+                $targetFile .= strtr($route->getPattern(), array('{domain_name}' =>  $domain, '{_locale}' => $locale, '.{_format}' => '' ));
+
+                if (true === $symlink) {
                     $this->filesystem->symlink($path[$defaultFormat], $targetFile);
                 } else {
-                    $this->filesystem->copy($path[$defaultFormat], $targetFile);;
+                    $this->filesystem->copy($path[$defaultFormat], $targetFile);
                 }
             }
         }
@@ -141,12 +141,13 @@ class TranslationDumper
      */
     private function getTranslationMessages()
     {
-        $files = $this->finder->getAllResources();
         $messages = array();
-        foreach ($files as $file) {
-            $fileName = explode('.', $file->getFilename());
+
+        foreach ($this->finder->getAllResources() as $file) {
+            $fileName  = explode('.', $file->getFilename());
             $extension = end($fileName);
-            $locale = prev($fileName);
+            $locale    = prev($fileName);
+
             $domain = array();
             while (prev($fileName)) {
                 $domain[] = current($fileName);

@@ -40,15 +40,16 @@ class TranslationFinder
     }
 
     /**
-     * Returns an array of all translation files .
+     * Returns an array of all translation files.
      *
      * @return array An array of translation files.
      */
     public function getAllResources()
     {
         $finder = new Finder();
+        $finder->files()->in($this->getLocations())->followLinks();
 
-        return $finder->files()->followLinks()->in($this->getLocations());
+        return $finder;
     }
 
     /**
@@ -83,6 +84,7 @@ class TranslationFinder
      */
     private function getLocations()
     {
+        $locations = array();
         foreach ($this->kernel->getBundles() as $bundle) {
             if (is_dir($bundle->getPath() . '/Resources/translations')) {
                 $locations[] = $bundle->getPath() . '/Resources/translations';
