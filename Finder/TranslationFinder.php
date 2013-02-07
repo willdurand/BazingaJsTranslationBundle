@@ -65,13 +65,13 @@ class TranslationFinder
                 continue;
             }
 
-            $returnLocales[] = $locale;
-
             if (strpos($locale, '_') === 2 && strlen($locale) === 5) {
                 $returnLocales[] = substr($locale, 0, 2);
             }
+
+            $returnLocales[] = $locale;
         }
 
-        return array_unique($returnLocales);
+        return array_values(array_unique($returnLocales));
     }
 }
