@@ -1,19 +1,19 @@
 language: php
 
 php:
-  - 5.3
-  - 5.4
-  - 5.5
+    - 5.3
+    - 5.4
+    - 5.5
 
 env:
-  - SYMFONY_VERSION=2.0.*
-  - SYMFONY_VERSION=2.1.*
-  - SYMFONY_VERSION=dev-master
+    - SYMFONY_VERSION=2.1.*
+    - SYMFONY_VERSION=dev-master
 
 before_script:
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar require symfony/framework-bundle:${SYMFONY_VERSION} symfony/finder:${SYMFONY_VERSION}
+    - curl -s http://getcomposer.org/installer | php
+    - php composer.phar require symfony/framework-bundle:${SYMFONY_VERSION} symfony/finder:${SYMFONY_VERSION}
+    - php composer.phar install --dev
 
 script:
-  - phpunit --coverage-text
-  - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index.html
+    - phpunit --coverage-text
+    - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index.html
