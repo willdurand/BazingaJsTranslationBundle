@@ -97,4 +97,25 @@ class TranslationFinder
 
         return $locations;
     }
+
+    /**
+     * Gets translation files location.
+     *
+     * @return array
+     */
+    private function getLocations()
+    {
+        $locations = array();
+        foreach ($this->kernel->getBundles() as $bundle) {
+            if (is_dir($bundle->getPath() . '/Resources/translations')) {
+                $locations[] = $bundle->getPath() . '/Resources/translations';
+            }
+        }
+
+        if (is_dir($this->kernel->getRootDir() . '/Resources/translations')) {
+            $locations[] = $this->kernel->getRootDir() . '/Resources/translations';
+        }
+
+        return $locations;
+    }
 }

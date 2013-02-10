@@ -44,5 +44,9 @@ class AddLoadersPass implements CompilerPassInterface
         $this->container
             ->getDefinition('bazinga.exposetranslation.dumper.translation_dumper')
             ->addMethodCall('addLoader', array($id, new Reference($loaderId)));
+
+        $this->container
+            ->getDefinition('bazinga.exposetranslation.dumper.translation_dumper')
+            ->addMethodCall('addLoader', array($id, new Reference($loaderId)));
     }
 }
