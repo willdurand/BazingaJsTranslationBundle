@@ -23,5 +23,10 @@
     "psr-0": { "Bazinga\\ExposeTranslationBundle": "" }
   },
   "target-dir": "Bazinga/ExposeTranslationBundle",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.2.x-dev"
+    }
+  },
   "minimum-stability": "dev"
 }
