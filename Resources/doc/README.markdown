@@ -1,4 +1,4 @@
-# TranslatorBundle
+# ExposeTranslationBundle
 
 A pretty nice way to expose your translated messages to your JavaScript.
 
