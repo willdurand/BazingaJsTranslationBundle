@@ -6,12 +6,14 @@ php:
     - 5.5
 
 env:
-    - SYMFONY_VERSION=2.1.*
-    - SYMFONY_VERSION=dev-master
+    - SYMFONY_VERSION=2.1
+    - SYMFONY_VERSION=2.2
+    #- SYMFONY_VERSION=dev-master
 
 before_script:
     - curl -s http://getcomposer.org/installer | php
-    - php composer.phar require symfony/framework-bundle:${SYMFONY_VERSION} symfony/finder:${SYMFONY_VERSION} --dev
+    - php composer.phar require symfony/framework-bundle:${SYMFONY_VERSION} symfony/finder:${SYMFONY_VERSION} symfony/console:${SYMFONY_VERSION} --no-update
+    - php composer.phar install --dev
 
 script:
     - phpunit --coverage-text
