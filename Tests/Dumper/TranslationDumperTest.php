@@ -3,6 +3,7 @@
 namespace Bazinga\ExposeTranslationBundle\Tests\Finder;
 
 use Bazinga\ExposeTranslationBundle\Tests\WebTestCase;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * TranslationDumperTest
@@ -19,6 +20,10 @@ class TranslationDumperTest extends WebTestCase
 
     public function setUp()
     {
+        if (version_compare(Kernel::MINOR_VERSION, '2.1.0', '<')) {
+            $this->markTestSkipped();
+        }
+
         $client    = static::createClient();
         $container = $client->getContainer();
 
