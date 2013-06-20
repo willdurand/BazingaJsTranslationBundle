@@ -137,6 +137,12 @@ class Controller
 
         $content = file_get_contents((string) $cache);
 
-        return new Response($content, 200, array('Content-Type' => $request->getMimeType($_format)));
+        $response = new Response($content);
+        $response->prepare($request);
+        $response->setPublic();
+        $response->setETag(md5($response->getContent()));
+        $response->isNotModified($request);
+
+        return $response;
     }
 }
