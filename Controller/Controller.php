@@ -2,6 +2,8 @@
 
 namespace Bazinga\ExposeTranslationBundle\Controller;
 
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
 use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -135,12 +137,12 @@ class Controller
             $cache->write($content, $resources);
         }
 
-        $content = file_get_contents((string) $cache);
-
-        $response = new Response($content);
+        $response = new StreamedResponse(function()use($cache){
+        	readfile((string) $cache);
+        });
         $response->prepare($request);
         $response->setPublic();
-        $response->setETag(md5($response->getContent()));
+        $response->setETag(md5_file((string) $cache));
         $response->isNotModified($request);
 
         return $response;
