@@ -142,7 +142,7 @@ class Controller
         });
         $response->prepare($request);
         $response->setPublic();
-        $response->setETag(md5_file((string) $cache));
+        $response->setLastModified(new \DateTime("@".filemtime((string)$cache)));
         $response->isNotModified($request);
 
         return $response;
