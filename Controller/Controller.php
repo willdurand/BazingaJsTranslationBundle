@@ -93,47 +93,7 @@ class Controller
      */
     public function exposeTranslationAction(Request $request, $domain_name, $_locale, $_format)
     {
-        $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.".".$_format, $this->debug);
-
-        if (!$cache->isFresh()) {
-            $locales = $this->translationFinder->createLocalesArray(array($this->localeFallback, $_locale));
-            $files = array();
-
-            foreach ($locales as $locale) {
-                foreach ($this->translationFinder->getResources($domain_name, $locale) as $file) {
-                    $files[] = $file;
-                }
-            }
-
-            $resources = array();
-
-            $catalogues = array();
-            foreach ($files as $file) {
-                $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
-
-                if (isset($this->loaders[$extension])) {
-                    $resources[] = new FileResource($file->getPath());
-                    $catalogues[] = $this->loaders[$extension]->load($file, $_locale, $domain_name);
-                }
-            }
-
-            $messages = array();
-            foreach ($catalogues as $catalogue) {
-                $messages = array_merge_recursive($messages, $catalogue->all());
-            }
-
-            foreach ($messages as &$domain) {
-                $domain = array_map(function($m){ return is_array($m) ? end($m) : $m; }, $domain);
-            }
-
-            $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
-                'messages'        => $messages,
-                'locale'          => $_locale,
-                'defaultDomains'  => $this->defaultDomains,
-            ));
-
-            $cache->write($content, $resources);
-        }
+        $cache = $this->collectMessages($cache, $_locale, $_format, array($domain_name));
 
         $content = file_get_contents((string) $cache);
 
@@ -144,5 +104,76 @@ class Controller
         $response->isNotModified($request);
 
         return $response;
+    }
+    /**
+     * exposeTranslationAction action.
+     */
+    public function exposeTranslationsAction(Request $request, $_locale, $_format)
+    {
+
+    	$domains = $request->get("domains");
+
+    	$cache = $this->collectMessages($_locale, $_format, $domains);
+
+    	$response = new StreamedResponse(function()use($cache){
+    		readfile((string) $cache);
+    	});
+    	$response->prepare($request);
+    	$response->setPublic();
+    	$response->setLastModified(new \DateTime("@".filemtime((string)$cache)));
+    	$response->isNotModified($request);
+
+    	return $response;
+    }
+    /**
+     * @param string $locale
+     * @param string $format
+     * @param array $domains
+     * @return \Symfony\Component\Config\ConfigCache
+     */
+    protected function collectMessages($locale, $format, array $domains)
+    {
+    	$cache = new ConfigCache($this->cacheDir.'/'.implode(".", $domains).'.'.$locale.".".$format, $this->debug);
+
+		if (!$cache->isFresh()) {
+
+    		$locales = $this->translationFinder->createLocalesArray(array($this->localeFallback, $locale));
+
+    		$files = array();
+    		$messages = array();
+    		$catalogues = array();
+    		$resources = array();
+
+    		foreach($domains as $domain_name){
+	    		foreach ($locales as $locale) {
+	    			foreach ($this->translationFinder->getResources($domain_name, $locale) as $file) {
+	    				$files[] = $file;
+	    			}
+	    		}
+
+	    		foreach ($files as $file) {
+	    			$extension = $file->getExtension();
+	    			if (isset($this->loaders[$extension])) {
+	    				$resources[] = new FileResource($file->getPath());
+	    				$catalogues[] = $this->loaders[$extension]->load($file, $locale, $domain_name);
+	    			}
+	    		}
+    		}
+
+    		foreach ($catalogues as $catalogue) {
+    			$messages = array_merge_recursive($messages, $catalogue->all());
+    		}
+    		foreach ($messages as &$domain) {
+    			$domain = array_map(function($m){ return is_array($m) ? end($m) : $m; }, $domain);
+    		}
+    		$content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $format . '.twig', array(
+    				'messages'        => $messages,
+    				'locale'          => $locale,
+    				'defaultDomains'  => $this->defaultDomains,
+    		));
+
+    		$cache->write($content, $resources);
+    	}
+    	return $cache;
     }
 }
