@@ -2,6 +2,8 @@
 
 namespace Bazinga\ExposeTranslationBundle\Controller;
 
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
 use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -93,17 +95,17 @@ class Controller
      */
     public function exposeTranslationAction(Request $request, $domain_name, $_locale, $_format)
     {
-        $cache = $this->collectMessages($cache, $_locale, $_format, array($domain_name));
+        $cache = $this->collectMessages($_locale, $_format, array($domain_name));
 
-        $content = file_get_contents((string) $cache);
+        $response = new StreamedResponse(function()use($cache){
+    		readfile((string) $cache);
+    	});
+    	$response->prepare($request);
+    	$response->setPublic();
+    	$response->setLastModified(new \DateTime("@".filemtime((string)$cache)));
+    	$response->isNotModified($request);
 
-        $response = new Response($content);
-        $response->prepare($request);
-        $response->setPublic();
-        $response->setETag(md5($response->getContent()));
-        $response->isNotModified($request);
-
-        return $response;
+    	return $response;
     }
     /**
      * exposeTranslationAction action.
