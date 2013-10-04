@@ -88,6 +88,29 @@ Just amend the above mentioned URLs to also contain the `'_format': 'json'` para
 
 Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
+### Load translation via dumped javascript files
+
+#### Create javascript translation files (dump)
+
+Dump the translation files to the `web/js` folder:
+
+    php app/console bazinga:expose-translation:dump web/js
+
+You can use the optional `--symlink` option. The `target` (`web/js` in the example above) argument is also optionally, `web` is the default `target`.
+
+#### Use with Assetic
+
+```twig
+{% javascripts
+    '@jquery'
+    '@expose_translation_bundle_for_js'
+    'js/i18n/*/*.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+```
+
+The `@expose_translation_bundle_for_js` is an asset in the assetic configuration (it contains the path of the translator.js).
+With this `'js/i18n/*/*.js'` you load all the translation files from all of the translation domains. Of couse, you can load domains one by one ``'js/i18n/admin/*.js'``
 
 ### The JavaScript side
 
