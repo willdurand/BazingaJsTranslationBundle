@@ -102,15 +102,12 @@ You can use the optional `--symlink` option. The `target` (`web/js` in the examp
 
 ```twig
 {% javascripts
-    '@jquery'
-    '@expose_translation_bundle_for_js'
+    'bundles/bazingaexposetranslation/js/translator.js'
     'js/i18n/*/*.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
 ```
-
-The `@expose_translation_bundle_for_js` is an asset in the assetic configuration (it contains the path of the translator.js).
-With this `'js/i18n/*/*.js'` you load all the translation files from all of the translation domains. Of couse, you can load domains one by one ``'js/i18n/admin/*.js'``
+With `'js/i18n/*/*.js'`, you load all the translation files from all of the translation domains. Of couse, you can load domains one by one ``'js/i18n/admin/*.js'``
 
 ### The JavaScript side
 
