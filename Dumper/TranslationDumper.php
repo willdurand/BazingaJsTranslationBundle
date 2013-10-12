@@ -101,6 +101,8 @@ class TranslationDumper
         foreach ($this->getTranslationMessages() as $locale => $domains) {
             foreach ($domains as $domain => $messageList) {
                 foreach ($formats as $format) {
+                    $messageList = array_map(function($m){ return is_array($m) ? end($m) : $m; }, $messageList);
+
                     $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $format . '.twig', array(
                         'messages'        => array($domain => $messageList),
                         'locale'          => $locale,
