@@ -158,7 +158,7 @@ class TranslationDumper
                 $catalogue = $this->loaders[$extension]->load($file, $locale, $domain);
 
                 if (isset($messages[$locale])) {
-                    $messages[$locale] = array_merge_recursive($messages[$locale], $catalogue->all());
+                    $messages[$locale] = array_replace_recursive($messages[$locale], $catalogue->all());
                 } else {
                     $messages[$locale] = $catalogue->all();
                 }

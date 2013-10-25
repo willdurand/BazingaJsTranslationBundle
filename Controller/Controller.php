@@ -119,11 +119,7 @@ class Controller
 
             $messages = array();
             foreach ($catalogues as $catalogue) {
-                $messages = array_merge_recursive($messages, $catalogue->all());
-            }
-
-            foreach ($messages as &$domain) {
-                $domain = array_map(function($m){ return is_array($m) ? end($m) : $m; }, $domain);
+                $messages = array_replace_recursive($messages, $catalogue->all());
             }
 
             $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
