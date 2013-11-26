@@ -139,7 +139,7 @@ class TranslationDumper
      *
      * @return array
      */
-    private function getTranslationMessages()
+    protected function getTranslationMessages()
     {
         $messages = array();
 
