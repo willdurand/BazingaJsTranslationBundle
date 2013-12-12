@@ -104,7 +104,6 @@ test('guesser', function() {
     equal(Translator.get('boo.baz'), 'boo.baz', 'Returns the key as the key cannot be guessed');
 });
 
-
 test('fromJson', function () {
     expect(6);
 
@@ -119,4 +118,29 @@ test('fromJson', function () {
     equal(Translator.locale, 'pt', 'JSON parser processes locale from valid object literal');
     deepEqual(Translator.defaultDomains, ['more_messages'], 'JSON parser processes defaultDomains from valid object literal');
     equal(Translator.get('more_messages:moo'), 'mar', 'JSON parser processes messages from valid object literal');
+});
+
+test('multiple locales', function() {
+    expect(5);
+
+    // Simulate i18n/messages/en.js loading
+    Translator.locale = 'en';
+    Translator.defaultDomains = ["messages"];
+    Translator.add("messages:symfony2.great", "I like Symfony2");
+    Translator.add("messages:symfony2.powerful", "Symfony2 is powerful");
+
+    // Simulate i18n/messages/fr.js loading
+    Translator.locale = 'fr';
+    Translator.defaultDomains = ["messages"];
+    Translator.add("messages:symfony2.great", "J'aime Symfony2");
+
+    // Test with locale = fr
+    equal(Translator.get('messages:symfony2.great'), "J'aime Symfony2", 'Return translation based on current locale');
+    ok(!Translator.has('messages:symfony2.powerful'), 'Translation set for another locale is not available for current locale');
+
+    // Test with locale = en
+    Translator.locale = 'en';
+    equal(Translator.get('messages:symfony2.great'), "I like Symfony2", 'Return translation based on previous locale');
+    ok(Translator.has('messages:symfony2.powerful'), 'Translation set for previous locale is still available');
+    equal(Translator.get('messages:symfony2.powerful'), "Symfony2 is powerful", 'Return translation based on previous locale');
 });
