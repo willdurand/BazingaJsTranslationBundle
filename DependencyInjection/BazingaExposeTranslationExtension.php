@@ -18,7 +18,7 @@ class BazingaExposeTranslationExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $processor = new Processor();
+        $processor     = new Processor();
         $configuration = new Configuration($container->getParameter('kernel.debug'));
         $config = $processor->processConfiguration($configuration, $configs);
 

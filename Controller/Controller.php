@@ -19,18 +19,22 @@ class Controller
      * @var TranslatorInterface
      */
     protected $translator;
+
     /**
      * @var EngineInterface
      */
     protected $engine;
+
     /**
      * @var TranslationFinder
      */
     protected $translationFinder;
+
     /**
      * @var array
      */
     protected $loaders;
+
     /**
      * @var array
      */
@@ -62,9 +66,15 @@ class Controller
      * @param string              $localeFallback
      * @param array               $defaultDomains    An array of default domain names.
      */
-    public function __construct(TranslatorInterface $translator, EngineInterface $engine,
-                                TranslationFinder $translationFinder, $cacheDir, $debug = false, $localeFallback = "", array $defaultDomains = array())
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        EngineInterface $engine,
+        TranslationFinder $translationFinder,
+        $cacheDir,
+        $debug = false,
+        $localeFallback = '',
+        array $defaultDomains = array()
+    ) {
         $this->translator        = $translator;
         $this->engine            = $engine;
         $this->translationFinder = $translationFinder;
@@ -93,20 +103,19 @@ class Controller
      */
     public function exposeTranslationAction(Request $request, $domain_name, $_locale, $_format)
     {
-        $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.".".$_format, $this->debug);
+        $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.'.'.$_format, $this->debug);
 
         if (!$cache->isFresh()) {
             $locales = $this->translationFinder->createLocalesArray(array($this->localeFallback, $_locale));
-            $files = array();
 
+            $files = array();
             foreach ($locales as $locale) {
                 foreach ($this->translationFinder->getResources($domain_name, $locale) as $file) {
                     $files[] = $file;
                 }
             }
 
-            $resources = array();
-
+            $resources  = array();
             $catalogues = array();
             foreach ($files as $file) {
                 $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);

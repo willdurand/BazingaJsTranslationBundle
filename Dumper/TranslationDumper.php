@@ -2,12 +2,11 @@
 
 namespace Bazinga\ExposeTranslationBundle\Dumper;
 
+use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Filesystem\Filesystem;
-
-use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
@@ -52,8 +51,12 @@ class TranslationDumper
      * @param RouterInterface   $router            The router.
      * @param FileSystem        $filesystem        The file system.
      */
-    public function __construct(KernelInterface $kernel, EngineInterface $engine,
-        TranslationFinder $translationFinder, RouterInterface $router, Filesystem $filesystem
+    public function __construct(
+        KernelInterface $kernel,
+        EngineInterface $engine,
+        TranslationFinder $translationFinder,
+        RouterInterface $router,
+        Filesystem $filesystem
     ) {
         $this->kernel     = $kernel;
         $this->engine     = $engine;
