@@ -1,31 +1,31 @@
 {
-  "name": "willdurand/expose-translation-bundle",
-  "description": "A pretty nice way to expose your translation messages to your JavaScript.",
-  "keywords": ["translation", "javascript"],
-  "type": "symfony-bundle",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "William Durand",
-      "email": "william.durand1@gmail.com"
+    "name": "willdurand/expose-translation-bundle",
+    "description": "A pretty nice way to expose your translation messages to your JavaScript.",
+    "keywords": [ "translation", "javascript", "symfony" ],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+        "name": "William Durand",
+        "email": "william.durand1@gmail.com"
     }
-  ],
-  "require": {
-    "symfony/framework-bundle": "~2.0",
-    "symfony/finder": "~2.0",
-    "symfony/console": "~2.0"
-  },
-  "require-dev": {
-    "symfony/yaml": "~2.0",
-    "symfony/browser-kit": "~2.0"
-  },
-  "autoload": {
-    "psr-0": { "Bazinga\\ExposeTranslationBundle": "" }
-  },
-  "target-dir": "Bazinga/ExposeTranslationBundle",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
+    ],
+    "require": {
+        "symfony/framework-bundle": "~2.1",
+        "symfony/finder": "~2.1",
+        "symfony/console": "~2.1"
+    },
+    "require-dev": {
+        "symfony/yaml": "~2.1",
+        "symfony/browser-kit": "~2.1"
+    },
+    "autoload": {
+        "psr-0": { "Bazinga\\ExposeTranslationBundle": "" }
+    },
+    "target-dir": "Bazinga/ExposeTranslationBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
-  }
 }

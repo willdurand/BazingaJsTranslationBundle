@@ -17,7 +17,6 @@ class TranslationFinder
     protected $kernel;
 
     /**
-     * Default constructor.
      * @param KernelInterface $kernel The kernel.
      */
     public function __construct(KernelInterface $kernel)
@@ -36,7 +35,11 @@ class TranslationFinder
     {
         $finder = new Finder();
 
-        return $finder->files()->name($domainName . '.' . $locale . '.*')->followLinks()->in($this->getLocations());
+        return $finder
+            ->files()
+            ->name($domainName . '.' . $locale . '.*')
+            ->followLinks()
+            ->in($this->getLocations());
     }
 
     /**
@@ -47,7 +50,10 @@ class TranslationFinder
     public function getAllResources()
     {
         $finder = new Finder();
-        $finder->files()->in($this->getLocations())->followLinks();
+        $finder
+            ->files()
+            ->in($this->getLocations())
+            ->followLinks();
 
         return $finder;
     }
@@ -67,7 +73,7 @@ class TranslationFinder
                 continue;
             }
 
-            if (strpos($locale, '_') === 2 && strlen($locale) === 5) {
+            if (2 === strpos($locale, '_') && 5 === strlen($locale)) {
                 $returnLocales[] = substr($locale, 0, 2);
             }
 
@@ -85,14 +91,43 @@ class TranslationFinder
     private function getLocations()
     {
         $locations = array();
-        foreach ($this->kernel->getBundles() as $bundle) {
-            if (is_dir($bundle->getPath() . '/Resources/translations')) {
-                $locations[] = $bundle->getPath() . '/Resources/translations';
+
+        if (class_exists('Symfony\Component\Validator\Validator')) {
+            $r = new \ReflectionClass('Symfony\Component\Validator\Validator');
+
+            $locations[] = dirname($r->getFilename()).'/Resources/translations';
+        }
+
+        if (class_exists('Symfony\Component\Form\Form')) {
+            $r = new \ReflectionClass('Symfony\Component\Form\Form');
+
+            $locations[] = dirname($r->getFilename()).'/Resources/translations';
+        }
+
+        if (class_exists('Symfony\Component\Security\Core\Exception\AuthenticationException')) {
+            $r = new \ReflectionClass('Symfony\Component\Security\Core\Exception\AuthenticationException');
+
+            if (file_exists($dir = dirname($r->getFilename()).'/../../Resources/translations')) {
+                $locations[] = $dir;
+            } else {
+                // Symfony 2.4 and above
+                $locations[] = dirname($r->getFilename()).'/../Resources/translations';
             }
         }
 
-        if (is_dir($this->kernel->getRootDir() . '/Resources/translations')) {
-            $locations[] = $this->kernel->getRootDir() . '/Resources/translations';
+        $overridePath = $this->kernel->getRootDir() . '/Resources/%s/translations';
+        foreach ($this->kernel->getBundles() as $bundle => $class) {
+            $reflection = new \ReflectionClass($class);
+            if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/translations')) {
+                $locations[] = $dir;
+            }
+            if (is_dir($dir = sprintf($overridePath, $bundle))) {
+                $locations[] = $dir;
+            }
+        }
+
+        if (is_dir($dir = $this->kernel->getRootDir() . '/Resources/translations')) {
+            $locations[] = $dir;
         }
 
         return $locations;
