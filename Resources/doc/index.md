@@ -93,9 +93,9 @@ Just amend the above mentioned URLs to also contain the `'_format': 'json'` para
 
 Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
-### Load translations via dumped JavaScript files
+### Load Translations Via Dumped JavaScript Files
 
-#### Dump JavaScript translation files
+#### Dump JavaScript Translation Files
 
 Dump the translation files to the `web/js` folder:
 
@@ -104,7 +104,7 @@ Dump the translation files to the `web/js` folder:
 You can use the optional `--symlink` option. The `target` (`web/js` in the
 example above) argument is also optionally, `web` is the default `target`.
 
-#### Use with Assetic
+#### Use With Assetic
 
 ```twig
 {% javascripts
@@ -117,7 +117,7 @@ With `'js/i18n/*/*.js'`, you load all the translation files from all of the
 translation domains. Of couse, you can load domains one by one
 `'js/i18n/admin/*.js'`.
 
-### The JavaScript side
+### The JavaScript Side
 
 ``` javascript
 Translator.has('DOMAIN_NAME:key');
@@ -141,7 +141,7 @@ Translator.get('key');
 
 **Note:** this will only work if default domains are previously loaded (see the _Load translation domains_ first section).
 
-#### Message placeholders
+#### Message Placeholders
 
 Read the official documentation about Symfony2 [message placeholders](http://symfony.com/doc/current/book/translation.html#message-placeholders).
 
@@ -194,7 +194,7 @@ Translator.get('apples', {"count" : 100}, 100);
 
 **Note:** This is not tested at the moment. It works fine for english/french translations.
 
-#### Get the locale
+#### Get The Locale
 
 You can get the current locale by accessing the `locale` attribute:
 
@@ -244,6 +244,7 @@ Translator.get('placeholder');
 // will return 'Hello %username%, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 ```
 
+
 More configuration
 ------------------
 
@@ -265,3 +266,33 @@ In a similar way, if some of your translations are not complete you can enable a
 bazinga_expose_translation:
     locale_fallback: "en" # put here locale code of some complete translation, I recommend the value used for translator fallback
 ```
+
+Reference Configuration
+-----------------------
+
+``` yaml
+# app/config/config*.yml
+bazinga_expose_translation:
+    locale_fallback:      ''
+    default_domains:      []
+```
+
+
+Testing
+-------
+
+### PHP
+
+Setup the test suite using [Composer](http://getcomposer.org/):
+
+    $ composer install --dev
+
+Run it using PHPUnit:
+
+    $ phpunit
+
+### JavaScript
+
+You can run the JavaScript test suite using [PhantomJS](http://phantomjs.org/):
+
+    $ phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index.html
