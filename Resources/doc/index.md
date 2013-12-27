@@ -119,11 +119,24 @@ translation domains. Of couse, you can load domains one by one
 
 ### The JavaScript Side
 
+The `Translator` object implements the Symfony2
+[`TranslatorInterface`](https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Translation/TranslatorInterface.php)
+and provides the same `trans()` and `transChoice()` methods:
+
 ``` javascript
 Translator.has('DOMAIN_NAME:key');
 // true or false
 
-Translator.get('DOMAIN_NAME:key');
+Translator.trans('key', {}, 'DOMAIN_NAME');
+// the translated message or undefined
+
+Translator.trans('DOMAIN_NAME:key');
+// the translated message or undefined
+
+Translator.transChoice('key', 1, {}, 'DOMAIN_NAME');
+// the translated message or undefined
+
+Translator.transChoice('DOMAIN_NAME:key', 1, {});
 // the translated message or undefined
 ```
 
@@ -135,32 +148,38 @@ If you don't specify any **domain**, a guesser is provided to find the best tran
 To configure the guesser, you have to set the `defaultDomains` attribute. By default, the configured default domain is `messages`.
 
 ``` javascript
-Translator.get('key');
+Translator.trans('key');
 // will try to find a translated message in default domains.
 ```
 
 **Note:** this will only work if default domains are previously loaded (see the _Load translation domains_ first section).
 
-#### Message Placeholders
+#### Message Placeholders / Parameters
 
-Read the official documentation about Symfony2 [message placeholders](http://symfony.com/doc/current/book/translation.html#message-placeholders).
-
-The `get()` method accepts a second argument that takes placeholders without `%` delimiters:
+The `trans()` method accepts a second argument that takes an array of parameters:
 
 ``` javascript
-Translator.get('DOMAIN_NAME:key', { "foo" : "bar" });
+Translator.trans('DOMAIN_NAME:key', { "foo" : "bar" });
 // will replace each "%foo%" in the message by "bar".
 ```
 
 You can override the placeholder delimiters by setting the `placeHolderSuffix` and `placeHolderPrefix` attributes.
 
+The `transChoice()` method accepts this array of parameters as third argument:
+
+``` javascript
+Translator.transChoice('DOMAIN_NAME:key', 123, { "foo" : "bar" });
+// will replace each "%foo%" in the message by "bar".
+```
+
+> Read the official documentation about Symfony2 [message
+placeholders](http://symfony.com/doc/current/book/translation.html#message-placeholders).
+
 #### Pluralization
 
-Probably the best feature provided in this bundle ! It allows you to use pluralization exactly like you can do in Symfony2.
-
-Read the official doc about [pluralization](http://symfony.com/doc/current/book/translation.html#pluralization).
-
-A third parameter can be added to the `get()` method, it's the **number** of objects being described. Here is an example:
+Probably the best feature provided by this bundle! It allows you to use
+pluralization exactly like you would do using the Symfony Translator
+component.
 
 ``` yaml
 # app/Resources/messages.en.yml
@@ -170,29 +189,30 @@ apples: "{0} There is no apples|{1} There is one apple|]1,19] There are %count% 
 ``` javascript
 Translator.locale = 'en';
 
-Translator.get('apples', {"count" : 0}, 0);
+Translator.transChoice('apples', 0, {"count" : 0});
 // will return "There is no apples"
 
-Translator.get('apples', {"count" : 1}, 1);
+Translator.transChoice('apples', 1, {"count" : 1});
 // will return "There is one apple"
 
-Translator.get('apples', {"count" : 2}, 2);
+Translator.transChoice('apples', 2, {"count" : 2});
 // will return "There are 2 apples"
 
-Translator.get('apples', {"count" : 10}, 10);
+Translator.transChoice('apples', 10, {"count" : 10});
 // will return "There are 10 apples"
 
-Translator.get('apples', {"count" : 19}, 19);
+Translator.transChoice('apples', 19, {"count" : 19});
 // will return "There are 19 apples"
 
-Translator.get('apples', {"count" : 20}, 20);
+Translator.transChoice('apples', 20, {"count" : 20});
 // will return "There are many apples"
 
-Translator.get('apples', {"count" : 100}, 100);
+Translator.transChoice('apples', 100, {"count" : 100});
 // will return "There are many apples"
 ```
 
-**Note:** This is not tested at the moment. It works fine for english/french translations.
+> Read the official doc about
+[pluralization](http://symfony.com/doc/current/book/translation.html#pluralization).
 
 #### Get The Locale
 
@@ -203,8 +223,8 @@ Translator.locale;
 // will return the current locale.
 ```
 
-
-## Example
+Examples
+--------
 
 Consider the following translation files:
 
@@ -225,22 +245,22 @@ placeholder: "Hello %username%, how are you ?"
 You can do:
 
 ``` javascript
-Translator.get('Hello:foo');
+Translator.trans('Hello:foo');
 // will return 'Bar' if the current locale is set to 'fr', undefined otherwise.
 
-Translator.get('Hello:ba.bar');
+Translator.trans('Hello:ba.bar');
 // will return 'Hello world' if the current locale is set to 'fr', undefined otherwise.
 
-Translator.get('Hello:placeholder');
+Translator.trans('Hello:placeholder');
 // will return 'Hello %username% !' if the current locale is set to 'fr', undefined otherwise.
 
-Translator.get('Hello:placeholder', { "username" : "will" });
+Translator.trans('Hello:placeholder', { "username" : "will" });
 // will return 'Hello will !' if the current locale is set to 'fr', undefined otherwise.
 
-Translator.get('placeholder', { "username" : "will" });
+Translator.trans('placeholder', { "username" : "will" });
 // will return 'Hello will, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 
-Translator.get('placeholder');
+Translator.trans('placeholder');
 // will return 'Hello %username%, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 ```
 
@@ -250,22 +270,28 @@ More configuration
 
 #### Custom Default Domains
 
-You can easily add your own default domains by adding these lines in your `app/config/config*.yml` files:
+You can easily add your own default domains by adding these lines in your
+`app/config/config*.yml` files:
 
 ``` yaml
 bazinga_expose_translation:
     default_domains: [ messages ]
 ```
 
-**Note:** You still have to include a `<script>` tag to expose messages but you avoid writing domain names before each of your keys.
+**Note:** You still have to include a `<script>` tag to expose messages but you
+avoid writing domain names before each of your keys.
 
 #### Locale Fallback
 
-In a similar way, if some of your translations are not complete you can enable a fallback for untranslated messages:
+In a similar way, if some of your translations are not complete you can enable a
+fallback for untranslated messages:
+
 ``` yaml
 bazinga_expose_translation:
-    locale_fallback: "en" # put here locale code of some complete translation, I recommend the value used for translator fallback
+    locale_fallback: "en" # It is recommended to set the same value used for the
+                          # translator fallback.
 ```
+
 
 Reference Configuration
 -----------------------
