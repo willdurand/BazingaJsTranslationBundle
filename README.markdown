@@ -3,6 +3,10 @@ ExposeTranslationBundle
 
 [![Build
 Status](https://secure.travis-ci.org/willdurand/BazingaExposeTranslationBundle.png?branch=master)](https://travis-ci.org/willdurand/BazingaExposeTranslationBundle)
+[![Total
+Downloads](https://poser.pugx.org/willdurand/expose-translation-bundle/downloads.png)](https://packagist.org/packages/willdurand/expose-translation-bundle)
+[![Latest Stable
+Version](https://poser.pugx.org/willdurand/expose-translation-bundle/v/stable.png)](https://packagist.org/packages/willdurand/expose-translation-bundle)
 
 A pretty nice way to expose your translated messages to your JavaScript.
 
@@ -16,8 +20,28 @@ For documentation, see:
 [Read the documentation](https://github.com/willdurand/BazingaExposeTranslationBundle/blob/master/Resources/doc/README.markdown)
 
 
-## License
+Contributing
+------------
 
-This bundle is under the MIT license. See the complete license in the bundle:
+See
+[CONTRIBUTING](https://github.com/willdurand/BazingaExposeTranslationBundle/blob/master/CONTRIBUTING.md)
+file.
+
+
+Credits
+-------
+
+* William DURAND as main author
+* Jan Sorgalla as contributor
+* Stan Chollet as contributor
+* Kamil Kaproń as contributor
+* [All contributors](https://github.com/willdurand/BazingaExposeTranslationBundle/graphs/contributors)
+
+
+License
+-------
+
+This bundle is released under the MIT license. See the complete license in the
+bundle:
 
     Resources/meta/LICENSE

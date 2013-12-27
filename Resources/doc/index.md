@@ -1,13 +1,19 @@
-# ExposeTranslationBundle
+ExposeTranslationBundle
+=======================
 
 A pretty nice way to expose your translated messages to your JavaScript.
 
 
-## Installation
+Installation
+------------
 
 Install the bundle:
 
-    php composer.phar require willdurand/expose-translation-bundle
+    composer require "willdurand/expose-translation-bundle:@stable"
+
+**Protip:** you should browse the
+[`willdurand/expose-translation-bundle`](https://packagist.org/packages/willdurand/expose-translation-bundle)
+page to choose a stable version to use, avoid the `@stable` meta constraint.
 
 Register the bundle in `app/AppKernel.php`:
 
@@ -36,22 +42,21 @@ Publish assets:
     php app/console assets:install --symlink web
 
 
-## Usage
+Usage
+-----
 
-Just add this line in your layout:
+Add this line in your layout:
 
 ``` html
 <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
 ```
 
-Now, you just have to specify which [translation
+Now, you have to specify which [translation
 files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions) to load.
-But **how to do that?**
 
+### Load Translation Domains
 
-### Load translation domains
-
-Just by adding a line as below:
+By adding a line as below:
 
 ``` html
 <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
@@ -239,10 +244,10 @@ Translator.get('placeholder');
 // will return 'Hello %username%, how are you ?' if the current locale is set to 'fr', undefined otherwise.
 ```
 
+More configuration
+------------------
 
-## More configuration
-
-#### Custom default domains
+#### Custom Default Domains
 
 You can easily add your own default domains by adding these lines in your `app/config/config*.yml` files:
 
@@ -253,18 +258,10 @@ bazinga_expose_translation:
 
 **Note:** You still have to include a `<script>` tag to expose messages but you avoid writing domain names before each of your keys.
 
-#### Locale fallback
+#### Locale Fallback
 
 In a similar way, if some of your translations are not complete you can enable a fallback for untranslated messages:
 ``` yaml
 bazinga_expose_translation:
     locale_fallback: "en" # put here locale code of some complete translation, I recommend the value used for translator fallback
 ```
-
-
-## Credits
-
-* William DURAND (Bazinga) as main author.
-* Jan Sorgalla as contributor.
-* Stan Chollet as contributor.
-* Kamil Kaproń as contributor.
