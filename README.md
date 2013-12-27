@@ -17,7 +17,7 @@ For documentation, see:
 
     Resources/doc/
 
-[Read the documentation](https://github.com/willdurand/BazingaExposeTranslationBundle/blob/master/Resources/doc/README.markdown)
+[Read the documentation](https://github.com/willdurand/BazingaExposeTranslationBundle/blob/master/Resources/doc/index.md)
 
 
 Contributing
