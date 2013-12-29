@@ -13,12 +13,12 @@
             <argument type="service" id="kernel" />
         </service>
         <service id="bazinga.exposetranslation.dumper.translation_dumper" class="%bazinga.exposetranslation.dumper.translation_dumper.class%">
-            <argument type="service" id="kernel" />
             <argument type="service" id="templating" />
             <argument type="service" id="bazinga.exposetranslation.finder.translation_finder" />
             <argument type="service" id="router" />
             <argument type="service" id="filesystem" />
+            <argument></argument> <!-- fallback (locale) -->
+            <argument></argument> <!-- default domain    -->
         </service>
     </services>
-
 </container>

@@ -52,40 +52,51 @@ Add this line in your layout:
 ```
 
 Now, you have to specify which [translation
-files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions) to load.
+files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions)
+you want to load.
 
-### Load Translation Domains
-
-By adding a line as below:
+### Load Translations
 
 ``` html
 <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 ```
 
-This will use the current `locale` and will provide translated messages found in each `messages.CURRENT_LOCALE.*` files of your project.
+This will use the current `locale` and will return the translated messages found
+in each `messages.CURRENT_LOCALE.*` files of your project.
 
-#### Domain
-
-``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME' }) }}"></script>
-```
-
-This will use the current `locale` and will provide translated messages found in each `DOMAIN_NAME.CURRENT_LOCALE.*` files of your project.
-
-#### Locale
-
-You can specify a `locale` to use for translation if you want, just add the `_locale` parameter:
+#### Domains
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME', '_locale' : 'MY_LOCALE' }) }}"></script>
+<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain': 'DOMAIN_NAME' }) }}"></script>
 ```
 
-This will provide translated messages found in each `DOMAIN_NAME.MY_LOCALE.*` files of your project.
+This will use the current `locale` and will return the translated messages found
+in each `DOMAIN_NAME.CURRENT_LOCALE.*` files of your project.
+
+#### Locales
+
+You can specify a `locales` **query parameter** to get translations in another
+language but also to load translations for different languages at once:
+
+``` html
+<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=MY_LOCALE"></script>
+```
+
+This will return the translated messages found in each `DOMAIN_NAME.MY_LOCALE.*`
+files of your project.
+
+``` html
+<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=fr,en"></script>
+```
+
+This will return the translated messages found in each `DOMAIN_NAME.(fr|en).*`
+files of your project.
 
 #### Loading via JSON
 
-Alternatively, you can load your translated messages via JSON (e.g. using jQuery's `ajax()` or RequireJS's text plugin).
-Just amend the above mentioned URLs to also contain the `'_format': 'json'` parameter like so:
+Alternatively, you can load your translated messages via JSON (e.g. using
+jQuery's `ajax()` or RequireJS's text plugin). Just amend the above mentioned
+URLs to also contain the `'_format': 'json'` parameter like so:
 
 ``` html
 {{ url('bazinga_exposetranslation_js', { '_format': 'json' }) }}
@@ -93,82 +104,69 @@ Just amend the above mentioned URLs to also contain the `'_format': 'json'` para
 
 Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
-### Load Translations Via Dumped JavaScript Files
+### The `dump` Command
 
-#### Dump JavaScript Translation Files
+This bundle provides a command to dump the translations files:
 
-Dump the translation files to the `web/js` folder:
+    php app/console bazinga:expose-translation:dump [target]
 
-    php app/console bazinga:expose-translation:dump web/js
+The optinal `target` argument allows you to override the target directory to
+dump JS translation files in.
 
-You can use the optional `--symlink` option. The `target` (`web/js` in the
-example above) argument is also optionally, `web` is the default `target`.
+#### Assetic
 
-#### Use With Assetic
+The command above is useful if you use
+[Assetic](http://symfony.com/doc/current/cookbook/assetic/asset_management.html):
 
 ```twig
 {% javascripts
-    'bundles/bazingaexposetranslation/js/translator.js'
-    'js/i18n/*/*.js' %}
+    'bundles/bazingaexposetranslation/js/translator.min.js'
+    'translations/config.js'
+    'translations/*/*.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
 ```
-With `'js/i18n/*/*.js'`, you load all the translation files from all of the
-translation domains. Of couse, you can load domains one by one
-`'js/i18n/admin/*.js'`.
 
-### The JavaScript Side
+You have to load the `config.js` file, which contains the configuration for the
+JS Translator, then you can load all translation files that have been dumped.
+Note that dumped files don't contain any configuration, they only add messages
+to the JS Translator.
+
+In the example above, all translation files from your entire project will be
+loaded. Of course you can load specific domains: `translations/admin/*.js`.
+
+### The JS Translator
 
 The `Translator` object implements the Symfony2
 [`TranslatorInterface`](https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Translation/TranslatorInterface.php)
 and provides the same `trans()` and `transChoice()` methods:
 
 ``` javascript
-Translator.has('DOMAIN_NAME:key');
-// true or false
-
 Translator.trans('key', {}, 'DOMAIN_NAME');
-// the translated message or undefined
-
-Translator.trans('DOMAIN_NAME:key');
 // the translated message or undefined
 
 Translator.transChoice('key', 1, {}, 'DOMAIN_NAME');
 // the translated message or undefined
-
-Translator.transChoice('DOMAIN_NAME:key', 1, {});
-// the translated message or undefined
 ```
 
 > **Note:** The JavaScript is AMD ready.
-
-#### Guesser
-
-If you don't specify any **domain**, a guesser is provided to find the best translated message for the given `key`.
-To configure the guesser, you have to set the `defaultDomains` attribute. By default, the configured default domain is `messages`.
-
-``` javascript
-Translator.trans('key');
-// will try to find a translated message in default domains.
-```
-
-**Note:** this will only work if default domains are previously loaded (see the _Load translation domains_ first section).
 
 #### Message Placeholders / Parameters
 
 The `trans()` method accepts a second argument that takes an array of parameters:
 
 ``` javascript
-Translator.trans('DOMAIN_NAME:key', { "foo" : "bar" });
+Translator.trans('key', { "foo" : "bar" }, 'DOMAIN_NAME');
 // will replace each "%foo%" in the message by "bar".
 ```
 
-You can override the placeholder delimiters by setting the `placeHolderSuffix` and `placeHolderPrefix` attributes.
+You can override the placeholder delimiters by setting the `placeHolderSuffix`
+and `placeHolderPrefix` attributes.
 
 The `transChoice()` method accepts this array of parameters as third argument:
 
 ``` javascript
-Translator.transChoice('DOMAIN_NAME:key', 123, { "foo" : "bar" });
+Translator.transChoice('key', 123, { "foo" : "bar" }, 'DOMAIN_NAME');
 // will replace each "%foo%" in the message by "bar".
 ```
 
@@ -245,51 +243,44 @@ placeholder: "Hello %username%, how are you ?"
 You can do:
 
 ``` javascript
-Translator.trans('Hello:foo');
-// will return 'Bar' if the current locale is set to 'fr', undefined otherwise.
+Translator.trans('foo');
+// will return 'Bar' if the current locale is set to 'fr',
+// undefined otherwise.
 
-Translator.trans('Hello:ba.bar');
-// will return 'Hello world' if the current locale is set to 'fr', undefined otherwise.
-
-Translator.trans('Hello:placeholder');
-// will return 'Hello %username% !' if the current locale is set to 'fr', undefined otherwise.
-
-Translator.trans('Hello:placeholder', { "username" : "will" });
-// will return 'Hello will !' if the current locale is set to 'fr', undefined otherwise.
-
-Translator.trans('placeholder', { "username" : "will" });
-// will return 'Hello will, how are you ?' if the current locale is set to 'fr', undefined otherwise.
+Translator.trans('ba.bar');
+// will return 'Hello world' if the current locale is set to 'fr',
+// undefined otherwise.
 
 Translator.trans('placeholder');
-// will return 'Hello %username%, how are you ?' if the current locale is set to 'fr', undefined otherwise.
+// will return 'Hello %username% !' if the current locale is set to 'fr',
+// undefined otherwise.
+
+Translator.trans('placeholder', { "username" : "will" });
+// will return 'Hello will !' if the current locale is set to 'fr',
+// undefined otherwise.
+
+Translator.trans('placeholder', { "username" : "will" });
+// will return 'Hello will, how are you ?' if the current locale is set to 'fr',
+// undefined otherwise.
+
+Translator.trans('placeholder');
+// will return 'Hello %username%, how are you ?' if the current locale is set to
+// 'fr', undefined otherwise.
 ```
 
 
 More configuration
 ------------------
 
-#### Custom Default Domains
-
-You can easily add your own default domains by adding these lines in your
-`app/config/config*.yml` files:
-
-``` yaml
-bazinga_expose_translation:
-    default_domains: [ messages ]
-```
-
-**Note:** You still have to include a `<script>` tag to expose messages but you
-avoid writing domain names before each of your keys.
-
 #### Locale Fallback
 
-In a similar way, if some of your translations are not complete you can enable a
-fallback for untranslated messages:
+If some of your translations are not complete you can enable a fallback for
+untranslated messages:
 
 ``` yaml
 bazinga_expose_translation:
-    locale_fallback: "en" # It is recommended to set the same value used for the
-                          # translator fallback.
+    locale_fallback: en  # It is recommended to set the same value used for the
+                         # translator fallback.
 ```
 
 
@@ -299,8 +290,7 @@ Reference Configuration
 ``` yaml
 # app/config/config*.yml
 bazinga_expose_translation:
-    locale_fallback:      ''
-    default_domains:      []
+    locale_fallback:      en
 ```
 
 

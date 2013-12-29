@@ -4,7 +4,6 @@ namespace Bazinga\ExposeTranslationBundle\Dumper;
 
 use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -14,56 +13,62 @@ use Symfony\Component\Filesystem\Filesystem;
 class TranslationDumper
 {
     /**
-     * @var KernelInterface
-     */
-    protected $kernel;
-
-    /**
      * @var EngineInterface
      */
-    protected $engine;
+    private $engine;
 
     /**
      * @var TranslationFinder
      */
-    protected $finder;
+    private $finder;
 
     /**
      * @var RouterInterface
      */
-    protected $router;
+    private $router;
 
     /**
      * @var array
      */
-    protected $loaders;
+    private $loaders = array();
 
     /**
      * @var Filesystem
      */
-    protected $filesystem;
+    private $filesystem;
 
     /**
-     * Default constructor.
-     * @param KernelInterface   $kernel            The kernel.
-     * @param EngineInterface   $engine            The engine.
-     * @param TranslationFinder $translationFinder The translation finder.
-     * @param RouterInterface   $router            The router.
-     * @param FileSystem        $filesystem        The file system.
+     * @var string
+     */
+    private $localeFallback;
+
+    /**
+     * @var string
+     */
+    private $defaultDomain;
+
+    /**
+     * @param EngineInterface   $engine         The engine.
+     * @param TranslationFinder $finder         The translation finder.
+     * @param RouterInterface   $router         The router.
+     * @param FileSystem        $filesystem     The file system.
+     * @param string            $localeFallback
+     * @param string            $defaultDomain
      */
     public function __construct(
-        KernelInterface $kernel,
         EngineInterface $engine,
-        TranslationFinder $translationFinder,
+        TranslationFinder $finder,
         RouterInterface $router,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        $localeFallback       = '',
+        $defaultDomain        = ''
     ) {
-        $this->kernel     = $kernel;
-        $this->engine     = $engine;
-        $this->finder     = $translationFinder;
-        $this->router     = $router;
-        $this->loaders    = array();
-        $this->filesystem = $filesystem;
+        $this->engine         = $engine;
+        $this->finder         = $finder;
+        $this->router         = $router;
+        $this->filesystem     = $filesystem;
+        $this->localeFallback = $localeFallback;
+        $this->defaultDomain  = $defaultDomain;
     }
 
     /**
@@ -80,18 +85,13 @@ class TranslationDumper
     }
 
     /**
-     * Dumps all translation files.
+     * Dump all translation files.
      *
-     * @param string  $targetDir Target directory.
-     * @param boolean $symlink   True if generate symlink
-     *
-     * @return null
+     * @param string $target Target directory.
      */
-    public function dump($targetDir = 'web', $symlink = false, $directory = null)
+    public function dump($target = 'web')
     {
         $route         = $this->router->getRouteCollection()->get('bazinga_exposetranslation_js');
-        $directory     = null === $directory ? $this->kernel->getRootDir() . '/../' : $directory;
-
         $requirements  = $route->getRequirements();
         $formats       = explode('|', $requirements['_format']);
 
@@ -99,75 +99,111 @@ class TranslationDumper
         $defaultFormat = $routeDefaults['_format'];
 
         $parts = array_filter(explode('/', $route->getPattern()));
-        $this->filesystem->remove($directory. $targetDir. "/" . current($parts));
+        $this->filesystem->remove($target. '/' . current($parts));
 
-        foreach ($this->getTranslationMessages() as $locale => $domains) {
-            foreach ($domains as $domain => $messageList) {
+        $this->dumpConfig($route, $formats, $target);
+        $this->dumpTranslations($route, $formats, $target);
+    }
+
+    private function dumpConfig($route, array $formats, $target)
+    {
+        foreach ($formats as $format) {
+            $file = sprintf('%s/%s', $target, strtr($route->getPattern(), array(
+                '{domain}'  => 'config',
+                '{_format}' => $format
+            )));
+
+            $this->filesystem->mkdir(dirname($file), 0755);
+
+            if (file_exists($file)) {
+                $this->filesystem->remove($file);
+            }
+
+            file_put_contents(
+                $file,
+                $this->engine->render('BazingaExposeTranslationBundle::config.' . $format . '.twig', array(
+                    'fallback'      => $this->localeFallback,
+                    'defaultDomain' => $this->defaultDomain,
+                ))
+            );
+        }
+    }
+
+    private function dumpTranslations($route, array $formats, $target)
+    {
+        foreach ($this->getTranslations() as $locale => $domains) {
+            foreach ($domains as $domain => $translations) {
                 foreach ($formats as $format) {
-                    $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $format . '.twig', array(
-                        'messages'        => array($domain => $messageList),
-                        'locale'          => $locale,
-                        'defaultDomains'  => $domain,
+                    $content = $this->engine->render('BazingaExposeTranslationBundle::getTranslations.' . $format . '.twig', array(
+                        'translations'   => array($locale => array(
+                            $domain => $translations,
+                        )),
+                        'include_config' => false,
                     ));
 
-                    $path[$format] = $directory. $targetDir . strtr($route->getPattern(), array(
-                        '{domain_name}' =>  $domain,
-                        '{_locale}' => $locale,
-                        '{_format}' => $format
-                    ));
+                    $file = sprintf('%s/%s',
+                        $target,
+                        strtr($route->getPattern(), array(
+                            '{domain}'  => $domain . '/' . $locale,
+                            '{_format}' => $format
+                        ))
+                    );
 
-                    $this->filesystem->mkdir(dirname($path[$format]), 0777);
+                    $this->filesystem->mkdir(dirname($file), 0755);
 
-                    if (file_exists($path[$format])) {
-                        $this->filesystem->remove($path[$format]);
+                    if (file_exists($file)) {
+                        $this->filesystem->remove($file);
                     }
 
-                    file_put_contents($path[$format], $content);
-                }
-
-                $targetFile  = $directory . $targetDir;
-                $targetFile .= strtr($route->getPattern(), array('{domain_name}' =>  $domain, '{_locale}' => $locale, '.{_format}' => '' ));
-
-                if (true === $symlink) {
-                    $this->filesystem->symlink($path[$defaultFormat], $targetFile);
-                } else {
-                    $this->filesystem->copy($path[$defaultFormat], $targetFile);
+                    file_put_contents($file, $content);
                 }
             }
         }
     }
 
     /**
-     * Get all translation messages
-     *
      * @return array
      */
-    protected function getTranslationMessages()
+    private function getTranslations()
     {
-        $messages = array();
+        $translations = array();
+        foreach ($this->finder->all() as $file) {
+            list($extension, $locale, $domain) = $this->getFileInfo($file);
 
-        foreach ($this->finder->getAllResources() as $file) {
-            $fileName  = explode('.', $file->getFilename());
-            $extension = end($fileName);
-            $locale    = prev($fileName);
-
-            $domain = array();
-            while (prev($fileName)) {
-                $domain[] = current($fileName);
+            if (!isset($translations[$locale])) {
+                $translations[$locale] = array();
             }
-            $domain = implode('.', $domain);
+
+            if (!isset($translations[$locale][$domain])) {
+                $translations[$locale][$domain] = array();
+            }
 
             if (isset($this->loaders[$extension])) {
-                $catalogue = $this->loaders[$extension]->load($file, $locale, $domain);
+                $catalogue = $this->loaders[$extension]
+                    ->load($file, $locale, $domain);
 
-                if (isset($messages[$locale])) {
-                    $messages[$locale] = array_replace_recursive($messages[$locale], $catalogue->all());
-                } else {
-                    $messages[$locale] = $catalogue->all();
-                }
+                $translations[$locale][$domain] = array_merge_recursive(
+                    $translations[$locale][$domain],
+                    $catalogue->all($domain)
+                );
             }
         }
 
-        return $messages;
+        return $translations;
+    }
+
+    private function getFileInfo($file)
+    {
+        $filename  = explode('.', $file->getFilename());
+        $extension = end($filename);
+        $locale    = prev($filename);
+
+        $domain = array();
+        while (prev($filename)) {
+            $domain[] = current($filename);
+        }
+        $domain = implode('.', $domain);
+
+        return array($extension, $locale, $domain);
     }
 }

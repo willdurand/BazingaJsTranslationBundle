@@ -22,14 +22,8 @@ class Configuration implements ConfigurationInterface
         $builder->root('bazinga_expose_translation')
             ->fixXmlConfig('default_domain')
             ->children()
-                ->scalarNode('locale_fallback')->defaultValue('')->end()
-                ->arrayNode('default_domains')
-                    ->beforeNormalization()
-                        ->ifTrue(function ($v) { return !is_array($v); })
-                        ->then(function ($v) { return array($v); })
-                    ->end()
-                    ->prototype('scalar')->end()
-                ->end()
+                ->scalarNode('locale_fallback')->defaultValue('en')->end()
+                ->scalarNode('default_domain')->defaultValue('messages')->end()
             ->end();
 
         return $builder;

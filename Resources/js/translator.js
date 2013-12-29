@@ -2,10 +2,11 @@
  * William DURAND <william.durand1@gmail.com>
  * MIT Licensed
  */
-var Translator = (function () {
+var Translator = (function() {
     "use strict";
 
     var _messages     = {},
+        _domains      = [],
         _sPluralRegex = /^\w+\: +(.+)$/,
         _cPluralRegex = /^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/,
         _iPluralRegex = /^\s*(\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/;
@@ -44,14 +45,13 @@ var Translator = (function () {
      * @param {String} id               The message id
      * @param {String} domain           The domain for the message or null to guess it
      * @param {String} locale           The locale or null to use the default
-     * @param {Array} domains           An array of domains
      * @param {String} currentLocale    The current locale or null to use the default
-     * @param {String} fallbackLocale   The fallback (default) locale
+     * @param {String} localeFallback   The fallback (default) locale
      * @return {String}                 The right message if found, `undefined` otherwise
      * @api private
      */
-    function get_message(id, domain, locale, domains, currentLocale, fallbackLocale) {
-        var _locale = locale || currentLocale || fallbackLocale,
+    function get_message(id, domain, locale, currentLocale, localeFallback) {
+        var _locale = locale || currentLocale || localeFallback,
             _domain = domain;
 
         if (undefined === _messages[_locale]) {
@@ -59,9 +59,9 @@ var Translator = (function () {
         }
 
         if (undefined === _domain) {
-            for (var i in domains) {
-                if (undefined !== _messages[_locale][domains[i]]) {
-                    _domain = domains[i];
+            for (var i in _domains) {
+                if (undefined !== _messages[_locale][_domains[i]]) {
+                    _domain = _domains[i];
 
                     break;
                 }
@@ -327,6 +327,23 @@ var Translator = (function () {
         }
     }
 
+    /**
+     * @type {Array}        An array
+     * @type {String}       An element to compare
+     * @return {Boolean}    Return `true` if `array` contains `element`,
+     *                      `false` otherwise
+     * @api private
+     */
+    function exists(array, element) {
+        for (var i in array) {
+            if (element === array[i]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     return {
         /**
          * The current locale.
@@ -369,14 +386,6 @@ var Translator = (function () {
         defaultDomain: 'messages',
 
         /**
-         * Default domains.
-         *
-         * @type {Array}
-         * @api public
-         */
-        defaultDomains: [],
-
-        /**
          * Plurar separator.
          *
          * @type {String}
@@ -385,7 +394,7 @@ var Translator = (function () {
         pluralSeparator: '|',
 
         /**
-         * Add a translation entry.
+         * Adds a translation entry.
          *
          * @param {String} id       The message id
          * @param {String} message  The message to register for the given id
@@ -394,7 +403,7 @@ var Translator = (function () {
          * @return {Object}         Translator
          * @api public
          */
-        add: function (id, message, domain, locale) {
+        add: function(id, message, domain, locale) {
             var _locale = locale || this.locale || this.fallback,
                 _domain = domain || this.defaultDomain;
 
@@ -407,6 +416,10 @@ var Translator = (function () {
             }
 
             _messages[_locale][_domain][id] = message;
+
+            if (!exists(_domains, _domain)) {
+                _domains.push(_domain);
+            }
 
             return this;
         },
@@ -422,12 +435,11 @@ var Translator = (function () {
          * @return {String}               The translated string
          * @api public
          */
-        trans: function (id, parameters, domain, locale) {
+        trans: function(id, parameters, domain, locale) {
             var _message = get_message(
                 id,
                 domain,
                 locale,
-                this.defaultDomains,
                 this.locale,
                 this.fallback
             );
@@ -446,12 +458,11 @@ var Translator = (function () {
          * @return {String}               The translated string
          * @api public
          */
-        transChoice: function (id, number, parameters, domain, locale) {
+        transChoice: function(id, number, parameters, domain, locale) {
             var _message = get_message(
                 id,
                 domain,
                 locale,
-                this.defaultDomains,
                 this.locale,
                 this.fallback
             );
@@ -470,13 +481,13 @@ var Translator = (function () {
         },
 
         /**
-         * Load translations from JSON
+         * Loads translations from JSON.
          *
          * @param {String} data     A JSON string or object literal
          * @return {Object}         Translator
          * @api public
          */
-        fromJSON: function (data) {
+        fromJSON: function(data) {
             if(typeof data === 'string') {
                 data = JSON.parse(data);
             }
@@ -489,8 +500,8 @@ var Translator = (function () {
                 this.fallback = data.fallback;
             }
 
-            if (data.defaultDomains) {
-                this.defaultDomains = data.defaultDomains;
+            if (data.defaultDomain) {
+                this.defaultDomain = data.defaultDomain;
             }
 
             if (data.translations) {
@@ -504,12 +515,20 @@ var Translator = (function () {
             }
 
             return this;
+        },
+
+        /**
+         * @api public
+         */
+        reset: function() {
+            _messages = {};
+            _domains  = [];
         }
     };
 })();
 
 if (typeof window.define === 'function' && window.define.amd) {
-    window.define('Translator', [], function () {
+    window.define('Translator', [], function() {
         return Translator;
     });
 }

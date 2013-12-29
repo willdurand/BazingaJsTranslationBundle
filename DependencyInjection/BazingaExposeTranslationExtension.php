@@ -26,11 +26,14 @@ class BazingaExposeTranslationExtension extends Extension
         $loader->load('services.xml');
         $loader->load('controllers.xml');
 
-        $defaultDomains = array_merge($config['default_domains'], array('messages'));
-
         $container
             ->getDefinition('bazinga.exposetranslation.controller')
-            ->replaceArgument(5, $config["locale_fallback"])
-            ->replaceArgument(6, $defaultDomains);
+            ->replaceArgument(5, $config['locale_fallback'])
+            ->replaceArgument(6, $config['default_domain']);
+
+        $container
+            ->getDefinition('bazinga.exposetranslation.dumper.translation_dumper')
+            ->replaceArgument(4, $config['locale_fallback'])
+            ->replaceArgument(5, $config['default_domain']);
     }
 }

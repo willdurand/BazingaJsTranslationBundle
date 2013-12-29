@@ -25,19 +25,21 @@ class TranslationFinder
     }
 
     /**
-     * Returns an array of translation files for a given domain and a given locale.
+     * Returns an array of translation files for a given domain,
+     * and a given locale.
      *
-     * @param  string $domainName A domain translation name.
-     * @param  string $locale     A locale.
-     * @return array  An array of translation files.
+     * @param string $domain A domain translation name
+     * @param string $locale A locale
+     *
+     * @return array An array of translation files.
      */
-    public function getResources($domainName, $locale)
+    public function get($domain, $locale)
     {
         $finder = new Finder();
 
         return $finder
             ->files()
-            ->name($domainName . '.' . $locale . '.*')
+            ->name($domain . '.' . $locale . '.*')
             ->followLinks()
             ->in($this->getLocations());
     }
@@ -47,7 +49,7 @@ class TranslationFinder
      *
      * @return array An array of translation files.
      */
-    public function getAllResources()
+    public function all()
     {
         $finder = new Finder();
         $finder
@@ -56,31 +58,6 @@ class TranslationFinder
             ->followLinks();
 
         return $finder;
-    }
-
-    /**
-     * Returns an array of (unique) locales and their fallback.
-     *
-     * @param  array $locales An array of locales.
-     * @return array An array of unique locales.
-     */
-    public function createLocalesArray(array $locales)
-    {
-        $returnLocales = array();
-
-        foreach ($locales as $locale) {
-            if (empty($locale)) {
-                continue;
-            }
-
-            if (2 === strpos($locale, '_') && 5 === strlen($locale)) {
-                $returnLocales[] = substr($locale, 0, 2);
-            }
-
-            $returnLocales[] = $locale;
-        }
-
-        return array_values(array_unique($returnLocales));
     }
 
     /**
