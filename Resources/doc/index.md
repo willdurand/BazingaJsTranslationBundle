@@ -1,7 +1,13 @@
 JsTranslationBundle
-=======================
+===================
 
 A pretty nice way to expose your translated messages to your JavaScript.
+
+**Important:** This documentation has been written for version `2.0.0` and above
+of this bundle. For version `1.x`, please read:
+[https://github.com/willdurand/BazingaJsTranslationBundle/blob/1.2.0/Resources/doc/index.md](https://github.com/willdurand/BazingaJsTranslationBundle/blob/1.2.0/Resources/doc/index.md).
+Also, you might be interested in this [UPGRADE
+guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGRADE.md).
 
 
 Installation
@@ -283,6 +289,16 @@ bazinga_expose_translation:
                          # translator fallback.
 ```
 
+#### Default Domain
+
+You can define the default domain used when translation messages are added
+without any given translation domain:
+
+``` yaml
+bazinga_expose_translation:
+    default_domain:       messages
+```
+
 
 Reference Configuration
 -----------------------
@@ -291,6 +307,7 @@ Reference Configuration
 # app/config/config*.yml
 bazinga_js_translation:
     locale_fallback:      en
+    default_domain:       messages
 ```
 
 

@@ -17,7 +17,8 @@ For documentation, see:
 
     Resources/doc/
 
-[Read the documentation](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md)
+[Read the
+documentation](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md)
 
 
 Contributing
