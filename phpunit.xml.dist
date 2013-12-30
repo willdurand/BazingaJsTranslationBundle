@@ -10,7 +10,7 @@
     syntaxCheck="false"
     bootstrap="./Tests/bootstrap.php">
     <testsuites>
-        <testsuite name="BazingaExposeTranslationBundle Test Suite">
+        <testsuite name="BazingaJsTranslationBundle Test Suite">
             <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
