@@ -22,11 +22,11 @@ new \Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle()
 ```
 // before
 Translator.get('foo')
-Translator.get('foo.plural')
+Translator.get('apples', {"count" : 0}, 0);
 
 // after
 Translator.trans('foo')
-Translator.transChoice('foo')
+Translator.transChoice('apples', 0, {"count" : 0});
 ```
 
 * Messages keys (aka ids) were prefixed by their translation domain, and you
