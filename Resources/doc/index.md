@@ -112,12 +112,19 @@ Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 ### The `dump` Command
 
-This bundle provides a command to dump the translations files:
+This bundle provides a command to dump the translation files:
 
     php app/console bazinga:js-translation:dump [target]
 
 The optional `target` argument allows you to override the target directory to
 dump JS translation files in.
+
+**Important:** as soon as you use dumped translation files, you must include a
+`meta` tag containing the current application's locale:
+
+```html
+<meta name="bazinga-js-translation" content="{{ app.request.locale }}">
+```
 
 #### Assetic
 

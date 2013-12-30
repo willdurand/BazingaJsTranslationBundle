@@ -69,6 +69,16 @@ JS
 
         $this->assertEquals(<<<JS
 (function (Translator) {
+    var metas = document.head.getElementsByTagName('meta');
+
+    for (var i = 0; i < metas.length; i++) {
+        if ('bazinga-js-translation' === metas[i].getAttribute('name').toLowerCase()) {
+            Translator.locale = metas[i].getAttribute('content').toLowerCase();
+
+            break;
+        }
+    }
+
     Translator.fallback      = 'en';
     Translator.defaultDomain = 'messages';
 })(Translator);
