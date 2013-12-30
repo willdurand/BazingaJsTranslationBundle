@@ -90,11 +90,13 @@ JSON
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
-Translator.locale        = 'en';
-Translator.fallback      = 'en';
-Translator.defaultDomain = 'messages';
-// en
-Translator.add("hello", "hello", "messages", "en");
+(function (Translator) {
+    Translator.locale        = 'en';
+    Translator.fallback      = 'en';
+    Translator.defaultDomain = 'messages';
+    // en
+    Translator.add("hello", "hello", "messages", "en");
+})(Translator);
 
 JS
         , $response->getContent());
@@ -108,13 +110,15 @@ JS
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
-Translator.locale        = 'en';
-Translator.fallback      = 'en';
-Translator.defaultDomain = 'messages';
-// en
-Translator.add("hello", "hello", "messages", "en");
-// fr
-Translator.add("hello", "bonjour", "messages", "fr");
+(function (Translator) {
+    Translator.locale        = 'en';
+    Translator.fallback      = 'en';
+    Translator.defaultDomain = 'messages';
+    // en
+    Translator.add("hello", "hello", "messages", "en");
+    // fr
+    Translator.add("hello", "bonjour", "messages", "fr");
+})(Translator);
 
 JS
         , $response->getContent());
@@ -128,10 +132,12 @@ JS
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
-Translator.locale        = 'en';
-Translator.fallback      = 'en';
-Translator.defaultDomain = 'messages';
-// en
+(function (Translator) {
+    Translator.locale        = 'en';
+    Translator.fallback      = 'en';
+    Translator.defaultDomain = 'messages';
+    // en
+})(Translator);
 
 JS
         , $response->getContent());
@@ -145,10 +151,12 @@ JS
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
-Translator.locale        = 'en';
-Translator.fallback      = 'en';
-Translator.defaultDomain = 'messages';
-// pt
+(function (Translator) {
+    Translator.locale        = 'en';
+    Translator.fallback      = 'en';
+    Translator.defaultDomain = 'messages';
+    // pt
+})(Translator);
 
 JS
         , $response->getContent());

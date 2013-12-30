@@ -50,22 +50,28 @@ class TranslationDumperTest extends WebTestCase
         }
 
         $this->assertEquals(<<<JS
-// fr
-Translator.add("hello", "bonjour", "messages", "fr");
+(function (Translator) {
+    // fr
+    Translator.add("hello", "bonjour", "messages", "fr");
+})(Translator);
 
 JS
         , file_get_contents($this->target . '/translations/messages/fr.js'));
 
         $this->assertEquals(<<<JS
-// en
-Translator.add("hello", "hello", "messages", "en");
+(function (Translator) {
+    // en
+    Translator.add("hello", "hello", "messages", "en");
+})(Translator);
 
 JS
         , file_get_contents($this->target . '/translations/messages/en.js'));
 
         $this->assertEquals(<<<JS
-Translator.fallback      = 'en';
-Translator.defaultDomain = 'messages';
+(function (Translator) {
+    Translator.fallback      = 'en';
+    Translator.defaultDomain = 'messages';
+})(Translator);
 
 JS
         , file_get_contents($this->target . '/translations/config.js'));
