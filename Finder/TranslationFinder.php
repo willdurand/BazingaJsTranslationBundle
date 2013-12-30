@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Finder;
+namespace Bazinga\Bundle\JsTranslationBundle\Finder;
 
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Finder\Finder;

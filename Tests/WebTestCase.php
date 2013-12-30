@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Tests;
+namespace Bazinga\Bundle\JsTranslationBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -32,7 +32,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         require_once __DIR__.'/Fixtures/app/AppKernel.php';
 
-        return 'Bazinga\ExposeTranslationBundle\Tests\AppKernel';
+        return 'Bazinga\Bundle\JsTranslationBundle\Tests\AppKernel';
     }
 
     protected static function createKernel(array $options = array())

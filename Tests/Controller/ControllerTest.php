@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Controller;
+namespace Bazinga\JsTranslationBundle\Tests\Controller;
 
-use Bazinga\ExposeTranslationBundle\Tests\WebTestCase;
+use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
 
 class ControllerTest extends WebTestCase
 {

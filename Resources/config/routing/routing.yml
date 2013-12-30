@@ -1,6 +1,6 @@
-bazinga_exposetranslation_js:
+bazinga_jstranslation_js:
     pattern:  /translations/{domain}.{_format}
-    defaults: { _controller: bazinga.exposetranslation.controller:getTranslationsAction, domain: "messages", _format: "js" }
+    defaults: { _controller: bazinga.jstranslation.controller:getTranslationsAction, domain: "messages", _format: "js" }
     methods:  [ GET ]
     options:
         i18n: false

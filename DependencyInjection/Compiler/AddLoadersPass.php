@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\DependencyInjection\Compiler;
+namespace Bazinga\Bundle\JsTranslationBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -13,7 +13,7 @@ class AddLoadersPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('bazinga.exposetranslation.controller')) {
+        if (!$container->hasDefinition('bazinga.jstranslation.controller')) {
             return;
         }
 
@@ -31,11 +31,11 @@ class AddLoadersPass implements CompilerPassInterface
     private function registerLoader(ContainerBuilder $container, $alias, $loaderId)
     {
         $container
-            ->getDefinition('bazinga.exposetranslation.controller')
+            ->getDefinition('bazinga.jstranslation.controller')
             ->addMethodCall('addLoader', array($alias, new Reference($loaderId)));
 
         $container
-            ->getDefinition('bazinga.exposetranslation.dumper.translation_dumper')
+            ->getDefinition('bazinga.jstranslation.translation_dumper')
             ->addMethodCall('addLoader', array($alias, new Reference($loaderId)));
     }
 }

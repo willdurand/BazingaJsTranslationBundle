@@ -1,4 +1,4 @@
-ExposeTranslationBundle
+JsTranslationBundle
 =======================
 
 A pretty nice way to expose your translated messages to your JavaScript.
@@ -24,7 +24,7 @@ public function registerBundles()
 {
     return array(
         // ...
-        new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
+        new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
     );
 }
 ```
@@ -33,8 +33,8 @@ Register the routing in `app/config/routing.yml`:
 
 ``` yaml
 # app/config/routing.yml
-_bazinga_exposetranslation:
-    resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
+_bazinga_jstranslation:
+    resource: "@BazingaJsTranslationBundle/Resources/config/routing/routing.yml"
 ```
 
 Publish assets:
@@ -48,7 +48,7 @@ Usage
 Add this line in your layout:
 
 ``` html
-<script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 ```
 
 Now, you have to specify which [translation
@@ -58,7 +58,7 @@ you want to load.
 ### Load Translations
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
+<script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 ```
 
 This will use the current `locale` and will return the translated messages found
@@ -67,7 +67,7 @@ in each `messages.CURRENT_LOCALE.*` files of your project.
 #### Domains
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain': 'DOMAIN_NAME' }) }}"></script>
+<script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME' }) }}"></script>
 ```
 
 This will use the current `locale` and will return the translated messages found
@@ -79,14 +79,14 @@ You can specify a `locales` **query parameter** to get translations in another
 language but also to load translations for different languages at once:
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=MY_LOCALE"></script>
+<script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=MY_LOCALE"></script>
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.MY_LOCALE.*`
 files of your project.
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=fr,en"></script>
+<script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=fr,en"></script>
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.(fr|en).*`
@@ -99,7 +99,7 @@ jQuery's `ajax()` or RequireJS's text plugin). Just amend the above mentioned
 URLs to also contain the `'_format': 'json'` parameter like so:
 
 ``` html
-{{ url('bazinga_exposetranslation_js', { '_format': 'json' }) }}
+{{ url('bazinga_jstranslation_js', { '_format': 'json' }) }}
 ```
 
 Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
@@ -108,7 +108,7 @@ Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 This bundle provides a command to dump the translations files:
 
-    php app/console bazinga:expose-translation:dump [target]
+    php app/console bazinga:js-translation:dump [target]
 
 The optinal `target` argument allows you to override the target directory to
 dump JS translation files in.
@@ -120,7 +120,7 @@ The command above is useful if you use
 
 ```twig
 {% javascripts
-    'bundles/bazingaexposetranslation/js/translator.min.js'
+    'bundles/bazingajstranslation/js/translator.min.js'
     'translations/config.js'
     'translations/*/*.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
@@ -289,7 +289,7 @@ Reference Configuration
 
 ``` yaml
 # app/config/config*.yml
-bazinga_expose_translation:
+bazinga_js_translation:
     locale_fallback:      en
 ```
 

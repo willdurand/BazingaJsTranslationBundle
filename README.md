@@ -1,8 +1,8 @@
-ExposeTranslationBundle
-=======================
+JsTranslationBundle
+===================
 
 [![Build
-Status](https://secure.travis-ci.org/willdurand/BazingaExposeTranslationBundle.png?branch=master)](https://travis-ci.org/willdurand/BazingaExposeTranslationBundle)
+Status](https://secure.travis-ci.org/willdurand/BazingaJsTranslationBundle.png?branch=master)](https://travis-ci.org/willdurand/BazingaJsTranslationBundle)
 [![Total
 Downloads](https://poser.pugx.org/willdurand/expose-translation-bundle/downloads.png)](https://packagist.org/packages/willdurand/expose-translation-bundle)
 [![Latest Stable
@@ -17,14 +17,14 @@ For documentation, see:
 
     Resources/doc/
 
-[Read the documentation](https://github.com/willdurand/BazingaExposeTranslationBundle/blob/master/Resources/doc/index.md)
+[Read the documentation](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md)
 
 
 Contributing
 ------------
 
 See
-[CONTRIBUTING](https://github.com/willdurand/BazingaExposeTranslationBundle/blob/master/CONTRIBUTING.md)
+[CONTRIBUTING](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/CONTRIBUTING.md)
 file.
 
 
@@ -35,7 +35,7 @@ Credits
 * Jan Sorgalla as contributor
 * Stan Chollet as contributor
 * Kamil Kaproń as contributor
-* [All contributors](https://github.com/willdurand/BazingaExposeTranslationBundle/graphs/contributors)
+* [All contributors](https://github.com/willdurand/BazingaJsTranslationBundle/graphs/contributors)
 
 
 License

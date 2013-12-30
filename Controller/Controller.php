@@ -1,8 +1,8 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Controller;
+namespace Bazinga\Bundle\JsTranslationBundle\Controller;
 
-use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
+use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,9 +69,9 @@ class Controller
         EngineInterface $engine,
         TranslationFinder $translationFinder,
         $cacheDir,
-        $debug                = false,
-        $localeFallback       = '',
-        $defaultDomain        = ''
+        $debug          = false,
+        $localeFallback = '',
+        $defaultDomain  = ''
     ) {
         $this->translator        = $translator;
         $this->engine            = $engine;
@@ -136,7 +136,7 @@ class Controller
                 }
             }
 
-            $content = $this->engine->render('BazingaExposeTranslationBundle::getTranslations.' . $_format . '.twig', array(
+            $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $_format . '.twig', array(
                 'locale'         => $request->getLocale(),
                 'fallback'       => $this->localeFallback,
                 'defaultDomain'  => $this->defaultDomain,

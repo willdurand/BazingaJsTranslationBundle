@@ -4,17 +4,17 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="bazinga.exposetranslation.finder.translation_finder.class">Bazinga\ExposeTranslationBundle\Finder\TranslationFinder</parameter>
-        <parameter key="bazinga.exposetranslation.dumper.translation_dumper.class">Bazinga\ExposeTranslationBundle\Dumper\TranslationDumper</parameter>
+        <parameter key="bazinga.jstranslation.translation_finder.class">Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder</parameter>
+        <parameter key="bazinga.jstranslation.translation_dumper.class">Bazinga\Bundle\JsTranslationBundle\Dumper\TranslationDumper</parameter>
     </parameters>
 
     <services>
-        <service id="bazinga.exposetranslation.finder.translation_finder" class="%bazinga.exposetranslation.finder.translation_finder.class%">
+        <service id="bazinga.jstranslation.translation_finder" class="%bazinga.jstranslation.translation_finder.class%">
             <argument type="service" id="kernel" />
         </service>
-        <service id="bazinga.exposetranslation.dumper.translation_dumper" class="%bazinga.exposetranslation.dumper.translation_dumper.class%">
+        <service id="bazinga.jstranslation.translation_dumper" class="%bazinga.jstranslation.translation_dumper.class%">
             <argument type="service" id="templating" />
-            <argument type="service" id="bazinga.exposetranslation.finder.translation_finder" />
+            <argument type="service" id="bazinga.jstranslation.translation_finder" />
             <argument type="service" id="router" />
             <argument type="service" id="filesystem" />
             <argument></argument> <!-- fallback (locale) -->

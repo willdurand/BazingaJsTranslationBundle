@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\DependencyInjection;
+namespace Bazinga\Bundle\JsTranslationBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -19,7 +19,7 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder();
 
-        $builder->root('bazinga_expose_translation')
+        $builder->root('bazinga_js_translation')
             ->fixXmlConfig('default_domain')
             ->children()
                 ->scalarNode('locale_fallback')->defaultValue('en')->end()

@@ -1,8 +1,8 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Dumper;
+namespace Bazinga\Bundle\JsTranslationBundle\Dumper;
 
-use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
+use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -60,8 +60,8 @@ class TranslationDumper
         TranslationFinder $finder,
         RouterInterface $router,
         Filesystem $filesystem,
-        $localeFallback       = '',
-        $defaultDomain        = ''
+        $localeFallback = '',
+        $defaultDomain  = ''
     ) {
         $this->engine         = $engine;
         $this->finder         = $finder;
@@ -91,7 +91,7 @@ class TranslationDumper
      */
     public function dump($target = 'web')
     {
-        $route         = $this->router->getRouteCollection()->get('bazinga_exposetranslation_js');
+        $route         = $this->router->getRouteCollection()->get('bazinga_jstranslation_js');
         $requirements  = $route->getRequirements();
         $formats       = explode('|', $requirements['_format']);
 
@@ -121,7 +121,7 @@ class TranslationDumper
 
             file_put_contents(
                 $file,
-                $this->engine->render('BazingaExposeTranslationBundle::config.' . $format . '.twig', array(
+                $this->engine->render('BazingaJsTranslationBundle::config.' . $format . '.twig', array(
                     'fallback'      => $this->localeFallback,
                     'defaultDomain' => $this->defaultDomain,
                 ))
@@ -134,7 +134,7 @@ class TranslationDumper
         foreach ($this->getTranslations() as $locale => $domains) {
             foreach ($domains as $domain => $translations) {
                 foreach ($formats as $format) {
-                    $content = $this->engine->render('BazingaExposeTranslationBundle::getTranslations.' . $format . '.twig', array(
+                    $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $format . '.twig', array(
                         'translations'   => array($locale => array(
                             $domain => $translations,
                         )),

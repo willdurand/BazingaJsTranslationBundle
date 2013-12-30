@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Command;
+namespace Bazinga\Bundle\JsTranslationBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,7 +21,7 @@ class DumpCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('bazinga:expose-translation:dump')
+            ->setName('bazinga:js-translation:dump')
             ->setDefinition(array(
                 new InputArgument(
                     'target',

@@ -1,8 +1,8 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Tests\Finder;
+namespace Bazinga\JsTranslationBundle\Tests\Finder;
 
-use Bazinga\ExposeTranslationBundle\Tests\WebTestCase;
+use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
@@ -20,9 +20,9 @@ class TranslationDumperTest extends WebTestCase
         $client    = static::createClient();
         $container = $client->getContainer();
 
-        $this->target     = '/tmp/test/'; //sys_get_temp_dir() . '/bazinga/expose-translation-bundle/';
+        $this->target     = sys_get_temp_dir() . '/bazinga/js-translation-bundle/';
         $this->filesystem = $container->get('filesystem');
-        $this->dumper     = $container->get('bazinga.exposetranslation.dumper.translation_dumper');
+        $this->dumper     = $container->get('bazinga.jstranslation.translation_dumper');
 
         $this->filesystem->mkdir($this->target, 0755);
     }
@@ -30,7 +30,7 @@ class TranslationDumperTest extends WebTestCase
     public function tearDown()
     {
         if (is_dir($this->target)) {
-            //    $this->filesystem->remove($this->target);
+            $this->filesystem->remove($this->target);
         }
     }
 
