@@ -55,7 +55,11 @@ var Translator = (function() {
             _domain = domain;
 
         if (undefined === _messages[_locale]) {
-            return id;
+            if (undefined === _messages[localeFallback]) {
+                return id;
+            }
+
+            _locale = localeFallback;
         }
 
         if (undefined === _domain) {

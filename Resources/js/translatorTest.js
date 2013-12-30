@@ -156,11 +156,11 @@ test('fromJSON', function () {
 test('multiple locales', function () {
     expect(3);
 
-    // Simulate i18n/messages/en.js loading
+    // Simulate translations/messages/en.js loading
     Translator.add('symfony2.great', 'I like Symfony2', 'messages', 'en');
     Translator.add('symfony2.powerful', 'Symfony2 is powerful', 'messages', 'en');
 
-    // Simulate i18n/messages/fr.js loading
+    // Simulate translations/messages/fr.js loading
     Translator.add('symfony2.great', 'J\'aime Symfony2', 'messages', 'fr');
 
     // Test with locale = fr
@@ -171,4 +171,25 @@ test('multiple locales', function () {
     Translator.locale = 'en';
     equal(Translator.trans('symfony2.great'), 'I like Symfony2', 'Return translation based on previous locale');
     equal(Translator.trans('symfony2.powerful'), 'Symfony2 is powerful', 'Return translation based on previous locale');
+});
+
+test('fallback', function () {
+    expect(4);
+
+    // Simulate translations/messages/en.js loading
+    Translator.add('symfony2.great', 'I like Symfony2', 'messages', 'en');
+    Translator.add('symfony2.powerful', 'Symfony2 is powerful', 'messages', 'en');
+
+    // Simulate translations/messages/fr.js loading
+    Translator.add('symfony2.great', 'J\'aime Symfony2', 'messages', 'fr');
+
+    Translator.locale = 'fr';
+    equal(Translator.trans('symfony2.great'), 'J\'aime Symfony2', 'Return translation based on current locale');
+
+    Translator.locale = 'en';
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2', 'Return translation based on previous locale');
+
+    Translator.locale = 'de';
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2', 'Return translation based on previous locale');
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2', 'Return translation based on previous locale', 'pt');
 });
