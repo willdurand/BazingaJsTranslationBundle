@@ -147,7 +147,11 @@ class Controller
             $cache->write($content, $resources);
         }
 
-        $response = new Response(file_get_contents((string) $cache));
+        $response = new Response(
+            file_get_contents((string) $cache),
+            Response::HTTP_OK,
+            array('Content-Type' => $request->getMimeType($_format))
+        );
         $response->prepare($request);
         $response->setPublic();
         $response->setETag(md5($response->getContent()));
