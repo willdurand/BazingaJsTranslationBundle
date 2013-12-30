@@ -1,8 +1,8 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Controller;
+namespace Bazinga\Bundle\JsTranslationBundle\Controller;
 
-use Bazinga\ExposeTranslationBundle\Finder\TranslationFinder;
+use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,71 +18,68 @@ class Controller
     /**
      * @var TranslatorInterface
      */
-    protected $translator;
+    private $translator;
 
     /**
      * @var EngineInterface
      */
-    protected $engine;
+    private $engine;
 
     /**
      * @var TranslationFinder
      */
-    protected $translationFinder;
+    private $translationFinder;
 
     /**
      * @var array
      */
-    protected $loaders;
-
-    /**
-     * @var array
-     */
-    protected $defaultDomains;
+    private $loaders = array();
 
     /**
      * @var string
      */
-    protected $cacheDir;
+    private $cacheDir;
 
     /**
-     * @var bool
+     * @var boolean
      */
-    protected $debug;
+    private $debug;
 
     /**
      * @var string
      */
-    protected $localeFallback;
+    private $localeFallback;
 
     /**
-     * Default constructor.
-     *
+     * @var string
+     */
+    private $defaultDomain;
+
+    /**
      * @param TranslatorInterface $translator        The translator.
      * @param EngineInterface     $engine            The engine.
      * @param TranslationFinder   $translationFinder The translation finder.
      * @param string              $cacheDir
      * @param boolean             $debug
      * @param string              $localeFallback
-     * @param array               $defaultDomains    An array of default domain names.
+     * @param string              $defaultDomain
      */
     public function __construct(
         TranslatorInterface $translator,
         EngineInterface $engine,
         TranslationFinder $translationFinder,
         $cacheDir,
-        $debug = false,
+        $debug          = false,
         $localeFallback = '',
-        array $defaultDomains = array()
+        $defaultDomain  = ''
     ) {
         $this->translator        = $translator;
         $this->engine            = $engine;
         $this->translationFinder = $translationFinder;
-        $this->defaultDomains    = $defaultDomains;
-        $this->loaders           = array();
         $this->cacheDir          = $cacheDir;
         $this->debug             = $debug;
         $this->localeFallback    = $localeFallback;
+        $this->defaultDomain     = $defaultDomain;
     }
 
     /**
@@ -98,56 +95,77 @@ class Controller
         }
     }
 
-    /**
-     * exposeTranslationAction action.
-     */
-    public function exposeTranslationAction(Request $request, $domain_name, $_locale, $_format)
+    public function getTranslationsAction(Request $request, $domain, $_format)
     {
-        $cache = new ConfigCache($this->cacheDir.'/'.$domain_name.'.'.$_locale.'.'.$_format, $this->debug);
+        $locales = $this->getLocales($request);
+        $cache   = new ConfigCache(sprintf('%s/%s.%s.%s',
+            $this->cacheDir,
+            $domain,
+            implode('-', $locales),
+            $_format
+        ), $this->debug);
 
         if (!$cache->isFresh()) {
-            $locales = $this->translationFinder->createLocalesArray(array($this->localeFallback, $_locale));
+            $resources    = array();
+            $translations = array();
 
-            $files = array();
             foreach ($locales as $locale) {
-                foreach ($this->translationFinder->getResources($domain_name, $locale) as $file) {
-                    $files[] = $file;
+                $translations[$locale] = array();
+
+                $files = $this->translationFinder->get($domain, $locale);
+
+                if (1 > count($files)) {
+                    continue;
+                }
+
+                $translations[$locale][$domain] = array();
+
+                foreach ($files as $file) {
+                    $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
+
+                    if (isset($this->loaders[$extension])) {
+                        $resources[] = new FileResource($file->getPath());
+                        $catalogue   = $this->loaders[$extension]
+                            ->load($file, $locale, $domain);
+
+                        $translations[$locale][$domain] = array_merge_recursive(
+                            $translations[$locale][$domain],
+                            $catalogue->all($domain)
+                        );
+                    }
                 }
             }
 
-            $resources  = array();
-            $catalogues = array();
-            foreach ($files as $file) {
-                $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
-
-                if (isset($this->loaders[$extension])) {
-                    $resources[] = new FileResource($file->getPath());
-                    $catalogues[] = $this->loaders[$extension]->load($file, $_locale, $domain_name);
-                }
-            }
-
-            $messages = array();
-            foreach ($catalogues as $catalogue) {
-                $messages = array_replace_recursive($messages, $catalogue->all());
-            }
-
-            $content = $this->engine->render('BazingaExposeTranslationBundle::exposeTranslation.' . $_format . '.twig', array(
-                'messages'        => $messages,
-                'locale'          => $_locale,
-                'defaultDomains'  => $this->defaultDomains,
+            $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $_format . '.twig', array(
+                'locale'         => $request->getLocale(),
+                'fallback'       => $this->localeFallback,
+                'defaultDomain'  => $this->defaultDomain,
+                'translations'   => $translations,
+                'include_config' => true,
             ));
 
             $cache->write($content, $resources);
         }
 
-        $content = file_get_contents((string) $cache);
-
-        $response = new Response($content);
+        $response = new Response(file_get_contents((string) $cache));
         $response->prepare($request);
         $response->setPublic();
         $response->setETag(md5($response->getContent()));
         $response->isNotModified($request);
 
         return $response;
+    }
+
+    private function getLocales(Request $request)
+    {
+        if (null !== $locales = $request->query->get('locales')) {
+            $locales = explode(',', $locales);
+        } else {
+            $locales = array($request->getLocale());
+        }
+
+        return array_unique(array_map(function ($locale) {
+            return trim($locale);
+        }, $locales));
     }
 }

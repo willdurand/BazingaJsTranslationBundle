@@ -1,5 +1,10 @@
 framework:
     secret:        test
     router:        { resource: "%kernel.root_dir%/config/routing.yml" }
-    templating:    { engines: ['php'] }
+    templating:    { engines: [ 'twig' ] }
     test:          ~
+
+# Twig Configuration
+twig:
+    debug:            %kernel.debug%
+    strict_variables: %kernel.debug%

@@ -1,0 +1,8 @@
+{
+{% if include_config %}
+    "locale": "{{ locale }}",
+    "fallback": "{{ fallback }}",
+    "defaultDomain": "{{ defaultDomain }}",
+{% endif %}
+    "translations": {{ translations|json_encode|raw }}
+}

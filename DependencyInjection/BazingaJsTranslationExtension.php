@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\DependencyInjection;
+namespace Bazinga\Bundle\JsTranslationBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,7 +11,7 @@ use Symfony\Component\Config\Definition\Processor;
 /**
  * @author William DURAND <william.durand1@gmail.com>
  */
-class BazingaExposeTranslationExtension extends Extension
+class BazingaJsTranslationExtension extends Extension
 {
     /**
      * Load configuration.
@@ -26,11 +26,14 @@ class BazingaExposeTranslationExtension extends Extension
         $loader->load('services.xml');
         $loader->load('controllers.xml');
 
-        $defaultDomains = array_merge($config['default_domains'], array('messages'));
+        $container
+            ->getDefinition('bazinga.jstranslation.controller')
+            ->replaceArgument(5, $config['locale_fallback'])
+            ->replaceArgument(6, $config['default_domain']);
 
         $container
-            ->getDefinition('bazinga.exposetranslation.controller')
-            ->replaceArgument(5, $config["locale_fallback"])
-            ->replaceArgument(6, $defaultDomains);
+            ->getDefinition('bazinga.jstranslation.translation_dumper')
+            ->replaceArgument(4, $config['locale_fallback'])
+            ->replaceArgument(5, $config['default_domain']);
     }
 }

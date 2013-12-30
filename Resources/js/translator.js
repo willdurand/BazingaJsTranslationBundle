@@ -2,20 +2,23 @@
  * William DURAND <william.durand1@gmail.com>
  * MIT Licensed
  */
+var Translator = (function() {
+    "use strict";
 
-var Translator = (function () {
-    var _messages = {},
+    var _messages     = {},
+        _domains      = [],
         _sPluralRegex = /^\w+\: +(.+)$/,
         _cPluralRegex = /^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/,
         _iPluralRegex = /^\s*(\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/;
 
     /**
-     * replace placeholders in given message.
+     * Replace placeholders in given message.
+     *
      * **WARNING:** used placeholders are removed.
      *
-     * @param {String} message      The translated message.
-     * @param {Object} placeholders The placeholders to replace.
-     * @return {String}             A human readable message.
+     * @param {String} message      The translated message
+     * @param {Object} placeholders The placeholders to replace
+     * @return {String}             A human readable message
      * @api private
      */
     function replace_placeholders(message, placeholders) {
@@ -36,28 +39,41 @@ var Translator = (function () {
     }
 
     /**
-     * Guess the domain if you don't specify it, based on
-     * given default domains.
+     * Get the message based on its id, its domain, and its locale. If domain or
+     * locale are not specified, it will try to find the message using fallbacks.
      *
-     * @param {String} key  A message key.
-     * @return {String}     The message if found, undefined otherwise.
+     * @param {String} id               The message id
+     * @param {String} domain           The domain for the message or null to guess it
+     * @param {String} locale           The locale or null to use the default
+     * @param {String} currentLocale    The current locale or null to use the default
+     * @param {String} localeFallback   The fallback (default) locale
+     * @return {String}                 The right message if found, `undefined` otherwise
      * @api private
      */
-    function guess_domain(key) {
-        var _k,
-            _defaultDomains = Translator.defaultDomains;
+    function get_message(id, domain, locale, currentLocale, localeFallback) {
+        var _locale = locale || currentLocale || localeFallback,
+            _domain = domain;
 
-        if (Translator.defaultDomains.constructor != Array) {
-            _defaultDomains = [Translator.defaultDomains];
+        if (undefined === _messages[_locale]) {
+            return id;
         }
 
-        for (_k in _defaultDomains) {
-            if (Translator.has(_defaultDomains[_k] + ':' + key)) {
-                return Translator.get(_defaultDomains[_k] + ':' + key);
+        if (undefined === _domain) {
+            for (var i in _domains) {
+                if (undefined !== _messages[_locale][_domains[i]]) {
+                    _domain = _domains[i];
+
+                    break;
+                }
             }
         }
 
-        return undefined;
+        if (undefined !== _messages[_locale][_domain] &&
+            undefined !== _messages[_locale][_domain][id]) {
+            return _messages[_locale][_domain][id];
+        }
+
+        return id;
     }
 
     /**
@@ -80,18 +96,19 @@ var Translator = (function () {
      * The two methods can also be mixed:
      *     {0} There is no apples|one: There is one apple|more: There is %count% apples
      *
-     * @param {String} message  The message.
-     * @param {Number} number   The number.
-     * @return {String}         The message part to use for translation.
+     * @param {String} message  The message id
+     * @param {Number} number   The number to use to find the indice of the message
+     * @param {String} locale   The locale
+     * @return {String}         The message part to use for translation
      * @api private
      */
-    function pluralize(message, number) {
+    function pluralize(message, number, locale) {
         var _p,
             _e,
             _explicitRules = [],
             _standardRules = [],
-            _parts = message.split(Translator.pluralSeparator),
-            _matches = [];
+            _parts         = message.split(Translator.pluralSeparator),
+            _matches       = [];
 
         for (_p in _parts) {
             var _part = _parts[_p];
@@ -136,7 +153,7 @@ var Translator = (function () {
             }
         }
 
-        return _standardRules[plural_position(number)] || _standardRules[0] || undefined;
+        return _standardRules[plural_position(number, locale)] || _standardRules[0] || undefined;
     }
 
     /**
@@ -145,8 +162,8 @@ var Translator = (function () {
      * Convert number as String, "Inf" and "-Inf"
      * values to number values.
      *
-     * @param {String} number   A litteral number.
-     * @return {Number}         The int value of the number.
+     * @param {String} number   A litteral number
+     * @return {Number}         The int value of the number
      * @api private
      */
     function convert_number(number) {
@@ -164,12 +181,13 @@ var Translator = (function () {
      *
      * Returns the plural position to use for the given locale and number.
      *
-     * @param {Number} number  A number.
-     * @return {Number}        The plural position.
+     * @param {Number} number  The number to use to find the indice of the message
+     * @param {String} locale  The locale
+     * @return {Number}        The plural position
      * @api private
      */
-    function plural_position(number) {
-        var _locale = Translator.locale || Translator.fallback;
+    function plural_position(number, locale) {
+        var _locale = locale;
 
         if ('pt_BR' === _locale) {
             _locale = 'xbr';
@@ -309,6 +327,23 @@ var Translator = (function () {
         }
     }
 
+    /**
+     * @type {Array}        An array
+     * @type {String}       An element to compare
+     * @return {Boolean}    Return `true` if `array` contains `element`,
+     *                      `false` otherwise
+     * @api private
+     */
+    function exists(array, element) {
+        for (var i in array) {
+            if (element === array[i]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     return {
         /**
          * The current locale.
@@ -343,12 +378,12 @@ var Translator = (function () {
         placeHolderSuffix: '%',
 
         /**
-         * Default domains.
+         * Default domain.
          *
-         * @type {String|Array}
+         * @type {String}
          * @api public
          */
-        defaultDomains: [],
+        defaultDomain: 'messages',
 
         /**
          * Plurar separator.
@@ -359,99 +394,141 @@ var Translator = (function () {
         pluralSeparator: '|',
 
         /**
-         * Add a translation entry.
+         * Adds a translation entry.
          *
-         * @param {String} key      A translation key.
-         * @param {String} message  A message for this key.
-         * @return {Object}         Translator.
+         * @param {String} id       The message id
+         * @param {String} message  The message to register for the given id
+         * @param {String} domain   The domain for the message or null to use the default
+         * @param {String} locale   The locale or null to use the default
+         * @return {Object}         Translator
          * @api public
          */
-        add: function(key, message) {
-            var _locale = Translator.locale || Translator.fallback;
+        add: function(id, message, domain, locale) {
+            var _locale = locale || this.locale || this.fallback,
+                _domain = domain || this.defaultDomain;
+
             if (!_messages[_locale]) {
                 _messages[_locale] = {};
             }
-            _messages[_locale][key] = message;
+
+            if (!_messages[_locale][_domain]) {
+                _messages[_locale][_domain] = {};
+            }
+
+            _messages[_locale][_domain][id] = message;
+
+            if (!exists(_domains, _domain)) {
+                _domains.push(_domain);
+            }
+
             return this;
         },
 
-      /**
-       * Get the translated message for the given key.
-       *
-       * @param {String} key            A translation key.
-       * @param {Object} placeholders   Placeholders.
-       * @param {Number} number         A number of objects being described.
-       * @return {String} The corresponding message if the key exists otherwise the key will be returned.
-       */
-        get: function(key, placeholders, number) {
-            var _locale = Translator.locale || Translator.fallback;
-            var _message = _messages[_locale][key],
-                _number = parseInt(number, 10),
-                _placeholders = placeholders || {};
-
-            if (_message === undefined) {
-                _message = guess_domain(key);
-            }
-
-            if (_message === undefined) {
-                _message = key;
-            }
-
-            if (_message && !isNaN(_number)) {
-                _message = pluralize(_message, _number);
-            }
-
-            _message = replace_placeholders(_message, _placeholders);
-
-            return _message;
-        },
 
         /**
-         * Determines wether a message is registered or not.
+         * Translates the given message.
          *
-         * @param {String} key  A translation id.
-         * @return {Boolean}    Wether the message is registered or not.
+         * @param {String} id             The message id
+         * @param {Object} parameters     An array of parameters for the message
+         * @param {String} domain         The domain for the message or null to guess it
+         * @param {String} locale         The locale or null to use the default
+         * @return {String}               The translated string
          * @api public
          */
-        has: function(key) {
-            var _locale = Translator.locale || Translator.fallback;
-            return (_messages[_locale] && _messages[_locale][key]) ? true : false;
+        trans: function(id, parameters, domain, locale) {
+            var _message = get_message(
+                id,
+                domain,
+                locale,
+                this.locale,
+                this.fallback
+            );
+
+            return replace_placeholders(_message, parameters || {});
         },
 
         /**
-         * Accepts a JSON string to feed translations
+         * Translates the given choice message by choosing a translation according to a number.
+         *
+         * @param {String} id             The message id
+         * @param {Number} number         The number to use to find the indice of the message
+         * @param {Object} parameters     An array of parameters for the message
+         * @param {String} domain         The domain for the message or null to guess it
+         * @param {String} locale         The locale or null to use the default
+         * @return {String}               The translated string
+         * @api public
+         */
+        transChoice: function(id, number, parameters, domain, locale) {
+            var _message = get_message(
+                id,
+                domain,
+                locale,
+                this.locale,
+                this.fallback
+            );
+
+            var _number  = parseInt(number, 10);
+
+            if (undefined !== _message && !isNaN(_number)) {
+                _message = pluralize(
+                    _message,
+                    _number,
+                    locale || this.locale || this.fallback
+                );
+            }
+
+            return replace_placeholders(_message, parameters || {});
+        },
+
+        /**
+         * Loads translations from JSON.
          *
          * @param {String} data     A JSON string or object literal
          * @return {Object}         Translator
+         * @api public
          */
-        fromJSON: function (data) {
-            if(typeof data === "string") {
+        fromJSON: function(data) {
+            if(typeof data === 'string') {
                 data = JSON.parse(data);
             }
 
-            if(data.locale) {
+            if (data.locale) {
                 this.locale = data.locale;
             }
 
-            if(data.defaultDomains) {
-                this.defaultDomains = data.defaultDomains;
+            if (data.fallback) {
+                this.fallback = data.fallback;
             }
 
-            if(data.messages) {
-                var key;
-                for(key in data.messages) {
-                    var message = data.messages[key];
-                    this.add(key, message);
+            if (data.defaultDomain) {
+                this.defaultDomain = data.defaultDomain;
+            }
+
+            if (data.translations) {
+                for (var locale in data.translations) {
+                    for (var domain in data.translations[locale]) {
+                        for (var id in data.translations[locale][domain]) {
+                            this.add(id, data.translations[locale][domain][id], domain, locale);
+                        }
+                    }
                 }
             }
 
             return this;
+        },
+
+        /**
+         * @api public
+         */
+        reset: function() {
+            _messages = {};
+            _domains  = [];
         }
     };
 })();
 
-if (typeof window.define === "function" && window.define.amd) {
-    window.define("Translator", [], function () {
+if (typeof window.define === 'function' && window.define.amd) {
+    window.define('Translator', [], function() {
         return Translator;
     });
 }

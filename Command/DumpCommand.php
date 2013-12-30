@@ -1,65 +1,68 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\Command;
+namespace Bazinga\Bundle\JsTranslationBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
 
 /**
- * Command that places translation assets into a given directory.
- *
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
  */
 class DumpCommand extends ContainerAwareCommand
 {
+    private $targetPath;
+
     /**
-     * @see Command
+     * {@inheritDoc}
      */
     protected function configure()
     {
         $this
-            ->setName('bazinga:expose-translation:dump')
+            ->setName('bazinga:js-translation:dump')
             ->setDefinition(array(
-                new InputArgument('target', InputArgument::OPTIONAL, 'The target directory', 'web'),
+                new InputArgument(
+                    'target',
+                    InputArgument::OPTIONAL,
+                    'Override the target directory to dump JS translation files in.'
+                ),
             ))
-            ->addOption('symlink', null, InputOption::VALUE_NONE, 'Symlinks the translation files instead of copying it')
-            ->setDescription('Dumps all translation files into a given directory.');
+            ->setDescription('Dumps all JS translation files to the filesystem');
     }
 
     /**
-     * @see Command
-     *
-     * @throws \InvalidArgumentException When the target directory does not exist
+     * {@inheritDoc}
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        parent::initialize($input, $output);
+
+        $this->targetPath = $input->getArgument('target') ?:
+            realpath(sprintf('%s/../web/', $this->getContainer()->getParameter('kernel.root_dir')));
+    }
+
+    /**
+     * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $target = rtrim($input->getArgument('target'), '/');
-
-        if (!is_dir($target)) {
-            throw new \InvalidArgumentException(
-                sprintf('The target directory "%s" does not exist.', $input->getArgument('target'))
-            );
-        }
-
-        if (!function_exists('symlink') && $input->getOption('symlink')) {
-            throw new \InvalidArgumentException(
-                'The symlink() function is not available on your system. You need to install the assets without the --symlink option.'
-            );
+        if (!is_dir($dir = dirname($this->targetPath))) {
+            $output->writeln('<info>[dir+]</info>  ' . $dir);
+            if (false === @mkdir($dir, 0777, true)) {
+                throw new \RuntimeException('Unable to create directory ' . $dir);
+            }
         }
 
         $output->writeln(sprintf(
-            'Installing translation files in <comment>%s</comment> directory using the <comment>%s</comment> option',
-            $target,
-            $input->getOption('symlink') ? 'symlink' : 'hard copy')
-        );
+            'Installing translation files in <comment>%s</comment> directory',
+            $this->targetPath
+        ));
 
         $this
             ->getContainer()
-            ->get('bazinga.exposetranslation.dumper.translation_dumper')
-            ->dump($target, $input->getOption('symlink'));
+            ->get('bazinga.jstranslation.translation_dumper')
+            ->dump($this->targetPath);
     }
 }

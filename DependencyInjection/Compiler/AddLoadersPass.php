@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\ExposeTranslationBundle\DependencyInjection\Compiler;
+namespace Bazinga\Bundle\JsTranslationBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,35 +11,31 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class AddLoadersPass implements CompilerPassInterface
 {
-    protected $container;
-
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('bazinga.exposetranslation.controller')) {
+        if (!$container->hasDefinition('bazinga.jstranslation.controller')) {
             return;
         }
-
-        $this->container = $container;
 
         foreach ($container->findTaggedServiceIds('translation.loader') as $loaderId => $attributes) {
             $attributes = array_shift($attributes);
 
-            $this->registerLoader($attributes['alias'], $loaderId);
+            $this->registerLoader($container, $attributes['alias'], $loaderId);
 
             if (isset($attributes['legacy-alias'])) {
-                $this->registerLoader($attributes['legacy-alias'], $loaderId);
+                $this->registerLoader($container, $attributes['legacy-alias'], $loaderId);
             }
         }
     }
 
-    protected function registerLoader($alias, $loaderId)
+    private function registerLoader(ContainerBuilder $container, $alias, $loaderId)
     {
-        $this->container
-            ->getDefinition('bazinga.exposetranslation.controller')
+        $container
+            ->getDefinition('bazinga.jstranslation.controller')
             ->addMethodCall('addLoader', array($alias, new Reference($loaderId)));
 
-        $this->container
-            ->getDefinition('bazinga.exposetranslation.dumper.translation_dumper')
+        $container
+            ->getDefinition('bazinga.jstranslation.translation_dumper')
             ->addMethodCall('addLoader', array($alias, new Reference($loaderId)));
     }
 }

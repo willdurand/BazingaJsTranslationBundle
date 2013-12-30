@@ -12,4 +12,4 @@ EOT
     );
 }
 
-$loader->add('Bazinga\ExposeTranslationBundle\Tests', __DIR__);
+$loader->add('Bazinga\Bundle\JsTranslationBundle\Tests', __DIR__);

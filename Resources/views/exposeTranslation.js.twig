@@ -1,7 +1,0 @@
-Translator.locale = '{{ locale }}';
-Translator.defaultDomains = [{% if defaultDomains %}"{{ defaultDomains|join('", "')|raw }}"{% endif %}];
-{% for domain, translations in messages %}
-{% for key, message in translations %}
-Translator.add({{ (domain~":"~key)|json_encode|raw }}, {{ message|json_encode|raw }});
-{% endfor %}
-{% endfor %}
