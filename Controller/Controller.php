@@ -149,7 +149,7 @@ class Controller
 
         $response = new Response(
             file_get_contents((string) $cache),
-            Response::HTTP_OK,
+            200,
             array('Content-Type' => $request->getMimeType($_format))
         );
         $response->prepare($request);
