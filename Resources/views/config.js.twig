@@ -2,6 +2,10 @@
     var metas = document.head.getElementsByTagName('meta');
 
     for (var i = 0; i < metas.length; i++) {
+        if (null === metas[i].getAttribute('name')) {
+            continue;
+        }
+
         if ('bazinga-js-translation' === metas[i].getAttribute('name').toLowerCase()) {
             Translator.locale = metas[i].getAttribute('content').toLowerCase();
 
