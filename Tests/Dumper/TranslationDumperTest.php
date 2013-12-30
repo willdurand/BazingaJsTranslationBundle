@@ -69,12 +69,6 @@ JS
 
         $this->assertEquals(<<<JS
 (function (Translator) {
-    var lang = document.documentElement.lang;
-
-    if ('' !== lang) {
-        Translator.locale = lang;
-    }
-
     Translator.fallback      = 'en';
     Translator.defaultDomain = 'messages';
 })(Translator);

@@ -15,7 +15,6 @@ class ControllerTest extends WebTestCase
 
         $this->assertEquals(<<<JSON
 {
-    "locale": "en",
     "fallback": "en",
     "defaultDomain": "messages",
     "translations": {"en":{"messages":{"hello":"hello"}}}
@@ -34,7 +33,6 @@ JSON
 
         $this->assertEquals(<<<JSON
 {
-    "locale": "en",
     "fallback": "en",
     "defaultDomain": "messages",
     "translations": {"en":{"messages":{"hello":"hello"}},"fr":{"messages":{"hello":"bonjour"}}}
@@ -53,7 +51,6 @@ JSON
 
         $this->assertEquals(<<<JSON
 {
-    "locale": "en",
     "fallback": "en",
     "defaultDomain": "messages",
     "translations": {"en":[]}
@@ -72,7 +69,6 @@ JSON
 
         $this->assertEquals(<<<JSON
 {
-    "locale": "en",
     "fallback": "en",
     "defaultDomain": "messages",
     "translations": {"pt":[]}
@@ -91,7 +87,6 @@ JSON
 
         $this->assertEquals(<<<JS
 (function (Translator) {
-    Translator.locale        = 'en';
     Translator.fallback      = 'en';
     Translator.defaultDomain = 'messages';
     // en
@@ -111,7 +106,6 @@ JS
 
         $this->assertEquals(<<<JS
 (function (Translator) {
-    Translator.locale        = 'en';
     Translator.fallback      = 'en';
     Translator.defaultDomain = 'messages';
     // en
@@ -133,7 +127,6 @@ JS
 
         $this->assertEquals(<<<JS
 (function (Translator) {
-    Translator.locale        = 'en';
     Translator.fallback      = 'en';
     Translator.defaultDomain = 'messages';
     // en
@@ -152,7 +145,6 @@ JS
 
         $this->assertEquals(<<<JS
 (function (Translator) {
-    Translator.locale        = 'en';
     Translator.fallback      = 'en';
     Translator.defaultDomain = 'messages';
     // pt
