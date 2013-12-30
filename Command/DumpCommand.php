@@ -39,8 +39,8 @@ class DumpCommand extends ContainerAwareCommand
     {
         parent::initialize($input, $output);
 
-        $this->targetPath = $input->getOption('target') ?:
-            sprintf('%s/../web/', $this->getContainer()->getParameter('kernel.root_dir'));
+        $this->targetPath = $input->getArgument('target') ?:
+            realpath(sprintf('%s/../web/', $this->getContainer()->getParameter('kernel.root_dir')));
     }
 
     /**
@@ -62,7 +62,7 @@ class DumpCommand extends ContainerAwareCommand
 
         $this
             ->getContainer()
-            ->get('bazinga.exposetranslation.dumper.translation_dumper')
+            ->get('bazinga.jstranslation.translation_dumper')
             ->dump($this->targetPath);
     }
 }
