@@ -59,8 +59,9 @@ var Translator = (function() {
         }
 
         if (undefined === _domain) {
-            for (var i in _domains) {
-                if (undefined !== _messages[_locale][_domains[i]]) {
+            for (var i = 0; i < _domains.length; i++) {
+                if (undefined !== _messages[_locale][_domains[i]] &&
+                    undefined !== _messages[_locale][_domains[i]][id]) {
                     _domain = _domains[i];
 
                     break;
@@ -335,7 +336,7 @@ var Translator = (function() {
      * @api private
      */
     function exists(array, element) {
-        for (var i in array) {
+        for (var i = 0; i < array.length; i++) {
             if (element === array[i]) {
                 return true;
             }
@@ -417,7 +418,7 @@ var Translator = (function() {
 
             _messages[_locale][_domain][id] = message;
 
-            if (!exists(_domains, _domain)) {
+            if (false === exists(_domains, _domain)) {
                 _domains.push(_domain);
             }
 

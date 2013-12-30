@@ -99,18 +99,21 @@ test('transChoice method', function () {
 });
 
 test('domains', function () {
-    expect(6);
+    expect(8);
 
     Translator.add('test', 'yop', 'Domain');
     Translator.add('test', 'lait', 'messages');
     Translator.add('foo.bar', 'baz', 'Domain');
+    Translator.add('note.list.link', 'zur\u00fcck zur Notizliste', 'AcmeDemoBundle');
 
     equal(Translator.trans('test'), 'yop', 'Returns the first guessed message corresponding to the given key');
     equal(Translator.trans('test', {}, 'messages'), 'lait', 'Guesser does not impact basic usage of get');
     equal(Translator.trans('foo.bar'), 'baz', 'Returns the correct guessed message');
     equal(Translator.trans('boo.baz'), 'boo.baz', 'Returns the key as the key cannot be guessed');
+    equal(Translator.trans('foo.bar'), 'baz', 'Returns the correct guessed message');
     equal(Translator.trans('foo.bar', {}, 'Domain'), 'baz', 'Returns the correct guessed message');
-    equal(Translator.trans('foo.bar', {}, 'messages'), 'foo.bar', 'Returns the key as the given domain is wrong');
+    equal(Translator.trans('foo.bar', {}, 'messages'), 'foo.bar', 'Returns the key as it does not exist in the given domain');
+    equal(Translator.trans('note.list.link'), 'zur\u00fcck zur Notizliste');
 });
 
 test('fromJSON', function () {
