@@ -55,7 +55,7 @@ Usage
 First, add the following line to your line. It will load the JS `Translator`:
 
 ``` html
-<script type="text/javascript" src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
+<script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 ```
 
 Then add the current application's locale into your layout, by adding a `lang`
@@ -74,7 +74,7 @@ you want to load.
 Loading translations is a matter of adding a new `script` tag as follows:
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
+<script src="{{ url('bazinga_jstranslation_js') }}"></script>
 ```
 
 This will use the current `locale` and will return the translated messages found
@@ -86,7 +86,7 @@ You can add translations that are bound to a given
 [domain](http://symfony.com/doc/current/components/translation/introduction.html#using-message-domains):
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME' }) }}"></script>
+<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME' }) }}"></script>
 ```
 
 This will use the current `locale` and will return the translated messages found
@@ -98,14 +98,14 @@ You can use the `locales` **query parameter** to get translations in a specific
 language, or to load translation messages in several languages at once:
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=MY_LOCALE"></script>
+<script src="{{ url('bazinga_jstranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=MY_LOCALE"></script>
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.MY_LOCALE.*`
 files of your project.
 
 ``` html
-<script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=fr,en"></script>
+<script src="{{ url('bazinga_jstranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=fr,en"></script>
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.(fr|en).*`
@@ -147,7 +147,7 @@ The command above is useful if you use
     'bundles/bazingajstranslation/js/translator.min.js'
     'translations/config.js'
     'translations/*/*.js' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
+    <script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 ```
 
@@ -304,7 +304,7 @@ If some of your translations are not complete you can enable a fallback for
 untranslated messages:
 
 ``` yaml
-bazinga_expose_translation:
+bazinga_js_translation:
     locale_fallback: en  # It is recommended to set the same value used for the
                          # translator fallback.
 ```
@@ -315,7 +315,7 @@ You can define the default domain used when translation messages are added
 without any given translation domain:
 
 ``` yaml
-bazinga_expose_translation:
+bazinga_js_translation:
     default_domain:       messages
 ```
 
