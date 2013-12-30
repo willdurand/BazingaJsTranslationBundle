@@ -110,7 +110,7 @@ This bundle provides a command to dump the translations files:
 
     php app/console bazinga:js-translation:dump [target]
 
-The optinal `target` argument allows you to override the target directory to
+The optional `target` argument allows you to override the target directory to
 dump JS translation files in.
 
 #### Assetic
