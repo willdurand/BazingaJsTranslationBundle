@@ -1,25 +1,26 @@
 module('Translator', {
-    setup: function () {
+    setup: function() {
         Translator.reset();
     }
 });
 
-test('api definition', function () {
-    expect(4);
+test('api definition', function() {
+    expect(5);
 
     ok(Translator, 'Translator is defined');
     ok($.isFunction(Translator.trans), 'Translator.trans is a function');
     ok($.isFunction(Translator.transChoice), 'Translator.transChoice is a function');
     ok($.isFunction(Translator.add), 'Translator.add is a function');
+    ok($.isFunction(Translator.fromJSON), 'Translator.fromJSON is a function');
 });
 
-test('add method', function () {
+test('add()', function() {
     expect(1);
 
     strictEqual(Translator.add('foo', 'bar'), Translator, 'The add method returns a Translator');
 });
 
-test('trans method', function () {
+test('trans()', function() {
     expect(10);
 
     Translator.add('foo', 'bar', 'Foo');
@@ -50,7 +51,7 @@ test('trans method', function () {
     equal(Translator.trans('Message not in the domain with %arg%', {arg: 'Bar'}), 'Message not in the domain with Bar', 'Message not in the domain with args returns the processed message');
 });
 
-test('transChoice method', function () {
+test('transChoice()', function() {
     expect(24);
 
     Translator.add('foo.plural', '{0} Nothing|[1,Inf[ Many things', 'Foo');
@@ -98,7 +99,7 @@ test('transChoice method', function () {
     equal(Translator.transChoice('{0} Nothing|[1,Inf[ Many things', 0, {}), 'Nothing', 'number = 0 returns the {0} part of the message');
 });
 
-test('domains', function () {
+test('guesses domains if not specified', function() {
     expect(8);
 
     Translator.add('test', 'yop', 'Domain');
@@ -116,8 +117,8 @@ test('domains', function () {
     equal(Translator.trans('note.list.link'), 'zur\u00fcck zur Notizliste');
 });
 
-test('fromJSON', function () {
-    expect(10);
+test('loads data from JSON string', function() {
+    expect(4);
 
     // accepts valid JSON string
     Translator.fromJSON('{ "locale": "en", "translations": { "en": { "messages": { "foo": "bar" } } } }');
@@ -126,8 +127,11 @@ test('fromJSON', function () {
     equal(Translator.trans('foo'), 'bar', 'JSON parser processes messages from valid JSON string');
     equal(Translator.trans('foo', {}, 'messages'), 'bar', 'JSON parser processes messages from valid JSON string');
     equal(Translator.trans('foo', {}, 'messages', 'en'), 'bar', 'JSON parser processes messages from valid JSON string');
+});
 
-    // accepts object literal
+test('loads data from JSON object literal', function() {
+    expect(6);
+
     Translator.fromJSON({
         "locale": "pt",
         "translations": {
@@ -153,7 +157,7 @@ test('fromJSON', function () {
     equal(Translator.fallback, 'en');
 });
 
-test('multiple locales', function () {
+test('deals with multiple locales', function() {
     expect(3);
 
     // Simulate translations/messages/en.js loading
@@ -165,31 +169,30 @@ test('multiple locales', function () {
 
     // Test with locale = fr
     Translator.locale = 'fr';
-    equal(Translator.trans('symfony2.great'), 'J\'aime Symfony2', 'Return translation based on current locale');
+    equal(Translator.trans('symfony2.great'), 'J\'aime Symfony2');
 
     // Test with locale = en
     Translator.locale = 'en';
-    equal(Translator.trans('symfony2.great'), 'I like Symfony2', 'Return translation based on previous locale');
-    equal(Translator.trans('symfony2.powerful'), 'Symfony2 is powerful', 'Return translation based on previous locale');
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
+    equal(Translator.trans('symfony2.powerful'), 'Symfony2 is powerful');
 });
 
-test('fallback', function () {
+test('uses fallback if the given locale does not contain the message', function() {
     expect(4);
 
-    // Simulate translations/messages/en.js loading
     Translator.add('symfony2.great', 'I like Symfony2', 'messages', 'en');
-    Translator.add('symfony2.powerful', 'Symfony2 is powerful', 'messages', 'en');
-
-    // Simulate translations/messages/fr.js loading
-    Translator.add('symfony2.great', 'J\'aime Symfony2', 'messages', 'fr');
-
-    Translator.locale = 'fr';
-    equal(Translator.trans('symfony2.great'), 'J\'aime Symfony2', 'Return translation based on current locale');
 
     Translator.locale = 'en';
-    equal(Translator.trans('symfony2.great'), 'I like Symfony2', 'Return translation based on previous locale');
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
 
     Translator.locale = 'de';
-    equal(Translator.trans('symfony2.great'), 'I like Symfony2', 'Return translation based on previous locale');
-    equal(Translator.trans('symfony2.great'), 'I like Symfony2', 'Return translation based on previous locale', 'pt');
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
+    equal(Translator.trans('symfony2.great', {}, null, 'pt'), 'I like Symfony2');
+    equal(Translator.trans('symfony2.great', {}, undefined, 'pt'), 'I like Symfony2');
+});
+
+test('gets the current locale using the `lang` attribute on the `html` tag', function() {
+    expect(1);
+
+    equal(Translator.locale, 'fr');
 });

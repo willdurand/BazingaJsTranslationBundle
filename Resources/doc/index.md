@@ -51,17 +51,26 @@ Publish assets:
 Usage
 -----
 
-Add this line in your layout:
+First, add the following line to your line. It will load the JS `Translator`:
 
 ``` html
 <script type="text/javascript" src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 ```
 
-Now, you have to specify which [translation
+Then add the current application's locale into your layout, by adding a `lang`
+attribute to the `html` tag:
+
+```html
+<html lang="{{ app.request.locale }}">
+```
+
+Now, you are done with the basic setup, and you can specify the [translation
 files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions)
 you want to load.
 
 ### Load Translations
+
+Loading translations is a matter of adding a new `script` tag as follows:
 
 ``` html
 <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
@@ -72,6 +81,9 @@ in each `messages.CURRENT_LOCALE.*` files of your project.
 
 #### Domains
 
+You can add translations that are bound to a given
+[domain](http://symfony.com/doc/current/components/translation/introduction.html#using-message-domains):
+
 ``` html
 <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME' }) }}"></script>
 ```
@@ -81,8 +93,8 @@ in each `DOMAIN_NAME.CURRENT_LOCALE.*` files of your project.
 
 #### Locales
 
-You can specify a `locales` **query parameter** to get translations in another
-language but also to load translations for different languages at once:
+You can use the `locales` **query parameter** to get translations in a specific
+language, or to load translation messages in several languages at once:
 
 ``` html
 <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain_name': 'DOMAIN_NAME') }}?locales=MY_LOCALE"></script>
@@ -123,16 +135,6 @@ You have to load a `config.js` file, which contains the configuration for the
 JS Translator, then you can load all translation files that have been dumped.
 Note that dumped files don't contain any configuration, they only add messages
 to the JS Translator.
-
-**Important:** as soon as you use dumped translation files, you must include a
-`meta` tag containing the current application's locale:
-
-```html
-<meta name="bazinga-js-translation" content="{{ app.request.locale }}">
-```
-
-This `meta` tag must be added **before** you load the `config.js` file. It is
-used to set the `locale` on the JS `Translator`.
 
 #### Assetic
 
@@ -236,6 +238,10 @@ You can get the current locale by accessing the `locale` attribute:
 Translator.locale;
 // will return the current locale.
 ```
+
+Bsy default, the `locale` is set to the value defined in the `lang` attribute of
+the `html` tag.
+
 
 Examples
 --------

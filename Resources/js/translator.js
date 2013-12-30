@@ -2,7 +2,7 @@
  * William DURAND <william.durand1@gmail.com>
  * MIT Licensed
  */
-var Translator = (function() {
+var Translator = (function(document) {
     "use strict";
 
     var _messages     = {},
@@ -62,7 +62,7 @@ var Translator = (function() {
             _locale = localeFallback;
         }
 
-        if (undefined === _domain) {
+        if (undefined === _domain || null === _domain) {
             for (var i = 0; i < _domains.length; i++) {
                 if (undefined !== _messages[_locale][_domains[i]] &&
                     undefined !== _messages[_locale][_domains[i]][id]) {
@@ -349,6 +349,17 @@ var Translator = (function() {
         return false;
     }
 
+    /**
+     * Get the current application's locale based on the `lang` attribute
+     * on the `html` tag.
+     *
+     * @return {String}     The current application's locale
+     * @api private
+     */
+    function get_current_locale() {
+        return document.documentElement.lang;
+    }
+
     return {
         /**
          * The current locale.
@@ -356,7 +367,7 @@ var Translator = (function() {
          * @type {String}
          * @api public
          */
-        locale: '',
+        locale: get_current_locale(),
 
         /**
          * Fallback locale.
@@ -526,11 +537,12 @@ var Translator = (function() {
          * @api public
          */
         reset: function() {
-            _messages = {};
-            _domains  = [];
+            _messages   = {};
+            _domains    = [];
+            this.locale = get_current_locale();
         }
     };
-})();
+})(document);
 
 if (typeof window.define === 'function' && window.define.amd) {
     window.define('Translator', [], function() {

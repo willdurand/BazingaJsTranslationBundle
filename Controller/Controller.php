@@ -137,7 +137,6 @@ class Controller
             }
 
             $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $_format . '.twig', array(
-                'locale'         => $request->getLocale(),
                 'fallback'       => $this->localeFallback,
                 'defaultDomain'  => $this->defaultDomain,
                 'translations'   => $translations,

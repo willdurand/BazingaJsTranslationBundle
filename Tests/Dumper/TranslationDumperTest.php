@@ -69,18 +69,10 @@ JS
 
         $this->assertEquals(<<<JS
 (function (Translator) {
-    var metas = document.head.getElementsByTagName('meta');
+    var lang = document.documentElement.lang;
 
-    for (var i = 0; i < metas.length; i++) {
-        if (null === metas[i].getAttribute('name')) {
-            continue;
-        }
-
-        if ('bazinga-js-translation' === metas[i].getAttribute('name').toLowerCase()) {
-            Translator.locale = metas[i].getAttribute('content').toLowerCase();
-
-            break;
-        }
+    if ('' !== lang) {
+        Translator.locale = lang;
     }
 
     Translator.fallback      = 'en';
