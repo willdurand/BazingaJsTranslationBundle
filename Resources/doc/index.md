@@ -1,7 +1,8 @@
 JsTranslationBundle
 ===================
 
-A pretty nice way to expose your translated messages to your JavaScript.
+A pretty nice way to expose your Symfony2 translation messages to your client
+applications.
 
 **Important:** This documentation has been written for version `2.0.0` and above
 of this bundle. For version `1.x`, please read:
@@ -227,7 +228,7 @@ Translator.transChoice('apples', 100, {"count" : 100});
 // will return "There are many apples"
 ```
 
-> Read the official doc about
+For more information, read the official documentation  about
 [pluralization](http://symfony.com/doc/current/book/translation.html#pluralization).
 
 #### Get The Locale
@@ -239,7 +240,7 @@ Translator.locale;
 // will return the current locale.
 ```
 
-Bsy default, the `locale` is set to the value defined in the `lang` attribute of
+By default, the `locale` is set to the value defined in the `lang` attribute of
 the `html` tag.
 
 
@@ -254,40 +255,43 @@ foo: "Bar"
 ba:
     bar: "Hello world"
 
-placeholder: "Hello %username% !"
+placeholder: "Hello %username%!"
 ```
 
 ``` yaml
 # app/Resources/translations/messages.fr.yml
-placeholder: "Hello %username%, how are you ?"
+placeholder: "Hello %username%, how are you?"
 ```
 
 You can do:
 
 ``` javascript
 Translator.trans('foo');
-// will return 'Bar' if the current locale is set to 'fr',
-// undefined otherwise.
+// will return 'Bar'
+
+Translator.trans('foo', {}, 'Hello');
+// will return 'Bar'
 
 Translator.trans('ba.bar');
-// will return 'Hello world' if the current locale is set to 'fr',
-// undefined otherwise.
+// will return 'Hello world'
 
-Translator.trans('placeholder');
-// will return 'Hello %username% !' if the current locale is set to 'fr',
-// undefined otherwise.
+Translator.trans('ba.bar', {}, 'Hello');
+// will return 'Hello world'
+
+Translator.trans('placeholder', {} , 'messages');
+// will return 'Hello %username%, how are you?'
+
+Translator.trans('placeholder', {} , 'Hello');
+// will return 'Hello %username%!'
+
+Translator.trans('placeholder', { "username" : "will" }, 'messages');
+// will return 'Hello will, how are you?'
+
+Translator.trans('placeholder', { "username" : "will" }, 'Hello');
+// will return 'Hello will!'
 
 Translator.trans('placeholder', { "username" : "will" });
-// will return 'Hello will !' if the current locale is set to 'fr',
-// undefined otherwise.
-
-Translator.trans('placeholder', { "username" : "will" });
-// will return 'Hello will, how are you ?' if the current locale is set to 'fr',
-// undefined otherwise.
-
-Translator.trans('placeholder');
-// will return 'Hello %username%, how are you ?' if the current locale is set to
-// 'fr', undefined otherwise.
+// will return 'Hello will!' as the `Hello` messages have been loaded before the `messages` ones
 ```
 
 
