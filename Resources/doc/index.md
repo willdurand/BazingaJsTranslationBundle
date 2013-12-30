@@ -119,12 +119,20 @@ This bundle provides a command to dump the translation files:
 The optional `target` argument allows you to override the target directory to
 dump JS translation files in.
 
+You have to load a `config.js` file, which contains the configuration for the
+JS Translator, then you can load all translation files that have been dumped.
+Note that dumped files don't contain any configuration, they only add messages
+to the JS Translator.
+
 **Important:** as soon as you use dumped translation files, you must include a
 `meta` tag containing the current application's locale:
 
 ```html
 <meta name="bazinga-js-translation" content="{{ app.request.locale }}">
 ```
+
+This `meta` tag must be added **before** you load the `config.js` file. It is
+used to set the `locale` on the JS `Translator`.
 
 #### Assetic
 
@@ -139,11 +147,6 @@ The command above is useful if you use
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
 ```
-
-You have to load the `config.js` file, which contains the configuration for the
-JS Translator, then you can load all translation files that have been dumped.
-Note that dumped files don't contain any configuration, they only add messages
-to the JS Translator.
 
 In the example above, all translation files from your entire project will be
 loaded. Of course you can load specific domains: `translations/admin/*.js`.
