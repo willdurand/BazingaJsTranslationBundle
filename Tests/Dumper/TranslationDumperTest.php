@@ -20,7 +20,7 @@ class TranslationDumperTest extends WebTestCase
         $client    = static::createClient();
         $container = $client->getContainer();
 
-        $this->target     = sys_get_temp_dir() . '/bazinga/js-translation-bundle/';
+        $this->target     = sys_get_temp_dir() . '/bazinga/js-translation-bundle';
         $this->filesystem = $container->get('filesystem');
         $this->dumper     = $container->get('bazinga.jstranslation.translation_dumper');
 

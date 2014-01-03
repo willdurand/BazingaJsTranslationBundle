@@ -130,7 +130,8 @@ This bundle provides a command to dump the translation files:
     php app/console bazinga:js-translation:dump [target]
 
 The optional `target` argument allows you to override the target directory to
-dump JS translation files in.
+dump JS translation files in. By default, it generates files in the `web/js/`
+directory.
 
 You have to load a `config.js` file, which contains the configuration for the
 JS Translator, then you can load all translation files that have been dumped.
@@ -145,14 +146,14 @@ The command above is useful if you use
 ```twig
 {% javascripts
     'bundles/bazingajstranslation/js/translator.min.js'
-    'translations/config.js'
-    'translations/*/*.js' %}
+    'js/translations/config.js'
+    'js/translations/*/*.js' %}
     <script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 ```
 
 In the example above, all translation files from your entire project will be
-loaded. Of course you can load specific domains: `translations/admin/*.js`.
+loaded. Of course you can load specific domains: `js/translations/admin/*.js`.
 
 ### The JS Translator
 

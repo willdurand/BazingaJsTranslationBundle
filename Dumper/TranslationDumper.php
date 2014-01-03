@@ -89,7 +89,7 @@ class TranslationDumper
      *
      * @param string $target Target directory.
      */
-    public function dump($target = 'web')
+    public function dump($target = 'web/js')
     {
         $route         = $this->router->getRouteCollection()->get('bazinga_jstranslation_js');
         $requirements  = $route->getRequirements();
@@ -108,10 +108,13 @@ class TranslationDumper
     private function dumpConfig($route, array $formats, $target)
     {
         foreach ($formats as $format) {
-            $file = sprintf('%s/%s', $target, strtr($route->getPattern(), array(
-                '{domain}'  => 'config',
-                '{_format}' => $format
-            )));
+            $file = sprintf('%s/%s',
+                $target,
+                strtr($route->getPattern(), array(
+                    '{domain}'  => 'config',
+                    '{_format}' => $format
+                ))
+            );
 
             $this->filesystem->mkdir(dirname($file), 0755);
 
@@ -144,7 +147,7 @@ class TranslationDumper
                     $file = sprintf('%s/%s',
                         $target,
                         strtr($route->getPattern(), array(
-                            '{domain}'  => $domain . '/' . $locale,
+                            '{domain}'  => sprintf('%s/%s', $domain, $locale),
                             '{_format}' => $format
                         ))
                     );
