@@ -153,4 +153,22 @@ JS
 JS
         , $response->getContent());
     }
+
+    public function testGetTranslationsWithNumericKeys()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/numerics.json?locales=en');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en":{"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+}
+
+JSON
+        , $response->getContent());
+    }
 }

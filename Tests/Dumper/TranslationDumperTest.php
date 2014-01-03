@@ -45,6 +45,8 @@ class TranslationDumperTest extends WebTestCase
             'messages/fr.json',
             'foo/en.js',
             'foo/en.json',
+            'numerics/en.js',
+            'numerics/en.json',
         ) as $file) {
             $this->assertFileExists($this->target . '/translations/' . $file);
         }
@@ -100,5 +102,13 @@ JSON
 
 JSON
         , file_get_contents($this->target . '/translations/config.json'));
+
+        $this->assertEquals(<<<JSON
+{
+    "translations": {"en":{"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+}
+
+JSON
+        , file_get_contents($this->target . '/translations/numerics/en.json'));
     }
 }

@@ -128,7 +128,7 @@ class Controller
                         $catalogue   = $this->loaders[$extension]
                             ->load($file, $locale, $domain);
 
-                        $translations[$locale][$domain] = array_merge_recursive(
+                        $translations[$locale][$domain] = array_replace_recursive(
                             $translations[$locale][$domain],
                             $catalogue->all($domain)
                         );
