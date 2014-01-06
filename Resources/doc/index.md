@@ -16,10 +16,10 @@ Installation
 
 Install the bundle:
 
-    composer require "willdurand/expose-translation-bundle:@stable"
+    composer require "willdurand/js-translation-bundle:@stable"
 
 **Protip:** you should browse the
-[`willdurand/expose-translation-bundle`](https://packagist.org/packages/willdurand/expose-translation-bundle)
+[`willdurand/js-translation-bundle`](https://packagist.org/packages/willdurand/js-translation-bundle)
 page to choose a stable version to use, avoid the `@stable` meta constraint.
 
 Register the bundle in `app/AppKernel.php`:

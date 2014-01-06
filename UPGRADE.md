@@ -1,6 +1,9 @@
 From 1.x to 2.0
 ===============
 
+* The package name has been rename from `willdurand/expose-translation-bundle`
+  to `willdurand/js-translation-bundle`.
+
 * This bundle now requires Symfony `2.3` and above.
 
 * The bundle has been renamed from `BazingaExposeTranslationBundle` to

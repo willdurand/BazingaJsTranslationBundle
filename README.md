@@ -4,9 +4,9 @@ JsTranslationBundle
 [![Build
 Status](https://secure.travis-ci.org/willdurand/BazingaJsTranslationBundle.png?branch=master)](https://travis-ci.org/willdurand/BazingaJsTranslationBundle)
 [![Total
-Downloads](https://poser.pugx.org/willdurand/expose-translation-bundle/downloads.png)](https://packagist.org/packages/willdurand/expose-translation-bundle)
+Downloads](https://poser.pugx.org/willdurand/js-translation-bundle/downloads.png)](https://packagist.org/packages/willdurand/js-translation-bundle)
 [![Latest Stable
-Version](https://poser.pugx.org/willdurand/expose-translation-bundle/v/stable.png)](https://packagist.org/packages/willdurand/expose-translation-bundle)
+Version](https://poser.pugx.org/willdurand/js-translation-bundle/v/stable.png)](https://packagist.org/packages/willdurand/js-translation-bundle)
 
 A pretty nice way to expose your Symfony2 translation messages to your client
 applications.
