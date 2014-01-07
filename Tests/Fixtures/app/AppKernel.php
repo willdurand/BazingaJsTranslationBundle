@@ -53,12 +53,12 @@ class AppKernel extends Kernel
 
     public function getCacheDir()
     {
-        return sys_get_temp_dir().'/'.Kernel::VERSION.'/bazinga-expose-translation/cache/'.$this->environment;
+        return sys_get_temp_dir().'/'.Kernel::VERSION.'/bazinga-js-translation/cache/'.$this->environment;
     }
 
     public function getLogDir()
     {
-        return sys_get_temp_dir().'/'.Kernel::VERSION.'/bazinga-expose-translation/logs';
+        return sys_get_temp_dir().'/'.Kernel::VERSION.'/bazinga-js-translation/logs';
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)

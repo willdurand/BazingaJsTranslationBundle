@@ -1,5 +1,5 @@
 {
-    "name": "willdurand/expose-translation-bundle",
+    "name": "willdurand/js-translation-bundle",
     "description": "A pretty nice way to expose your translation messages to your JavaScript.",
     "keywords": [ "translation", "javascript", "symfony" ],
     "type": "symfony-bundle",
@@ -18,6 +18,9 @@
     "require-dev": {
         "symfony/yaml": "~2.1",
         "symfony/browser-kit": "~2.1"
+    },
+    "replace": {
+        "willdurand/expose-translation-bundle": "1.2.*"
     },
     "autoload": {
         "psr-0": { "Bazinga\\ExposeTranslationBundle": "" }
