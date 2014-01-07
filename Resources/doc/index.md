@@ -6,7 +6,7 @@ applications.
 
 **Important:** This documentation has been written for version `2.0.0` and above
 of this bundle. For version `1.x`, please read:
-[https://github.com/willdurand/BazingaJsTranslationBundle/blob/1.2.0/Resources/doc/index.md](https://github.com/willdurand/BazingaJsTranslationBundle/blob/1.2.0/Resources/doc/index.md).
+[https://github.com/willdurand/BazingaJsTranslationBundle/blob/1.2.1/Resources/doc/index.md](https://github.com/willdurand/BazingaJsTranslationBundle/blob/1.2.1/Resources/doc/index.md).
 Also, you might be interested in this [UPGRADE
 guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGRADE.md).
 
