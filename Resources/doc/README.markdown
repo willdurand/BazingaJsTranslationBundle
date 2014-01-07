@@ -7,7 +7,7 @@ A pretty nice way to expose your translated messages to your JavaScript.
 
 Install the bundle:
 
-    php composer.phar require willdurand/expose-translation-bundle
+    php composer.phar require willdurand/js-translation-bundle
 
 Register the bundle in `app/AppKernel.php`:
 
