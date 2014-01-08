@@ -20,7 +20,6 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
 
         $builder->root('bazinga_js_translation')
-            ->fixXmlConfig('default_domain')
             ->children()
                 ->scalarNode('locale_fallback')->defaultValue('en')->end()
                 ->scalarNode('default_domain')->defaultValue('messages')->end()
