@@ -420,7 +420,7 @@ var Translator = (function(document) {
          * @api public
          */
         add: function(id, message, domain, locale) {
-            var _locale = locale || this.locale || this.fallback,
+            var _locale = locale || this.locale || this.fallback,
                 _domain = domain || this.defaultDomain;
 
             if (!_messages[_locale]) {
