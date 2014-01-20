@@ -131,3 +131,6 @@ parameter:
 ```html
 <html lang="{{ app.request.locale }}">
 ```
+
+* The route's placeholder named `domain_name` has gone, it is now named
+  `domain`.
