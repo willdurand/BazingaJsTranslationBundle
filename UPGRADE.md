@@ -124,3 +124,10 @@ parameter:
   messages to the JS `Translator`). Two special files, `config.js` and
   `config.json`, are now generated and contain the configuration for the JS
   `Translator`.
+
+* You should add the current application's locale into your layout, by adding
+  a lang attribute to the html tag:
+
+```html
+<html lang="{{ app.request.locale }}">
+```
