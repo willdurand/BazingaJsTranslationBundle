@@ -2,7 +2,7 @@
  * William DURAND <william.durand1@gmail.com>
  * MIT Licensed
  */
-var Translator = (function(document) {
+var Translator = (function(document, undefined) {
     "use strict";
 
     var _messages     = {},
@@ -31,7 +31,6 @@ var Translator = (function(document) {
 
             if (_r.test(message)) {
                 message = message.replace(_r, placeholders[_i]);
-                delete(placeholders[_i]);
             }
         }
 
@@ -54,8 +53,8 @@ var Translator = (function(document) {
         var _locale = locale || currentLocale || localeFallback,
             _domain = domain;
 
-        if (undefined === _messages[_locale]) {
-            if (undefined === _messages[localeFallback]) {
+        if (undefined == _messages[_locale]) {
+            if (undefined == _messages[localeFallback]) {
                 return id;
             }
 
@@ -64,8 +63,8 @@ var Translator = (function(document) {
 
         if (undefined === _domain || null === _domain) {
             for (var i = 0; i < _domains.length; i++) {
-                if (undefined !== _messages[_locale][_domains[i]] &&
-                    undefined !== _messages[_locale][_domains[i]][id]) {
+                if (undefined != _messages[_locale][_domains[i]] &&
+                    undefined != _messages[_locale][_domains[i]][id]) {
                     _domain = _domains[i];
 
                     break;
@@ -73,8 +72,8 @@ var Translator = (function(document) {
             }
         }
 
-        if (undefined !== _messages[_locale][_domain] &&
-            undefined !== _messages[_locale][_domain][id]) {
+        if (undefined != _messages[_locale][_domain] &&
+            undefined != _messages[_locale][_domain][id]) {
             return _messages[_locale][_domain][id];
         }
 
@@ -173,9 +172,9 @@ var Translator = (function(document) {
      */
     function convert_number(number) {
         if ('-Inf' === number) {
-            return Math.log(0);
+            return Number.NEGATIVE_INFINITY;
         } else if ('+Inf' === number || 'Inf' === number) {
-            return -Math.log(0);
+            return Number.POSITIVE_INFINITY;
         }
 
         return parseInt(number, 10);
@@ -485,7 +484,7 @@ var Translator = (function(document) {
 
             var _number  = parseInt(number, 10);
 
-            if (undefined !== _message && !isNaN(_number)) {
+            if (undefined != _message && !isNaN(_number)) {
                 _message = pluralize(
                     _message,
                     _number,
@@ -542,7 +541,7 @@ var Translator = (function(document) {
             this.locale = get_current_locale();
         }
     };
-})(document);
+})(document, undefined);
 
 if (typeof window.define === 'function' && window.define.amd) {
     window.define('Translator', [], function() {
