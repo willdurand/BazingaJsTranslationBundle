@@ -7,9 +7,9 @@ var Translator = (function(document, undefined) {
 
     var _messages     = {},
         _domains      = [],
-        _sPluralRegex = /^\w+\: +(.+)$/,
-        _cPluralRegex = /^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/,
-        _iPluralRegex = /^\s*(\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/;
+        _sPluralRegex = new RegExp(/^\w+\: +(.+)$/),
+        _cPluralRegex = new RegExp(/^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/),
+        _iPluralRegex = new RegExp(/^\s*(\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/);
 
     /**
      * Replace placeholders in given message.
@@ -116,14 +116,12 @@ var Translator = (function(document, undefined) {
 
         for (_p in _parts) {
             var _part = _parts[_p];
-            var _rc = new RegExp(_cPluralRegex);
-            var _rs = new RegExp(_sPluralRegex);
 
-            if (_rc.test(_part)) {
-                _matches = _part.match(_rc);
+            if (_cPluralRegex.test(_part)) {
+                _matches = _part.match(_cPluralRegex);
                 _explicitRules[_matches[0]] = _matches[_matches.length - 1];
-            } else if (_rs.test(_part)) {
-                _matches = _part.match(_rs);
+            } else if (_sPluralRegex.test(_part)) {
+                _matches = _part.match(_sPluralRegex);
                 _standardRules.push(_matches[1]);
             } else {
                 _standardRules.push(_part);
@@ -131,10 +129,8 @@ var Translator = (function(document, undefined) {
         }
 
         for (_e in _explicitRules) {
-            var _r = new RegExp(_iPluralRegex);
-
-            if (_r.test(_e)) {
-                _matches = _e.match(_r);
+            if (_iPluralRegex.test(_e)) {
+                _matches = _e.match(_iPluralRegex);
 
                 if (_matches[1]) {
                     var _ns = _matches[2].split(','),
