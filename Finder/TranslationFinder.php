@@ -109,9 +109,9 @@ class TranslationFinder
 
             if (file_exists($dir = dirname($r->getFilename()).'/../../Resources/translations')) {
                 $locations[] = $dir;
-            } else {
+            } elseif (file_exists($dir = dirname($r->getFilename()).'/../Resources/translations')) {
                 // Symfony 2.4 and above
-                $locations[] = dirname($r->getFilename()).'/../Resources/translations';
+                $locations[] = $dir;
             }
         }
 
