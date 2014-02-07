@@ -352,7 +352,7 @@ var Translator = (function(document, undefined) {
      * @api private
      */
     function get_current_locale() {
-        return document.documentElement.lang;
+        return document.documentElement.lang.replace('-', '_');
     }
 
     return {
