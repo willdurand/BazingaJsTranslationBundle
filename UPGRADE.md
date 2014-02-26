@@ -14,7 +14,7 @@ From 1.x to 2.0
 
 ```
 // before
-new \Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBunde()
+new \Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle()
 
 // after
 new \Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle()
