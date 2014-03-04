@@ -52,7 +52,7 @@ Publish assets:
 Usage
 -----
 
-First, add the following line to your line. It will load the JS `Translator`:
+First, add the following line to your template. It will load the JS `Translator`:
 
 ``` html
 <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
@@ -90,7 +90,7 @@ You can add translations that are bound to a given
 ```
 
 This will use the current `locale` and will return the translated messages found
-in each `DOMAIN_NAME.CURRENT_LOCALE.*` files of your project.
+in each `DOMAIN_NAME.CURRENT_LOCALE.*` file of your project.
 
 #### Locales
 
@@ -109,7 +109,7 @@ files of your project.
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.(fr|en).*`
-files of your project.
+file of your project.
 
 #### Loading via JSON
 
