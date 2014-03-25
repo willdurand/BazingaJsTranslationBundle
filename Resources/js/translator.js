@@ -54,11 +54,22 @@ var Translator = (function(document, undefined) {
             _domain = domain;
 
         if (undefined == _messages[_locale]) {
-            if (undefined == _messages[localeFallback]) {
-                return id;
+            
+            var localeShort = null;
+            
+            if(_locale.indexOf("_") > 0) 
+                var localeShort = _locale.substr(0, _locale.indexOf("_"));
+            
+            if (localeShort && (undefined != _messages[localeShort])) {
+                _locale = localeShort;
+            }    
+            else {
+                if (undefined == _messages[localeFallback]) {
+                    return id;
+                }
+    
+                _locale = localeFallback;
             }
-
-            _locale = localeFallback;
         }
 
         if (undefined === _domain || null === _domain) {
