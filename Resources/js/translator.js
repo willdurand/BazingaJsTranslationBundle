@@ -63,8 +63,8 @@ var Translator = (function(document, undefined) {
 
         if (undefined === _domain || null === _domain) {
             for (var i = 0; i < _domains.length; i++) {
-                if (undefined != _messages[_locale][_domains[i]] &&
-                    undefined != _messages[_locale][_domains[i]][id]) {
+                if (has_message(_locale, _domains[i], id) ||
+                    has_message(localeFallback, _domains[i], id)) {
                     _domain = _domains[i];
 
                     break;
@@ -72,12 +72,42 @@ var Translator = (function(document, undefined) {
             }
         }
 
-        if (undefined != _messages[_locale][_domain] &&
-            undefined != _messages[_locale][_domain][id]) {
+        if (has_message(_locale, _domain, id)) {
             return _messages[_locale][_domain][id];
         }
 
+        if (has_message(localeFallback, _domain, id)) {
+            return _messages[localeFallback][_domain][id];
+        }
+
         return id;
+    }
+
+    /**
+     * Just look for a specific locale / domain / id if the message is available,
+     * helpfull for message availability validation
+     *
+     * @param {String} locale           The locale
+     * @param {String} domain           The domain for the message
+     * @param {String} id               The message id
+     * @return {Boolean}                Return `true` if message is available,
+     *                      `               false` otherwise
+     * @api private
+     */
+    function has_message(locale, domain, id) {
+        if (undefined == _messages[locale]) {
+            return false;
+        }
+
+        if (undefined == _messages[locale][domain]) {
+            return false;
+        }
+
+        if (undefined == _messages[locale][domain][id]) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
