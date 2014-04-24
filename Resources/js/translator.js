@@ -63,8 +63,8 @@ var Translator = (function(document, undefined) {
 
         if (undefined === _domain || null === _domain) {
             for (var i = 0; i < _domains.length; i++) {
-                if (is_available_message(_locale, _domains[i], id) ||
-                    is_available_message(localeFallback, _domains[i], id)) {
+                if (has_message(_locale, _domains[i], id) ||
+                    has_message(localeFallback, _domains[i], id)) {
                     _domain = _domains[i];
 
                     break;
@@ -72,9 +72,11 @@ var Translator = (function(document, undefined) {
             }
         }
 
-        if (is_available_message(_locale, _domain, id)) {
+        if (has_message(_locale, _domain, id)) {
             return _messages[_locale][_domain][id];
-        } else if (is_available_message(localeFallback, _domain, id)) {
+        }
+
+        if (has_message(localeFallback, _domain, id)) {
             return _messages[localeFallback][_domain][id];
         }
 
@@ -92,7 +94,7 @@ var Translator = (function(document, undefined) {
      *                      `               false` otherwise
      * @api private
      */
-    function is_available_message(locale, domain, id) {
+    function has_message(locale, domain, id) {
         if (undefined == _messages[locale]) {
             return false;
         }
