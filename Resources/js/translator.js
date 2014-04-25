@@ -114,7 +114,7 @@ var Translator = (function(document, undefined) {
             _parts         = message.split(Translator.pluralSeparator),
             _matches       = [];
 
-        for (_p in _parts) {
+        for (_p = 0; _p < _parts.length; _p++) {
             var _part = _parts[_p];
 
             if (_cPluralRegex.test(_part)) {

@@ -52,7 +52,7 @@ test('trans()', function() {
 });
 
 test('transChoice()', function() {
-    expect(24);
+    expect(26);
 
     Translator.add('foo.plural', '{0} Nothing|[1,Inf[ Many things', 'Foo');
     Translator.add('foo.plural.with.args', '{0} Nothing|{1} One thing|[2,Inf[ %count% things', 'Foo');
@@ -60,6 +60,7 @@ test('transChoice()', function() {
     Translator.add('complex.plural', '{0} There is no apples|[20,Inf] There are many apples|There is one apple|a_few: There are %count% apples', 'Foo');
     Translator.add('foo.plural.space.before.interval', ' {0} Nothing| [1,Inf[ Many things', 'Foo');
     Translator.add('foo.plural.without.space', '{0}Nothing|[1,Inf[Many things', 'Foo');
+    Translator.add('foo.single', 'Things', 'Foo');
 
     // Basic
     equal(Translator.transChoice('foo.plural', null, {}, 'Foo'), '{0} Nothing|[1,Inf[ Many things', 'Returns the correct message for the given key');
@@ -94,6 +95,10 @@ test('transChoice()', function() {
     equal(Translator.transChoice('foo.plural.without.space', 0, {}, 'Foo'), 'Nothing', 'number = 0 returns the {0} part of the message');
     equal(Translator.transChoice('foo.plural.without.space', 1, {}, 'Foo'), 'Many things', 'number = 1 returns the [1,Inf[ part of the message');
     equal(Translator.transChoice('foo.plural.without.space', 100, {}, 'Foo'), 'Many things', 'number = 100 returns the [1,Inf[ part of the message');
+
+    // Fallback to default translation
+    equal(Translator.transChoice('foo.single', 1, {}, 'Foo'), 'Things', 'number = 1 returns the single available translation');
+    equal(Translator.transChoice('foo.single', 2, {}, 'Foo'), 'Things', 'number = 2 returns the single available translation');
 
     // Message not in a domain with pluralization
     equal(Translator.transChoice('{0} Nothing|[1,Inf[ Many things', 0, {}), 'Nothing', 'number = 0 returns the {0} part of the message');
