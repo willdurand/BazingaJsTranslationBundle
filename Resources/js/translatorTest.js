@@ -196,6 +196,22 @@ test('uses fallback if the given locale does not contain the message', function(
     equal(Translator.trans('symfony2.great', {}, undefined, 'pt'), 'I like Symfony2');
 });
 
+test('retry on fallback when locale exist but not the domain', function() {
+    expect(5);
+
+    Translator.add('symfony2.great', 'I like Symfony2', 'messages', 'en');
+    Translator.add('symfony2.domain', 'Just creating another default domain', 'domain', 'de');
+
+    Translator.locale = 'en';
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
+
+    Translator.locale = 'de';
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
+    equal(Translator.trans('symfony2.domain'), 'Just creating another default domain');
+    equal(Translator.trans('symfony2.great', {}, null, 'pt'), 'I like Symfony2');
+    equal(Translator.trans('symfony2.great', {}, undefined, 'pt'), 'I like Symfony2');
+});
+
 test('gets the current locale using the `lang` attribute on the `html` tag', function() {
     expect(1);
 
