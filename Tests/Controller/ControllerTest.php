@@ -171,4 +171,30 @@ JS
 JSON
         , $response->getContent());
     }
+
+    public function testGetTranslationsWithPathTraversalAttack()
+    {
+        $client  = static::createClient();
+
+        // 1. `evil.js` is not accessible
+        $crawler  = $client->request('GET', '/translations?locales=randomstring/../../evil');
+        $response = $client->getResponse();
+
+        $this->assertEquals(404, $response->getStatusCode());
+
+        // 2. let's create a random directory with a randome js file
+        $crawler  = $client->request('GET', '/translations?locales=randomstring/something');
+        $response = $client->getResponse();
+
+        $this->assertFileExists(sprintf('%s/%s/messages.randomstring/something.js',
+            $client->getKernel()->getCacheDir(),
+            'bazinga-js-translation'
+        ));
+
+        // 3. path traversal attack
+        $crawler  = $client->request('GET', '/translations?locales=randomstring/../../evil');
+        $response = $client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
 }
