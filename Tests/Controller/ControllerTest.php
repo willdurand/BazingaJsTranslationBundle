@@ -183,19 +183,21 @@ JSON
         $this->assertEquals(404, $response->getStatusCode());
 
         // 2. let's create a random directory with a randome js file
+        // Fixing this issue = not creating any file here
         $crawler  = $client->request('GET', '/translations?locales=randomstring/something');
         $response = $client->getResponse();
 
-        $this->assertFileExists(sprintf('%s/%s/messages.randomstring/something.js',
+        $this->assertFileNotExists(sprintf('%s/%s/messages.randomstring/something.js',
             $client->getKernel()->getCacheDir(),
             'bazinga-js-translation'
         ));
 
         // 3. path traversal attack
+        // Fixing this issue = 404
         $crawler  = $client->request('GET', '/translations?locales=randomstring/../../evil');
         $response = $client->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     public function testGetTranslationsWithLocaleInjection()
