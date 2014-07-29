@@ -13,7 +13,8 @@
     "require": {
         "symfony/framework-bundle": "~2.3",
         "symfony/finder": "~2.3",
-        "symfony/console": "~2.3"
+        "symfony/console": "~2.3",
+        "symfony/intl": "~2.3"
     },
     "require-dev": {
         "symfony/yaml": "~2.3",

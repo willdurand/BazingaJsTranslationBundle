@@ -197,4 +197,22 @@ JSON
 
         $this->assertEquals(200, $response->getStatusCode());
     }
+
+    public function testGetTranslationsWithLocaleInjection()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=foo%0Auncommented%20code;');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": []
+}
+
+JSON
+        , $response->getContent());
+    }
 }

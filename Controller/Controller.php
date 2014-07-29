@@ -173,6 +173,10 @@ class Controller
             $locales = array($request->getLocale());
         }
 
+        $locales = array_filter($locales, function ($locale) {
+            return strcasecmp(\Locale::getDisplayLanguage($locale), $locale) !== 0;
+        });
+
         return array_unique(array_map(function ($locale) {
             return trim($locale);
         }, $locales));
