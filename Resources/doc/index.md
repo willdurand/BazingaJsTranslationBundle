@@ -98,14 +98,14 @@ You can use the `locales` **query parameter** to get translations in a specific
 language, or to load translation messages in several languages at once:
 
 ``` html
-<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME') }}?locales=MY_LOCALE"></script>
+<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME' }) }}?locales=MY_LOCALE"></script>
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.MY_LOCALE.*`
 files of your project.
 
 ``` html
-<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME') }}?locales=fr,en"></script>
+<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME' }) }}?locales=fr,en"></script>
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.(fr|en).*`
