@@ -127,11 +127,14 @@ Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 This bundle provides a command to dump the translation files:
 
-    php app/console bazinga:js-translation:dump [target]
+    php app/console bazinga:js-translation:dump [--domains="..."] [target]
 
 The optional `target` argument allows you to override the target directory to
 dump JS translation files in. By default, it generates files in the `web/js/`
 directory.
+
+The option --domains is a comma separated list of domains to dump. Default is
+all domains.
 
 You have to load a `config.js` file, which contains the configuration for the
 JS Translator, then you can load all translation files that have been dumped.

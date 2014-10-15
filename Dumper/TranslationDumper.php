@@ -88,8 +88,9 @@ class TranslationDumper
      * Dump all translation files.
      *
      * @param string $target Target directory.
+     * @param array $targetDomains an arrray of domains to dump, empty means all
      */
-    public function dump($target = 'web/js')
+    public function dump($target = 'web/js', array $targetDomains = [])
     {
         $route         = $this->router->getRouteCollection()->get('bazinga_jstranslation_js');
         $requirements  = $route->getRequirements();
@@ -102,7 +103,7 @@ class TranslationDumper
         $this->filesystem->remove($target. '/' . current($parts));
 
         $this->dumpConfig($route, $formats, $target);
-        $this->dumpTranslations($route, $formats, $target);
+        $this->dumpTranslations($route, $formats, $target, $targetDomains);
     }
 
     private function dumpConfig($route, array $formats, $target)
@@ -132,10 +133,13 @@ class TranslationDumper
         }
     }
 
-    private function dumpTranslations($route, array $formats, $target)
+    private function dumpTranslations($route, array $formats, $target, $targetDomains)
     {
         foreach ($this->getTranslations() as $locale => $domains) {
             foreach ($domains as $domain => $translations) {
+                if ($targetDomains && !in_array($domain, $targetDomains)) {
+                    continue;
+                }
                 foreach ($formats as $format) {
                     $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $format . '.twig', array(
                         'translations'   => array($locale => array(

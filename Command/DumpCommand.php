@@ -4,6 +4,7 @@ namespace Bazinga\Bundle\JsTranslationBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
@@ -13,7 +14,7 @@ use Symfony\Component\Console\Output\Output;
  */
 class DumpCommand extends ContainerAwareCommand
 {
-    private $targetPath;
+    private $targetPath, $targetDomains;
 
     /**
      * {@inheritDoc}
@@ -28,6 +29,13 @@ class DumpCommand extends ContainerAwareCommand
                     InputArgument::OPTIONAL,
                     'Override the target directory to dump JS translation files in.'
                 ),
+                new InputOption(
+                    'domains',
+                    null,
+                    InputOption::VALUE_REQUIRED,
+                    'Comma separated list of domains to dump (no spaces allowed), default: all',
+                    array()
+                ),
             ))
             ->setDescription('Dumps all JS translation files to the filesystem');
     }
@@ -41,6 +49,7 @@ class DumpCommand extends ContainerAwareCommand
 
         $this->targetPath = $input->getArgument('target') ?:
             realpath(sprintf('%s/../web/js', $this->getContainer()->getParameter('kernel.root_dir')));
+        $this->targetDomains = is_null($input->getOption('domains')) ? [] : explode(',', $input->getOption('domains'));
     }
 
     /**
@@ -63,6 +72,6 @@ class DumpCommand extends ContainerAwareCommand
         $this
             ->getContainer()
             ->get('bazinga.jstranslation.translation_dumper')
-            ->dump($this->targetPath);
+            ->dump($this->targetPath, $this->targetDomains);
     }
 }

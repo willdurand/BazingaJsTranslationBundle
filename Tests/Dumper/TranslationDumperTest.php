@@ -36,6 +36,15 @@ class TranslationDumperTest extends WebTestCase
 
     public function testDump()
     {
+        $this->dumper->dump($this->target, array('foo'));
+        foreach (array(
+            'foo/en.js',
+            'foo/en.json',
+        ) as $file) {
+            $this->assertFileExists($this->target . '/translations/' . $file);
+        }
+        $this->assertFileNotExists($this->target . '/translations/messages/en.js');
+        
         $this->dumper->dump($this->target);
 
         foreach (array(
