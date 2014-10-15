@@ -133,7 +133,7 @@ The optional `target` argument allows you to override the target directory to
 dump JS translation files in. By default, it generates files in the `web/js/`
 directory.
 
-The option --domains is a comma separated list of domains to dump. Default is
+The option `--domains` is a comma separated list of domains to dump. Default is
 all domains.
 
 You have to load a `config.js` file, which contains the configuration for the
