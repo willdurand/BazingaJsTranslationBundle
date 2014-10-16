@@ -82,6 +82,10 @@ var Translator = (function(document, undefined) {
             var _last = _parts[_parts.length - 1];
             var _lastLength = _last.length;
 
+            if (1 == _parts.length) {
+                break;
+            }
+
             _locale = _locale.substring(0, _length - (_lastLength + 1));
 
             if (has_message(_locale, _domain, id)) {
