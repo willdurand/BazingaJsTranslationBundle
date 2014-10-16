@@ -217,3 +217,57 @@ test('gets the current locale using the `lang` attribute on the `html` tag', fun
 
     equal(Translator.locale, 'fr');
 });
+
+test('finds longer locale names', function() {
+    expect(1);
+
+    Translator.add('symfony2.powerful', 'Symfony2 is powerful', 'messages', 'de_DE');
+
+    Translator.locale = 'de_DE';
+    equal(Translator.trans('symfony2.powerful'), 'Symfony2 is powerful');
+});
+
+test('searches in part domain, if not exists in full domain', function() {
+    expect(2);
+
+    Translator.add('symfony2.powerful', 'Ich liebe Symfony2', 'messages', 'de_DE');
+    Translator.add('symfony2.great', 'Ich mag Symfony2', 'messages', 'de');
+    Translator.add('symfony2.great', 'I like Symfony2', 'messages', 'en');
+
+    Translator.locale = 'en';
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
+
+    Translator.locale = 'de_DE';
+    equal(Translator.trans('symfony2.great'), 'Ich mag Symfony2');
+});
+
+test('searches in fallback domain, if not exists in full or part domain', function() {
+    expect(2);
+
+    Translator.fromJSON({
+        "fallback": "en"
+    });
+
+    Translator.add('symfony2.powerful', 'Symfony2 ist gigantisch', 'messages', 'de_DE');
+    Translator.add('symfony2.powerful', 'Symfony2 ist groß', 'messages', 'de');
+    Translator.add('symfony2.great', 'I like Symfony2', 'messages', 'en');
+
+    Translator.locale = 'en';
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
+
+    Translator.locale = 'de_DE';
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
+});
+
+test('works with given optional parameters', function() {
+    expect(2);
+
+    Translator.add('symfony2.great', 'Symfony2 ist gigantisch', 'messages', 'de_DE');
+    Translator.add('symfony2.great', 'Symfony2 ist groß', 'messages', 'de');
+    Translator.add('symfony2.great', 'I like Symfony2', 'messages', 'en');
+
+    Translator.locale = 'en';
+    equal(Translator.trans('symfony2.great'), 'I like Symfony2');
+
+    equal(Translator.trans('symfony2.great', {}, 'messages', 'de_DE'), 'Symfony2 ist gigantisch');
+});

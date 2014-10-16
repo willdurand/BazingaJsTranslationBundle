@@ -76,6 +76,19 @@ var Translator = (function(document, undefined) {
             return _messages[_locale][_domain][id];
         }
 
+        while ( _locale.length > 2 ) {
+            var _length = _locale.length;
+            var _parts = _locale.split(/[\s_]+/);
+            var _last = _parts[_parts.length - 1];
+            var _lastLength = _last.length;
+
+            _locale = _locale.substring(0, _length - (_lastLength + 1));
+
+            if (has_message(_locale, _domain, id)) {
+                return _messages[_locale][_domain][id];
+            }
+        }
+
         if (has_message(localeFallback, _domain, id)) {
             return _messages[localeFallback][_domain][id];
         }
