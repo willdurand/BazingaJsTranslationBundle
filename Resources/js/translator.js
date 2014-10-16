@@ -76,6 +76,25 @@ var Translator = (function(document, undefined) {
             return _messages[_locale][_domain][id];
         }
 
+        var _length, _parts, _last, _lastLength;
+
+        while (_locale.length > 2) {
+            _length     = _locale.length;
+            _parts      = _locale.split(/[\s_]+/);
+            _last       = _parts[_parts.length - 1];
+            _lastLength = _last.length;
+
+            if (1 === _parts.length) {
+                break;
+            }
+
+            _locale = _locale.substring(0, _length - (_lastLength + 1));
+
+            if (has_message(_locale, _domain, id)) {
+                return _messages[_locale][_domain][id];
+            }
+        }
+
         if (has_message(localeFallback, _domain, id)) {
             return _messages[localeFallback][_domain][id];
         }
