@@ -54,11 +54,27 @@ var Translator = (function(document, undefined) {
             _domain = domain;
 
         if (undefined == _messages[_locale]) {
-            if (undefined == _messages[localeFallback]) {
-                return id;
+            
+            var localeShort = null;
+            
+            var tmpLocale = _locale;
+            while (tmpLocale.lastIndexOf("_") > 0) {
+                tmpLocale = tmpLocale.substr(0, tmpLocale.lastIndexOf("_"));
+                if(undefined != _messages[tmpLocale]) {
+                    localeShort = tmpLocale;
+                    break;
+                }
             }
-
-            _locale = localeFallback;
+            
+            if (localeShort) {
+                _locale = localeShort;
+            }    
+            else {
+                if (undefined == _messages[localeFallback]) {
+                    return id;
+                }
+                _locale = localeFallback;
+            }
         }
 
         if (undefined === _domain || null === _domain) {
