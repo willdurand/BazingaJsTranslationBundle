@@ -177,24 +177,24 @@ JSON
         $client  = static::createClient();
 
         // 1. `evil.js` is not accessible
-        $crawler  = $client->request('GET', '/translations?locales=randomstring/../../evil');
+        $crawler  = $client->request('GET', '/translations?locales=en-randomstring/../../evil');
         $response = $client->getResponse();
 
         $this->assertEquals(404, $response->getStatusCode());
 
-        // 2. let's create a random directory with a randome js file
+        // 2. let's create a random directory with a random js file
         // Fixing this issue = not creating any file here
-        $crawler  = $client->request('GET', '/translations?locales=randomstring/something');
+        $crawler  = $client->request('GET', '/translations?locales=en-randomstring/something');
         $response = $client->getResponse();
 
-        $this->assertFileNotExists(sprintf('%s/%s/messages.randomstring/something.js',
+        $this->assertFileNotExists(sprintf('%s/%s/messages.en-randomstring/something.js',
             $client->getKernel()->getCacheDir(),
             'bazinga-js-translation'
         ));
 
         // 3. path traversal attack
         // Fixing this issue = 404
-        $crawler  = $client->request('GET', '/translations?locales=randomstring/../../evil');
+        $crawler  = $client->request('GET', '/translations?locales=en-randomstring/../../evil');
         $response = $client->getResponse();
 
         $this->assertEquals(404, $response->getStatusCode());
@@ -207,14 +207,6 @@ JSON
         $crawler  = $client->request('GET', '/translations/messages.json?locales=foo%0Auncommented%20code;');
         $response = $client->getResponse();
 
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages",
-    "translations": []
-}
-
-JSON
-        , $response->getContent());
+        $this->assertEquals(404, $response->getStatusCode());
     }
 }

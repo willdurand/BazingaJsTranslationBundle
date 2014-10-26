@@ -100,7 +100,12 @@ class Controller
     public function getTranslationsAction(Request $request, $domain, $_format)
     {
         $locales = $this->getLocales($request);
-        $cache   = new ConfigCache(sprintf('%s/%s.%s.%s',
+
+        if (0 === count($locales)) {
+            throw new NotFoundHttpException();
+        }
+
+        $cache = new ConfigCache(sprintf('%s/%s.%s.%s',
             $this->cacheDir,
             $domain,
             implode('-', $locales),
@@ -174,11 +179,13 @@ class Controller
         }
 
         $locales = array_filter($locales, function ($locale) {
-            return strcasecmp(\Locale::getDisplayLanguage($locale), $locale) !== 0;
+            return 1 === preg_match('/^[a-z]{2}(-[A-Z]{2})?$/', $locale);
         });
 
-        return array_unique(array_map(function ($locale) {
+        $locales = array_unique(array_map(function ($locale) {
             return trim($locale);
         }, $locales));
+
+        return $locales;
     }
 }
