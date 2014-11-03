@@ -209,4 +209,76 @@ JSON
 
         $this->assertEquals(404, $response->getStatusCode());
     }
+
+    public function testGetTranslationsWithLowerCaseUnderscoredLocale()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=en_en');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en_en":[]}
+}
+
+JSON
+        , $response->getContent());
+    }
+
+    public function testGetTranslationsWithLowerCaseDashedLocale()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=en-en');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en-en":[]}
+}
+
+JSON
+        , $response->getContent());
+    }
+
+    public function testGetTranslationsWithDashedLocale()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=fr-FR');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"fr-FR":[]}
+}
+
+JSON
+        , $response->getContent());
+    }
+
+    public function testGetTranslationsWithUnderscoredLocale()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=fr_FR');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"fr_FR":[]}
+}
+
+JSON
+        , $response->getContent());
+    }
 }
