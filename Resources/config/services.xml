@@ -19,6 +19,8 @@
             <argument type="service" id="filesystem" />
             <argument></argument> <!-- fallback (locale) -->
             <argument></argument> <!-- default domain    -->
+            <argument></argument> <!-- active locales -->
+            <argument></argument> <!-- active domains -->
         </service>
     </services>
 </container>
