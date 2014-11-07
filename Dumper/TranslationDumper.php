@@ -38,6 +38,16 @@ class TranslationDumper
     private $filesystem;
 
     /**
+     * @var array List of locales translations to dump
+     */
+    private $activeLocales;
+
+    /**
+     * @var array List of domains translations to dump
+     */
+    private $activeDomains;
+
+    /**
      * @var string
      */
     private $localeFallback;
@@ -61,7 +71,9 @@ class TranslationDumper
         RouterInterface $router,
         Filesystem $filesystem,
         $localeFallback = '',
-        $defaultDomain  = ''
+        $defaultDomain  = '',
+        array $activeLocales = array(),
+        array $activeDomains = array()
     ) {
         $this->engine         = $engine;
         $this->finder         = $finder;
@@ -69,6 +81,24 @@ class TranslationDumper
         $this->filesystem     = $filesystem;
         $this->localeFallback = $localeFallback;
         $this->defaultDomain  = $defaultDomain;
+        $this->activeLocales  = $activeLocales;
+        $this->activeDomains  = $activeDomains;
+    }
+
+    /**
+     * Get array of active locales
+     */
+    public function getActiveLocales()
+    {
+        return $this->activeLocales;
+    }
+
+    /**
+     * Get array of active locales
+     */
+    public function getActiveDomains()
+    {
+        return $this->activeDomains;
     }
 
     /**
@@ -170,8 +200,14 @@ class TranslationDumper
     private function getTranslations()
     {
         $translations = array();
+        $activeLocales = $this->activeLocales;
+        $activeDomains = $this->activeDomains;
         foreach ($this->finder->all() as $file) {
             list($extension, $locale, $domain) = $this->getFileInfo($file);
+
+            if ( (count($activeLocales) > 0 && !in_array($locale, $activeLocales)) || (count($activeDomains) > 0 && !in_array($domain, $activeDomains)) ) {
+                continue;
+            }
 
             if (!isset($translations[$locale])) {
                 $translations[$locale] = array();

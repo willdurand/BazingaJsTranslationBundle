@@ -51,6 +51,17 @@ class TranslationDumperTest extends WebTestCase
             $this->assertFileExists($this->target . '/translations/' . $file);
         }
 
+        foreach (array(
+            'front/en.js',
+            'front/en.json',
+            'front/fr.js',
+            'front/fr.json',
+            'messages/es.js',
+            'messages/es.json',
+        ) as $file) {
+            $this->assertFileNotExists($this->target . '/translations/' . $file);
+        }
+
         $this->assertEquals(<<<JS
 (function (Translator) {
     // fr

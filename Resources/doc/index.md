@@ -320,6 +320,29 @@ bazinga_js_translation:
     default_domain:       messages
 ```
 
+#### Active locales
+
+By default, all locales are dump. 
+You can define an array of active locales:
+
+``` yaml
+bazinga_js_translation:
+    active_locales:
+        - fr
+        - en
+```
+
+#### Active Domains
+
+By default, all domains are dump. 
+You can define an array of active domains:
+
+``` yaml
+bazinga_js_translation:
+    active_domains:
+        - messages
+```
+
 
 Reference Configuration
 -----------------------
