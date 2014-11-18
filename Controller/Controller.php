@@ -56,6 +56,10 @@ class Controller
      * @var string
      */
     private $defaultDomain;
+    /**
+     * @var int
+     */
+    private $httpCacheTime;
 
     /**
      * @param TranslatorInterface $translator        The translator.
@@ -65,6 +69,7 @@ class Controller
      * @param boolean             $debug
      * @param string              $localeFallback
      * @param string              $defaultDomain
+     * @param int                 $httpCacheTime
      */
     public function __construct(
         TranslatorInterface $translator,
@@ -73,7 +78,8 @@ class Controller
         $cacheDir,
         $debug          = false,
         $localeFallback = '',
-        $defaultDomain  = ''
+        $defaultDomain  = '',
+        $httpCacheTime  = 86400
     ) {
         $this->translator        = $translator;
         $this->engine            = $engine;
@@ -82,6 +88,7 @@ class Controller
         $this->debug             = $debug;
         $this->localeFallback    = $localeFallback;
         $this->defaultDomain     = $defaultDomain;
+        $this->httpCacheTime     = $httpCacheTime;
     }
 
     /**
@@ -157,6 +164,8 @@ class Controller
             }
         }
 
+        $expirationTime = new \DateTime();
+        $expirationTime->modify('+' . $this->httpCacheTime . ' seconds');
         $response = new Response(
             file_get_contents((string) $cache),
             200,
@@ -166,6 +175,7 @@ class Controller
         $response->setPublic();
         $response->setETag(md5($response->getContent()));
         $response->isNotModified($request);
+        $response->setExpires($expirationTime);
 
         return $response;
     }
