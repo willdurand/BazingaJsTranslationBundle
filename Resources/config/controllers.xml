@@ -16,6 +16,7 @@
             <argument>%kernel.debug%</argument>
             <argument></argument> <!-- fallback (locale) -->
             <argument></argument> <!-- default domain    -->
+            <argument></argument> <!-- http cache time -->
         </service>
     </services>
 </container>
