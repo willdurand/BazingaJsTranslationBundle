@@ -322,7 +322,7 @@ bazinga_js_translation:
 
 #### Active locales
 
-By default, all locales are dump. 
+By default, all locales are dumped. 
 You can define an array of active locales:
 
 ``` yaml
@@ -334,7 +334,7 @@ bazinga_js_translation:
 
 #### Active Domains
 
-By default, all domains are dump. 
+By default, all domains are dumped. 
 You can define an array of active domains:
 
 ``` yaml
