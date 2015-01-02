@@ -14,7 +14,7 @@ bazinga_js_translation:
     active_locales:
         - fr
         - en
-    active_domains: 
+    active_domains:
         - messages
         - numerics
         - foo
