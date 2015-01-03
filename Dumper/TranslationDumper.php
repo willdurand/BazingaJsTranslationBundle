@@ -182,7 +182,7 @@ class TranslationDumper
                         ))
                     );
 
-                    $this->filesystem->mkdir(dirname($file), 0755);
+                    $this->filesystem->mkdir(dirname($file));
 
                     if (file_exists($file)) {
                         $this->filesystem->remove($file);

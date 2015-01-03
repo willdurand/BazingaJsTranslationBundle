@@ -24,7 +24,7 @@ class TranslationDumperTest extends WebTestCase
         $this->filesystem = $container->get('filesystem');
         $this->dumper     = $container->get('bazinga.jstranslation.translation_dumper');
 
-        $this->filesystem->mkdir($this->target, 0755);
+        $this->filesystem->mkdir($this->target);
     }
 
     public function tearDown()
