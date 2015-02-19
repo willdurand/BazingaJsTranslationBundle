@@ -20,42 +20,42 @@ class Controller
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    protected $translator;
 
     /**
      * @var EngineInterface
      */
-    private $engine;
+    protected $engine;
 
     /**
      * @var TranslationFinder
      */
-    private $translationFinder;
+    protected $translationFinder;
 
     /**
      * @var array
      */
-    private $loaders = array();
+    protected $loaders = array();
 
     /**
      * @var string
      */
-    private $cacheDir;
+    protected $cacheDir;
 
     /**
      * @var boolean
      */
-    private $debug;
+    protected $debug;
 
     /**
      * @var string
      */
-    private $localeFallback;
+    protected $localeFallback;
 
     /**
      * @var string
      */
-    private $defaultDomain;
+    protected $defaultDomain;
 
     /**
      * @param TranslatorInterface $translator        The translator.
@@ -165,7 +165,7 @@ class Controller
         return $response;
     }
 
-    private function getLocales(Request $request)
+    protected function getLocales(Request $request)
     {
         if (null !== $locales = $request->query->get('locales')) {
             $locales = explode(',', $locales);
