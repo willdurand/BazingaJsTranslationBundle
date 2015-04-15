@@ -108,6 +108,11 @@ class Controller
     {
         $locales = $this->getLocales($request);
 
+        // The translations are by language not by locale
+        foreach ($locales as &$locale) {
+            $locale = explode('_', $locale)[0];
+        }
+
         if (0 === count($locales)) {
             throw new NotFoundHttpException();
         }
