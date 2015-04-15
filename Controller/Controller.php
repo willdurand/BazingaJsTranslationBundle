@@ -108,11 +108,6 @@ class Controller
     {
         $locales = $this->getLocales($request);
 
-        // The translations are by language not by locale
-        foreach ($locales as &$locale) {
-            $locale = explode('_', $locale)[0];
-        }
-
         if (0 === count($locales)) {
             throw new NotFoundHttpException();
         }
@@ -131,7 +126,8 @@ class Controller
             foreach ($locales as $locale) {
                 $translations[$locale] = array();
 
-                $files = $this->translationFinder->get($domain, $locale);
+                // The translations are by language not by locale
+                $files = $this->translationFinder->get($domain, explode('_', $locale)[0]);
 
                 if (1 > count($files)) {
                     continue;
