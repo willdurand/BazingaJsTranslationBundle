@@ -56,6 +56,7 @@ class Controller
      * @var string
      */
     private $defaultDomain;
+
     /**
      * @var int
      */
@@ -106,54 +107,92 @@ class Controller
 
     public function getTranslationsAction(Request $request, $domain, $_format)
     {
-        $locales = $this->getLocales($request);
+        $requestedLocales = $this->getLocales($request);
 
-        if (0 === count($locales)) {
+        if (empty($requestedLocales)) {
             throw new NotFoundHttpException();
         }
 
         $cache = new ConfigCache(sprintf('%s/%s.%s.%s',
             $this->cacheDir,
             $domain,
-            implode('-', $locales),
+            implode('-', $requestedLocales),
             $_format
         ), $this->debug);
 
         if (!$cache->isFresh()) {
+            $derivedLocaleMap = $this->createDerivedLocaleMap($requestedLocales);
+
+            $derivedLocales = array();
+
+            foreach ($derivedLocaleMap as $locale) {
+                $derivedLocales[$locale] = $locale;
+            }
+
+            $effectiveLocales = array_merge($derivedLocales, $requestedLocales);
+
+            //Load translations:
+
             $resources    = array();
             $translations = array();
 
-            foreach ($locales as $locale) {
-                $translations[$locale] = array();
+            foreach ($effectiveLocales as $effectiveLocale) {
+                $translations[$effectiveLocale] = array();
 
-                $files = $this->translationFinder->get($domain, $locale);
+                $files = $this->translationFinder->get($domain, $effectiveLocale);
 
                 if (1 > count($files)) {
                     continue;
                 }
 
-                $translations[$locale][$domain] = array();
+                $translations[$effectiveLocale][$domain] = array();
 
                 foreach ($files as $file) {
-                    $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
+                    /*@var $file \Symfony\Component\Finder\SplFileInfo*/
 
-                    if (isset($this->loaders[$extension])) {
-                        $resources[] = new FileResource($file->getPath());
-                        $catalogue   = $this->loaders[$extension]
-                            ->load($file, $locale, $domain);
+                    $extension = $file->getExtension();
 
-                        $translations[$locale][$domain] = array_replace_recursive(
-                            $translations[$locale][$domain],
-                            $catalogue->all($domain)
-                        );
+                    if (!isset($this->loaders[$extension])) {
+                        continue;
                     }
+
+                    $resources[] = new FileResource($file->getPath());
+
+                    $catalogue   = $this->loaders[$extension]->load($file, $effectiveLocale, $domain);
+
+                    $translations[$effectiveLocale][$domain] = array_replace_recursive(
+                        $translations[$effectiveLocale][$domain],
+                        $catalogue->all($domain)
+                    );
                 }
             }
 
-            $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $_format . '.twig', array(
+            //Compile a final list of translations - apparently - containing only translations for the requested
+            //locales:
+
+            $requestedTranslations = array();
+
+            foreach ($requestedLocales as $requestedLocale) {
+                if (array_key_exists($requestedLocale, $derivedLocaleMap)) {
+                    //Get the translations for the 'root' locale from which the requested 'regional' locale derives.
+                    $rootLocaleTranslations = $translations[$derivedLocaleMap[$requestedLocale]];
+
+                    //Merge the regional translations into the translations for the 'root' locale.
+                    $requestedTranslations[$requestedLocale] = array_merge_recursive(
+                        $rootLocaleTranslations,
+                        $translations[$requestedLocale]
+                    );
+                } else {
+                    $requestedTranslations[$requestedLocale] = $translations[$requestedLocale];
+                }
+            }
+
+            //Render, and then cache, content for the response:
+
+            $content = $this->engine->render("BazingaJsTranslationBundle::getTranslations.{$_format}.twig", array(
                 'fallback'       => $this->localeFallback,
                 'defaultDomain'  => $this->defaultDomain,
-                'translations'   => $translations,
+                'translations'   => $requestedTranslations,
                 'include_config' => true,
             ));
 
@@ -164,26 +203,23 @@ class Controller
             }
         }
 
-        $expirationTime = new \DateTime();
-        $expirationTime->modify('+' . $this->httpCacheTime . ' seconds');
-        $response = new Response(
-            file_get_contents((string) $cache),
-            200,
-            array('Content-Type' => $request->getMimeType($_format))
-        );
-        $response->prepare($request);
-        $response->setPublic();
-        $response->setETag(md5($response->getContent()));
-        $response->isNotModified($request);
-        $response->setExpires($expirationTime);
+        $response = $this->createResponse($request, file_get_contents((string) $cache), $_format);
 
         return $response;
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     private function getLocales(Request $request)
     {
-        if (null !== $locales = $request->query->get('locales')) {
-            $locales = explode(',', $locales);
+        $queryLocales = $request->query->get('locales');
+
+        $locales = array();
+
+        if (null !== $queryLocales) {
+            $locales = explode(',', $queryLocales);
         } else {
             $locales = array($request->getLocale());
         }
@@ -196,6 +232,58 @@ class Controller
             return trim($locale);
         }, $locales));
 
-        return $locales;
+        //Key on locale code - like `["en_GB" => "en_GB"]`.
+        return array_combine($locales, $locales);
+    }
+
+    /**
+     * Returns an array that maps two-part locale codes (e.g. "en_GB") in the specified array to the code for the 'root'
+     * locale from which each of them derives (e.g. "en").
+     *
+     * @param array $locales
+     * @return array
+     */
+    private function createDerivedLocaleMap(array $locales)
+    {
+        $map = array();
+
+        foreach ($locales as $locale) {
+            if (strpos($locale, '_') === false) {
+                continue;
+            }
+
+            $parts = explode('_', $locale);
+            $languageCode = reset($parts);
+            $map[$locale] = $languageCode;
+        }
+
+        return $map;
+    }
+
+    /**
+     * Factory method that creates a response for translations.
+     *
+     * @param Request $request
+     * @param string $content
+     * @param string $_format
+     * @return Response
+     */
+    private function createResponse(Request $request, $content, $_format)
+    {
+        $expirationTime = new \DateTime("+{$this->httpCacheTime} seconds");
+
+        $response = new Response(
+            $content,
+            200,
+            array('Content-Type' => $request->getMimeType($_format))
+        );
+
+        $response->prepare($request);
+        $response->setPublic();
+        $response->setETag(md5($response->getContent()));
+        $response->isNotModified($request);
+        $response->setExpires($expirationTime);
+
+        return $response;
     }
 }

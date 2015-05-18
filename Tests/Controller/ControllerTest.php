@@ -221,7 +221,7 @@ JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"en_en":[]}
+    "translations": {"en_en":{"messages":{"hello":"hello"}}}
 }
 
 JSON
@@ -275,10 +275,57 @@ JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"fr_FR":[]}
+    "translations": {"fr_FR":{"messages":{"hello":"bonjour"}}}
 }
 
 JSON
         , $response->getContent());
+    }
+
+    public static function providesUnsupportedLocaleTranslations()
+    {
+        return array(
+            array(<<<END
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en_XX":{"messages":{"hello":"hello"}}}
+}
+
+END
+                ,
+                'en_XX',
+            ),
+            array(<<<END
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"fr_XX":{"messages":{"hello":"bonjour"}}}
+}
+
+END
+                ,
+                'fr_XX',
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider providesUnsupportedLocaleTranslations
+     */
+    public function testGettranslationsactionReturnsTranslationsForTheRootLocaleIfThereAreNoneForTheSpecifiedTwoPartLocale(
+        $expectedJson,
+        $unsupportedLocaleCode
+    ) {
+        $client = static::createClient();
+        $client->request('GET', '/translations/messages.json?locales=' . $unsupportedLocaleCode);
+        $response = $client->getResponse();
+
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    public function testDatetimeCanBeConstructedUsingARelativeDateTimeString()
+    {
+        $this->assertTrue(new \DateTime('+1 seconds') > new \DateTime());
     }
 }
