@@ -319,13 +319,31 @@ END
     ) {
         $client = static::createClient();
         $client->request('GET', '/translations/messages.json?locales=' . $unsupportedLocaleCode);
-        $response = $client->getResponse();
 
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals($expectedJson, $client->getResponse()->getContent());
     }
 
     public function testDatetimeCanBeConstructedUsingARelativeDateTimeString()
     {
         $this->assertTrue(new \DateTime('+1 seconds') > new \DateTime());
+    }
+
+    public static function providesInvalidLocaleCodes()
+    {
+        return array(
+            array('en_'),
+            array('_GB'),
+        );
+    }
+
+    /**
+     * @dataProvider providesInvalidLocaleCodes
+     */
+    public function testGettranslationsactionReturnsA404IfARequestedLocaleCodeIsInvalid($invalidLocaleCode)
+    {
+        $client = static::createClient();
+        $client->request('GET', '/translations/messages.json?locales=' . $invalidLocaleCode);
+
+        $this->assertSame(404, $client->getResponse()->getStatusCode());
     }
 }
