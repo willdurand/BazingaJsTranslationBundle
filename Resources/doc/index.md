@@ -136,7 +136,7 @@ to the JS Translator.
 
 #### Assetic
 
-The command above is useful if you use
+The command below is useful if you use
 [Assetic](http://symfony.com/doc/current/cookbook/assetic/asset_management.html):
 
 ```twig
@@ -150,6 +150,10 @@ The command above is useful if you use
 
 In the example above, all translation files from your entire project will be
 loaded. Of course you can load specific domains: `js/translations/admin/*.js`.
+
+The default translation URLs let a controller dump the translations. If you 
+make use of the Assetic, you need to manually dump the translations each time
+a translation changes because the Assetic links will point to a static file.
 
 ### The JS Translator
 
