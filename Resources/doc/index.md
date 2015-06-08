@@ -38,6 +38,7 @@ Register the routing in `app/config/routing.yml`:
 # app/config/routing.yml
 _bazinga_jstranslation:
     resource: "@BazingaJsTranslationBundle/Resources/config/routing/routing.yml"
+    prefix: /js
 ```
 
 Publish assets:
