@@ -164,10 +164,16 @@ class Controller
             }
         }
 
+        if (method_exists($cache, 'getPath')) {
+            $cachePath = $cache->getPath();
+        } else {
+            $cachePath = (string) $cache;
+        }
+
         $expirationTime = new \DateTime();
         $expirationTime->modify('+' . $this->httpCacheTime . ' seconds');
         $response = new Response(
-            file_get_contents((string) $cache),
+            file_get_contents($cachePath),
             200,
             array('Content-Type' => $request->getMimeType($_format))
         );
