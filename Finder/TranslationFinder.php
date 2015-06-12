@@ -69,8 +69,8 @@ class TranslationFinder
     {
         $locations = array();
 
-        if (class_exists('Symfony\Component\Validator\Validator')) {
-            $r = new \ReflectionClass('Symfony\Component\Validator\Validator');
+        if (class_exists('Symfony\Component\Validator\Validation')) {
+            $r = new \ReflectionClass('Symfony\Component\Validator\Validation');
 
             $locations[] = dirname($r->getFilename()).'/Resources/translations';
         }
