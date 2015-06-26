@@ -53,6 +53,17 @@ var Translator = (function(document, undefined) {
         var _locale = locale || currentLocale || localeFallback,
             _domain = domain;
 
+        /**
+         * If the _locale looks like nl_NL or nl-NL
+         * Try the language as the locale
+         */
+        if (undefined == _messages[_locale]) {
+            var tryLanguage = _locale.match(/^([a-z]{2})(_|-)[A-Z]{2}$/)
+            if (undefined != tryLanguage) {
+                _locale = tryLanguage[1];
+            }
+        }
+
         if (undefined == _messages[_locale]) {
             if (undefined == _messages[localeFallback]) {
                 return id;
