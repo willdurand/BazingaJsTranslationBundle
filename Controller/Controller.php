@@ -11,6 +11,7 @@ use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Bazinga\Bundle\JsTranslationBundle\LocaleCode;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
@@ -107,84 +108,75 @@ class Controller
 
     public function getTranslationsAction(Request $request, $domain, $_format)
     {
-        $requestedLocales = $this->getLocales($request);
+        $localeCodes = $this->createLocaleCodesFromRequest($request);
 
-        if (empty($requestedLocales)) {
-            throw new NotFoundHttpException();
-        }
-
-        $cache = new ConfigCache(sprintf('%s/%s.%s.%s',
-            $this->cacheDir,
-            $domain,
-            implode('-', $requestedLocales),
-            $_format
-        ), $this->debug);
+        $cache = new ConfigCache($this->createCacheFilename($domain, $localeCodes, $_format), $this->debug);
 
         if (!$cache->isFresh()) {
-            $derivedLocaleMap = $this->createDerivedLocaleMap($requestedLocales);
-
-            $derivedLocales = array();
-
-            foreach ($derivedLocaleMap as $locale) {
-                $derivedLocales[$locale] = $locale;
-            }
-
-            $effectiveLocales = array_merge($derivedLocales, $requestedLocales);
-
             //Load translations:
 
             $resources    = array();
             $translations = array();
 
-            foreach ($effectiveLocales as $effectiveLocale) {
-                $translations[$effectiveLocale] = array();
+            foreach ($localeCodes as $localeCode) {
+                $symfonyLocaleCodeStrings = array($localeCode->getString() => $localeCode->getSymfonyString());
 
-                $files = $this->translationFinder->get($domain, $effectiveLocale);
-
-                if (1 > count($files)) {
-                    continue;
+                //If the locale code has a country code (i.e. a second part, as in "en-GB", for example) then also fetch
+                //the 'base' translations.
+                if ($localeCode->hasCountryCode()) {
+                    $symfonyLocaleCodeStrings[$localeCode->getLanguageCode()] = $localeCode->getLanguageCode();
                 }
 
-                $translations[$effectiveLocale][$domain] = array();
+                foreach ($symfonyLocaleCodeStrings as $localeCodeString => $symfonyLocaleCodeString) {
+                    $translations[$localeCodeString] = array();
 
-                foreach ($files as $file) {
-                    /*@var $file \Symfony\Component\Finder\SplFileInfo*/
+                    $files = $this->translationFinder->get($domain, $symfonyLocaleCodeString);
 
-                    $extension = $file->getExtension();
-
-                    if (!isset($this->loaders[$extension])) {
+                    if (1 > count($files)) {
                         continue;
                     }
 
-                    $resources[] = new FileResource($file->getPath());
+                    $translations[$localeCodeString][$domain] = array();
 
-                    $catalogue   = $this->loaders[$extension]->load($file, $effectiveLocale, $domain);
+                    foreach ($files as $file) {
+                        /*@var $file \Symfony\Component\Finder\SplFileInfo*/
 
-                    $translations[$effectiveLocale][$domain] = array_replace_recursive(
-                        $translations[$effectiveLocale][$domain],
-                        $catalogue->all($domain)
-                    );
+                        $extension = $file->getExtension();
+
+                        if (!isset($this->loaders[$extension])) {
+                            continue;
+                        }
+
+                        $resources[] = new FileResource($file->getPath());
+
+                        $catalogue   = $this->loaders[$extension]->load($file, $symfonyLocaleCodeString, $domain);
+
+                        $translations[$localeCodeString][$domain] = array_replace_recursive(
+                            $translations[$localeCodeString][$domain],
+                            $catalogue->all($domain)
+                        );
+                    }
                 }
             }
 
-            //Compile a final list of translations - apparently - containing only translations for the requested
+            //Compile a final list of translations containing - apparently - only translations for the requested
             //locales:
 
             $requestedTranslations = array();
 
-            foreach ($requestedLocales as $requestedLocale) {
-                if (array_key_exists($requestedLocale, $derivedLocaleMap)) {
-                    //Get the translations for the 'root' locale from which the requested 'regional' locale derives.
-                    $rootLocaleTranslations = $translations[$derivedLocaleMap[$requestedLocale]];
+            foreach ($localeCodes as $localeCode) {
+                $localeCodeString = $localeCode->getString();
 
-                    //Merge the regional translations into the translations for the 'root' locale.
-                    $requestedTranslations[$requestedLocale] = array_merge_recursive(
-                        $rootLocaleTranslations,
-                        $translations[$requestedLocale]
-                    );
-                } else {
-                    $requestedTranslations[$requestedLocale] = $translations[$requestedLocale];
+                $baseTranslations = array();
+
+                if ($localeCode->hasCountryCode()) {
+                    $baseTranslations = $translations[$localeCode->getLanguageCode()];
                 }
+
+                $requestedTranslations[$localeCodeString] = array_replace_recursive(
+                    $baseTranslations,
+                    $translations[$localeCodeString]
+                );
             }
 
             //Render, and then cache, content for the response:
@@ -210,54 +202,43 @@ class Controller
 
     /**
      * @param Request $request
-     * @return array
+     * @return LocaleCode[]
      */
-    private function getLocales(Request $request)
+    private function createLocaleCodesFromRequest(Request $request)
     {
-        $queryLocales = $request->query->get('locales');
+        $localeCodeStringsCsv = $request->query->get('locales', $request->getLocale());
+        $localeCodeStrings = array_unique(explode(',', $localeCodeStringsCsv));
 
-        $locales = array();
+        $localeCodes = array();
 
-        if (null !== $queryLocales) {
-            $locales = explode(',', $queryLocales);
-        } else {
-            $locales = array($request->getLocale());
+        foreach ($localeCodeStrings as $localeCodeString) {
+            try {
+                $localeCodes[] = new LocaleCode($localeCodeString);
+            } catch (\Exception $e) {
+                throw new NotFoundHttpException();
+            }
         }
 
-        $locales = array_filter($locales, function ($locale) {
-            return 1 === preg_match('/^[a-z]{2}([-_]{1}[a-zA-Z]{2})?$/', $locale);
-        });
-
-        $locales = array_unique(array_map(function ($locale) {
-            return trim($locale);
-        }, $locales));
-
-        //Key on locale code - like `["en_GB" => "en_GB"]`.
-        return array_combine($locales, $locales);
+        return $localeCodes;
     }
 
     /**
-     * Returns an array that maps two-part locale codes (e.g. "en_GB") in the specified array to the code for the 'root'
-     * locale from which each of them derives (e.g. "en").
-     *
-     * @param array $locales
-     * @return array
+     * @param string $domain
+     * @param LocaleCode[] $localeCodes
+     * @param string $format
+     * @return string
      */
-    private function createDerivedLocaleMap(array $locales)
+    private function createCacheFilename($domain, array $localeCodes, $format)
     {
-        $map = array();
+        $localeCodeStrings = array();
 
-        foreach ($locales as $locale) {
-            if (strpos($locale, '_') === false) {
-                continue;
-            }
-
-            $parts = explode('_', $locale);
-            $languageCode = reset($parts);
-            $map[$locale] = $languageCode;
+        foreach ($localeCodes as $localeCode) {
+            $localeCodeStrings[] = $localeCode->getString();
         }
 
-        return $map;
+        $localeCodesId = implode('-', $localeCodeStrings);
+
+        return sprintf('%s/%s.%s.%s', $this->cacheDir, $domain, $localeCodesId, $format);
     }
 
     /**
@@ -265,17 +246,17 @@ class Controller
      *
      * @param Request $request
      * @param string $content
-     * @param string $_format
+     * @param string $format
      * @return Response
      */
-    private function createResponse(Request $request, $content, $_format)
+    private function createResponse(Request $request, $content, $format)
     {
         $expirationTime = new \DateTime("+{$this->httpCacheTime} seconds");
 
         $response = new Response(
             $content,
             200,
-            array('Content-Type' => $request->getMimeType($_format))
+            array('Content-Type' => $request->getMimeType($format))
         );
 
         $response->prepare($request);

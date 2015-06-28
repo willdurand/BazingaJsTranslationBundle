@@ -50,4 +50,17 @@ abstract class WebTestCase extends BaseWebTestCase
         parent::setUp();
         $this->deleteTmpDir();
     }
+
+    protected function sendRequest($requestUri, array $server = array())
+    {
+        $finalServer = array_merge(array(
+            'REQUEST_METHOD' => 'GET',
+        ), $server);
+
+        $client = static::createClient(array(), $finalServer);
+        $client->request($finalServer['REQUEST_METHOD'], $requestUri);
+        $response = $client->getResponse();
+
+        return $response;
+    }
 }

@@ -6,12 +6,20 @@ use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
 
 class ControllerTest extends WebTestCase
 {
+    private function requestTranslations($domain, $format, array $locales = array())
+    {
+        $requestUri = "/translations/{$domain}.{$format}";
+
+        if (!empty($locales)) {
+            $requestUri .= '?locales=' . implode(',', $locales);
+        }
+
+        return $this->sendRequest($requestUri);
+    }
+
     public function testGetTranslations()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('messages', 'json');
 
         $this->assertEquals(<<<JSON
 {
@@ -26,10 +34,7 @@ JSON
 
     public function testGetTranslationsWithMultipleLocales()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=en,fr');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('messages', 'json', array('en', 'fr'));
 
         $this->assertEquals(<<<JSON
 {
@@ -44,10 +49,7 @@ JSON
 
     public function testGetTranslationsWithUnknownDomain()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/unknown.json');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('unknown', 'json');
 
         $this->assertEquals(<<<JSON
 {
@@ -62,10 +64,7 @@ JSON
 
     public function testGetTranslationsWithUnknownLocale()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/foo.json?locales=pt');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('foo', 'json', array('pt'));
 
         $this->assertEquals(<<<JSON
 {
@@ -80,10 +79,7 @@ JSON
 
     public function testGetJsTranslations()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.js');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('messages', 'js');
 
         $this->assertEquals(<<<JS
 (function (Translator) {
@@ -99,10 +95,7 @@ JS
 
     public function testGetJsTranslationsWithMultipleLocales()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.js?locales=en,fr');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('messages', 'js', array('en', 'fr'));
 
         $this->assertEquals(<<<JS
 (function (Translator) {
@@ -120,10 +113,7 @@ JS
 
     public function testGetJsTranslationsWithUnknownDomain()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/unknown.js');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('unknown', 'js');
 
         $this->assertEquals(<<<JS
 (function (Translator) {
@@ -138,10 +128,7 @@ JS
 
     public function testGetJsTranslationsWithUnknownLocale()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/foo.js?locales=pt');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('foo', 'js', array('pt'));
 
         $this->assertEquals(<<<JS
 (function (Translator) {
@@ -156,10 +143,7 @@ JS
 
     public function testGetTranslationsWithNumericKeys()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/numerics.json?locales=en');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('numerics', 'json', array('en'));
 
         $this->assertEquals(<<<JSON
 {
@@ -212,16 +196,13 @@ JSON
 
     public function testGetTranslationsWithLowerCaseUnderscoredLocale()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=en_en');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('messages', 'json', array('de_lu'));
 
         $this->assertEquals(<<<JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"en_en":{"messages":{"hello":"hello"}}}
+    "translations": {"de_lu":{"messages":{"hello":"hallo"}}}
 }
 
 JSON
@@ -230,34 +211,13 @@ JSON
 
     public function testGetTranslationsWithLowerCaseDashedLocale()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=en-en');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('messages', 'json', array('de-lu'));
 
         $this->assertEquals(<<<JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"en-en":[]}
-}
-
-JSON
-        , $response->getContent());
-    }
-
-    public function testGetTranslationsWithDashedLocale()
-    {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=fr-FR');
-        $response = $client->getResponse();
-
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages",
-    "translations": {"fr-FR":[]}
+    "translations": {"de-lu":{"messages":{"hello":"hallo"}}}
 }
 
 JSON
@@ -266,22 +226,37 @@ JSON
 
     public function testGetTranslationsWithUnderscoredLocale()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=fr_FR');
-        $response = $client->getResponse();
+        $response = $this->requestTranslations('messages', 'json', array('ro_RO'));
 
         $this->assertEquals(<<<JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"fr_FR":{"messages":{"hello":"bonjour"}}}
+    "translations": {"ro_RO":{"messages":{"hello":"alo"}}}
 }
 
 JSON
         , $response->getContent());
     }
 
+    public function testGetTranslationsWithDashedLocale()
+    {
+        $response = $this->requestTranslations('messages', 'json', array('ro-RO'));
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"ro-RO":{"messages":{"hello":"alo"}}}
+}
+
+JSON
+        , $response->getContent());
+    }
+
+    /**
+     * @todo Rename this.
+     */
     public static function providesUnsupportedLocaleTranslations()
     {
         return array(
@@ -294,7 +269,7 @@ JSON
 
 END
                 ,
-                'en_XX',
+                array('en_XX'),
             ),
             array(<<<END
 {
@@ -305,7 +280,29 @@ END
 
 END
                 ,
-                'fr_XX',
+                array('fr_XX'),
+            ),
+            array(<<<END
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en-XX":{"messages":{"hello":"hello"}}}
+}
+
+END
+                ,
+                array('en-XX'),
+            ),
+            array(<<<END
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"fr-XX":{"messages":{"hello":"bonjour"}}}
+}
+
+END
+                ,
+                array('fr-XX'),
             ),
         );
     }
@@ -313,14 +310,13 @@ END
     /**
      * @dataProvider providesUnsupportedLocaleTranslations
      */
-    public function testGettranslationsactionReturnsTranslationsForTheRootLocaleIfThereAreNoneForTheSpecifiedTwoPartLocale(
+    public function testGettranslationsactionReturnsTranslationsForTheLanguageCodeIfThereAreNoneForTheCountry(
         $expectedJson,
-        $unsupportedLocaleCode
+        $locales
     ) {
-        $client = static::createClient();
-        $client->request('GET', '/translations/messages.json?locales=' . $unsupportedLocaleCode);
+        $response = $this->requestTranslations('messages', 'json', $locales);
 
-        $this->assertEquals($expectedJson, $client->getResponse()->getContent());
+        $this->assertEquals($expectedJson, $response->getContent());
     }
 
     public function testDatetimeCanBeConstructedUsingARelativeDateTimeString()
@@ -331,19 +327,41 @@ END
     public static function providesInvalidLocaleCodes()
     {
         return array(
-            array('en_'),
-            array('_GB'),
+            array(
+                array('en_'),
+            ),
+            array(
+                array('_GB'),
+            ),
         );
     }
 
     /**
      * @dataProvider providesInvalidLocaleCodes
      */
-    public function testGettranslationsactionReturnsA404IfARequestedLocaleCodeIsInvalid($invalidLocaleCode)
+    public function testGettranslationsactionReturnsA404IfARequestedLocaleCodeIsInvalid($invalidLocaleCodes)
     {
-        $client = static::createClient();
-        $client->request('GET', '/translations/messages.json?locales=' . $invalidLocaleCode);
+        $response = $this->requestTranslations('messages', 'json', $invalidLocaleCodes);
 
-        $this->assertSame(404, $client->getResponse()->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /**
+     * Here we make sure that translations won't get in a pickle if there are multiple files for the same domain with 
+     * related one-part and two-part locale codes.
+     */
+    public function testTranslationsForTwoPartLocaleCodesAreMergedIntoTheTranslationsForTheLanguageCode()
+    {
+        $response = $this->requestTranslations('messages', 'json', array('bo_IN'));
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"bo_IN":{"messages":{"one":"foo","two":"qux"}}}
+}
+
+JSON
+        , $response->getContent());
     }
 }
