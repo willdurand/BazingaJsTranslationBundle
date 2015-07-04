@@ -58,7 +58,7 @@ Then add the current application's locale into your layout, by adding a `lang`
 attribute to the `html` tag:
 
 ```html
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.request.locale|split('_')[0] }}">
 ```
 
 Now, you are done with the basic setup, and you can specify the [translation
