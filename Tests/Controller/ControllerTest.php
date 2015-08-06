@@ -10,7 +10,7 @@ class ControllerTest extends WebTestCase
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/messages.json');
+        $client->request('GET', '/translations/messages.json');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JSON
@@ -28,7 +28,7 @@ JSON
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=en,fr');
+        $client->request('GET', '/translations/messages.json?locales=en,fr');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JSON
@@ -46,7 +46,7 @@ JSON
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/unknown.json');
+        $client->request('GET', '/translations/unknown.json');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JSON
@@ -64,7 +64,7 @@ JSON
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/foo.json?locales=pt');
+        $client->request('GET', '/translations/foo.json?locales=pt');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JSON
@@ -82,7 +82,7 @@ JSON
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/messages.js');
+        $client->request('GET', '/translations/messages.js');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
@@ -101,7 +101,7 @@ JS
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/messages.js?locales=en,fr');
+        $client->request('GET', '/translations/messages.js?locales=en,fr');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
@@ -122,7 +122,7 @@ JS
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/unknown.js');
+        $client->request('GET', '/translations/unknown.js');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
@@ -140,7 +140,7 @@ JS
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/foo.js?locales=pt');
+        $client->request('GET', '/translations/foo.js?locales=pt');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
@@ -158,7 +158,7 @@ JS
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/numerics.json?locales=en');
+        $client->request('GET', '/translations/numerics.json?locales=en');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JSON
@@ -177,15 +177,14 @@ JSON
         $client  = static::createClient();
 
         // 1. `evil.js` is not accessible
-        $crawler  = $client->request('GET', '/translations?locales=en-randomstring/../../evil');
+        $client->request('GET', '/translations?locales=en-randomstring/../../evil');
         $response = $client->getResponse();
 
         $this->assertEquals(404, $response->getStatusCode());
 
         // 2. let's create a random directory with a random js file
         // Fixing this issue = not creating any file here
-        $crawler  = $client->request('GET', '/translations?locales=en-randomstring/something');
-        $response = $client->getResponse();
+        $client->request('GET', '/translations?locales=en-randomstring/something');
 
         $this->assertFileNotExists(sprintf('%s/%s/messages.en-randomstring/something.js',
             $client->getKernel()->getCacheDir(),
@@ -194,7 +193,7 @@ JSON
 
         // 3. path traversal attack
         // Fixing this issue = 404
-        $crawler  = $client->request('GET', '/translations?locales=en-randomstring/../../evil');
+        $client->request('GET', '/translations?locales=en-randomstring/../../evil');
         $response = $client->getResponse();
 
         $this->assertEquals(404, $response->getStatusCode());
@@ -204,81 +203,45 @@ JSON
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=foo%0Auncommented%20code;');
+        $client->request('GET', '/translations/messages.json?locales=foo%0Auncommented%20code;');
         $response = $client->getResponse();
 
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    public function testGetTranslationsWithLowerCaseUnderscoredLocale()
+    /**
+     * @dataProvider getLocales
+     */
+    public function testGetTranslationsForDifferentLocales($locale)
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=en_en');
+        $client->request('GET', '/translations/messages.json?locales=' . $locale);
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"en_en":[]}
+    "translations": {"$locale":[]}
 }
 
 JSON
         , $response->getContent());
     }
 
-    public function testGetTranslationsWithLowerCaseDashedLocale()
+    public function getLocales()
     {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=en-en');
-        $response = $client->getResponse();
-
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages",
-    "translations": {"en-en":[]}
-}
-
-JSON
-        , $response->getContent());
-    }
-
-    public function testGetTranslationsWithDashedLocale()
-    {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=fr-FR');
-        $response = $client->getResponse();
-
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages",
-    "translations": {"fr-FR":[]}
-}
-
-JSON
-        , $response->getContent());
-    }
-
-    public function testGetTranslationsWithUnderscoredLocale()
-    {
-        $client  = static::createClient();
-
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=fr_FR');
-        $response = $client->getResponse();
-
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages",
-    "translations": {"fr_FR":[]}
-}
-
-JSON
-        , $response->getContent());
+        return array(
+            'simple with two characters' => array('eo'),
+            'simple with three characters' => array('zhc'),
+            'lowercase underscore' => array('en_en'),
+            'lowercase dashed' => array('en-en'),
+            'underscored' => array('fr-FR'),
+            'dashed' => array('fr_FR'),
+            'with numeric value in locale' => array('es_419'),
+            'locale with three parts separeted by undescore' => array('ha_Latn_NE'),
+            'locale with three parts separeted by undescore with long last part' => array('ja_J2P_TRADITIONAL')
+        );
     }
 }
