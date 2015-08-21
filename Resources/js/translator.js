@@ -593,3 +593,10 @@ if (typeof window.define === 'function' && window.define.amd) {
         return Translator;
     });
 }
+
+// Export the Translator object for Node.js
+if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = Translator;
+    }
+}
