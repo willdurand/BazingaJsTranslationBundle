@@ -65,7 +65,7 @@ class TranslationFinder
      *
      * @return array
      */
-    private function getLocations()
+    protected function getLocations()
     {
         $locations = array();
 
