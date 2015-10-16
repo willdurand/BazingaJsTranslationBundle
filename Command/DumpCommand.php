@@ -40,7 +40,7 @@ class DumpCommand extends ContainerAwareCommand
         parent::initialize($input, $output);
 
         $this->targetPath = $input->getArgument('target') ?:
-            realpath(sprintf('%s/../web/js', $this->getContainer()->getParameter('kernel.root_dir')));
+            sprintf('%s/../web/js', $this->getContainer()->getParameter('kernel.root_dir'));
     }
 
     /**
