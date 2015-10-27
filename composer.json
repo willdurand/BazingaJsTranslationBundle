@@ -22,7 +22,7 @@
         "symfony/twig-bundle": "~2.3"
     },
     "replace": {
-        "willdurand/expose-translation-bundle": "2.3.*"
+        "willdurand/expose-translation-bundle": "2.4.*"
     },
     "autoload": {
         "psr-0": { "Bazinga\\Bundle\\JsTranslationBundle": "" }
@@ -30,7 +30,7 @@
     "target-dir": "Bazinga/Bundle/JsTranslationBundle",
     "extra": {
         "branch-alias": {
-            "dev-master": "2.4-dev"
+            "dev-master": "2.5-dev"
         }
     }
 }
