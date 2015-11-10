@@ -43,10 +43,6 @@ class AppKernel extends Kernel
         );
     }
 
-    public function init()
-    {
-    }
-
     public function getRootDir()
     {
         return __DIR__;
