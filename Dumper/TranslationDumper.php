@@ -128,7 +128,7 @@ class TranslationDumper
         $routeDefaults = $route->getDefaults();
         $defaultFormat = $routeDefaults['_format'];
 
-        $parts = array_filter(explode('/', $route->getPattern()));
+        $parts = array_filter(explode('/', $route->getPath()));
         $this->filesystem->remove($target. '/' . current($parts));
 
         $this->dumpConfig($route, $formats, $target);
@@ -140,7 +140,7 @@ class TranslationDumper
         foreach ($formats as $format) {
             $file = sprintf('%s/%s',
                 $target,
-                strtr($route->getPattern(), array(
+                strtr($route->getPath(), array(
                     '{domain}'  => 'config',
                     '{_format}' => $format
                 ))
@@ -176,7 +176,7 @@ class TranslationDumper
 
                     $file = sprintf('%s/%s',
                         $target,
-                        strtr($route->getPattern(), array(
+                        strtr($route->getPath(), array(
                             '{domain}'  => sprintf('%s/%s', $domain, $locale),
                             '{_format}' => $format
                         ))
