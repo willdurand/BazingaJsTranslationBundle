@@ -106,6 +106,19 @@ class TranslationFinder
         if (is_dir($dir = $this->kernel->getRootDir() . '/Resources/translations')) {
             $locations[] = $dir;
         }
+        
+        // Read from all custom translator paths
+        $config = Yaml::parse(
+            file_get_contents($this->kernel->getRootDir().'/config/config.yml')
+        );
+        if(key_exists('framework', $config) && key_exists('translator', $config['framework']) && key_exists('path', $config['framework']['translator'])) {
+            $paths = $config['framework']['translator']['path'];
+            foreach ($paths as $key => $path) {
+                $path = str_replace('%kernel.root_dir%/..', '%s', $path);
+                $paths[$key] = sprintf($path, $this->kernel->getRootDir().'\..');
+            }
+            $locations = array_merge($locations, $paths);
+        }
 
         return $locations;
     }
