@@ -108,18 +108,22 @@ class TranslationFinder
             $locations[] = $dir;
         }
         
-        // Read from all custom translator paths
-        $config = Yaml::parse(
-            file_get_contents($this->kernel->getRootDir().'/config/config.yml')
-        );
-        if(key_exists('framework', $config) && key_exists('translator', $config['framework']) && key_exists('path', $config['framework']['translator'])) {
-            $paths = $config['framework']['translator']['path'];
-            foreach ($paths as $key => $path) {
-                $path = str_replace('%kernel.root_dir%/..', '%s', $path);
-                $paths[$key] = sprintf($path, $this->kernel->getRootDir().'\..');
+        // Check if config.yml exists
+        if(file_exists($this->kernel->getRootDir().'/config/config.yml')) {
+            // Read from config.yml all custom translator paths
+            $config = Yaml::parse(
+                file_get_contents($this->kernel->getRootDir().'/config/config.yml')
+            );
+            if(key_exists('framework', $config) && key_exists('translator', $config['framework']) && key_exists('path', $config['framework']['translator'])) {
+                $paths = $config['framework']['translator']['path'];
+                foreach ($paths as $key => $path) {
+                    $path = str_replace('%kernel.root_dir%/..', '%s', $path);
+                    $paths[$key] = sprintf($path, $this->kernel->getRootDir().'\..');
+                }
+                $locations = array_merge($locations, $paths);
             }
-            $locations = array_merge($locations, $paths);
         }
+
 
         return $locations;
     }
