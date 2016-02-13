@@ -4,6 +4,7 @@ namespace Bazinga\Bundle\JsTranslationBundle\Finder;
 
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
