@@ -202,8 +202,8 @@ class TranslationDumper
         $translations = array();
         $activeLocales = $this->activeLocales;
         $activeDomains = $this->activeDomains;
-        foreach ($this->finder->all() as $file) {
-            list($extension, $locale, $domain) = $this->getFileInfo($file);
+        foreach ($this->finder->all() as $filename) {
+            list($extension, $locale, $domain) = $this->getFileInfo($filename);
 
             if ( (count($activeLocales) > 0 && !in_array($locale, $activeLocales)) || (count($activeDomains) > 0 && !in_array($domain, $activeDomains)) ) {
                 continue;
@@ -219,7 +219,7 @@ class TranslationDumper
 
             if (isset($this->loaders[$extension])) {
                 $catalogue = $this->loaders[$extension]
-                    ->load($file, $locale, $domain);
+                    ->load($filename, $locale, $domain);
 
                 $translations[$locale][$domain] = array_replace_recursive(
                     $translations[$locale][$domain],
@@ -231,17 +231,9 @@ class TranslationDumper
         return $translations;
     }
 
-    private function getFileInfo($file)
+    private function getFileInfo($filename)
     {
-        $filename  = explode('.', $file->getFilename());
-        $extension = end($filename);
-        $locale    = prev($filename);
-
-        $domain = array();
-        while (prev($filename)) {
-            $domain[] = current($filename);
-        }
-        $domain = implode('.', $domain);
+        list($domain, $locale, $extension) = explode('.', basename($filename), 3);
 
         return array($extension, $locale, $domain);
     }

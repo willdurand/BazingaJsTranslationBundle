@@ -3,6 +3,7 @@
 namespace Bazinga\JsTranslationBundle\Tests\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
+use Symfony\Component\HttpKernel\Kernel;
 
 class ControllerTest extends WebTestCase
 {
@@ -280,5 +281,27 @@ JSON
 
 JSON
         , $response->getContent());
+    }
+
+    public function testGetTranslationsOutsideResourcesFolder()
+    {
+        if (Kernel::VERSION_ID < 20800) {
+            return;
+        }
+
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/outsider.json');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en":{"outsider":{"frontpage.hi":"hi"}}}
+}
+
+JSON
+            , $response->getContent());
     }
 }

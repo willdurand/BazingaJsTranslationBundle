@@ -60,7 +60,11 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/'.$this->environment.'.yml');
+        if (self::VERSION_ID < 20800) {
+            $loader->load(__DIR__.'/config/older_versions_config.yml');
+        } else {
+            $loader->load(__DIR__.'/config/'.$this->environment.'.yml');
+        }
     }
 
     public function serialize()
