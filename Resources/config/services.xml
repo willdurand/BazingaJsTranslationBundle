@@ -22,5 +22,17 @@
             <argument></argument> <!-- active locales -->
             <argument></argument> <!-- active domains -->
         </service>
+        <service id="bazinga.jstranslation.filesystem" class="Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem"></service>
+        <service id="bazinga.jstranslation.finder" class="Symfony\Component\Finder\Finder"></service>
+        <service id="bazinga.jstranslation.translation_js_extractor">
+            <argument type="service" id="bazinga.jstranslation.filesystem"></argument>
+            <argument type="service" id="bazinga.jstranslation.finder"></argument>
+            <tag name="translation.extractor" alias="js" />
+        </service>
+        <service id="bazinga.jstranslation.translation_coffee_extractor">
+            <argument type="service" id="bazinga.jstranslation.filesystem"></argument>
+            <argument type="service" id="bazinga.jstranslation.finder"></argument>
+            <tag name="translation.extractor" alias="coffee" />
+        </service>
     </services>
 </container>
