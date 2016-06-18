@@ -5,6 +5,7 @@ namespace Bazinga\JsTranslationBundle\Tests\Extractor;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Translation\MessageCatalogue;
+use Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory;
 use Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem;
 use Bazinga\Bundle\JsTranslationBundle\Extractor\JsExtractor;
 
@@ -12,7 +13,8 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
 {
     const TEST_LOCALE = 'en';
     const TEST_KEY_1 = 'test-key-1';
-    const NUMBER_OF_SUPPORTED_EXTENSIONS = 2;
+    const TRANSLATION_PATH_PUBLIC = '/translation-path/public';
+    const TRANSLATION_PATH_VIEWS = '/translation-path/views';
 
     /**
      * @var JsExtractor
@@ -25,9 +27,9 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
     private $filesystem;
 
     /**
-     * @var Finder
+     * @var FinderFactory
      */
-    private $finder;
+    private $finderFactory;
 
     /**
      * @var MessageCatalogue
@@ -41,12 +43,12 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->filesystem = $this->prophesize(Filesystem::class);
-        $this->finder = $this->prophesize(Finder::class);
+        $this->finderFactory = $this->prophesize(FinderFactory::class);
         $this->messageCatalogue = new MessageCatalogue(self::TEST_LOCALE);
 
         $this->sut = new JsExtractor(
             $this->filesystem->reveal(),
-            $this->finder->reveal()
+            $this->finderFactory->reveal()
         );
     }
 
@@ -92,31 +94,35 @@ STRING;
 
     private function givenASourceFolder()
     {
-        $this->folder = '/translation-path/views';
+        $this->folder = self::TRANSLATION_PATH_VIEWS;
         $this->fileName = 'test.js';
         $this->filesystem
-            ->exists('/translation-path/public')
+            ->exists(self::TRANSLATION_PATH_PUBLIC)
             ->willReturn(true);
     }
 
     private function thenTheFinderWillFindAJsFile()
     {
-        $this->finder
+        $finder = $this->prophesize(Finder::class);
+
+        $finder
             ->files()
             ->shouldBeCalled();
 
-        $this->finder
+        $finder
             ->name('*.js')
             ->shouldBeCalled();
 
-        $this->finder
+        $finder
             ->name('*.jsx')
             ->shouldBeCalled();
 
-        $this->finder
-            ->in('/translation-path/public')
+        $finder
+            ->in(self::TRANSLATION_PATH_PUBLIC)
             ->shouldBeCalled()
             ->willReturn([$this->fileName]);
+
+        $this->finderFactory->createNewFinder()->willReturn($finder->reveal());
     }
 
     private function andTheFilesystemWillGrabItsContent()
