@@ -4,6 +4,7 @@ namespace Bazinga\Bundle\JsTranslationBundle\Finder;
 
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
@@ -106,6 +107,23 @@ class TranslationFinder
         if (is_dir($dir = $this->kernel->getRootDir() . '/Resources/translations')) {
             $locations[] = $dir;
         }
+        
+        // Check if config.yml exists
+        if(file_exists($this->kernel->getRootDir().'/config/config.yml')) {
+            // Read from config.yml all custom translator paths
+            $config = Yaml::parse(
+                file_get_contents($this->kernel->getRootDir().'/config/config.yml')
+            );
+            if(key_exists('framework', $config) && key_exists('translator', $config['framework']) && key_exists('path', $config['framework']['translator'])) {
+                $paths = $config['framework']['translator']['path'];
+                foreach ($paths as $key => $path) {
+                    $path = str_replace('%kernel.root_dir%/..', '%s', $path);
+                    $paths[$key] = sprintf($path, $this->kernel->getRootDir().'\..');
+                }
+                $locations = array_merge($locations, $paths);
+            }
+        }
+
 
         return $locations;
     }
