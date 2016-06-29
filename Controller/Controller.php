@@ -134,13 +134,13 @@ class Controller
 
                 $translations[$locale][$domain] = array();
 
-                foreach ($files as $file) {
-                    $extension = pathinfo($file->getFilename(), \PATHINFO_EXTENSION);
+                foreach ($files as $filename) {
+                    $extension = pathinfo($filename, \PATHINFO_EXTENSION);
 
                     if (isset($this->loaders[$extension])) {
-                        $resources[] = new FileResource($file->getPath());
+                        $resources[] = new FileResource($filename);
                         $catalogue   = $this->loaders[$extension]
-                            ->load($file, $locale, $domain);
+                            ->load($filename, $locale, $domain);
 
                         $translations[$locale][$domain] = array_replace_recursive(
                             $translations[$locale][$domain],
