@@ -17,16 +17,13 @@ class TranslationResourceFilesPass implements CompilerPassInterface
             return;
         }
 
-        if (Kernel::VERSION_ID < 20700) {
-            $translationFiles = $this->getTranslationFilesFromOlderSymfonyVersions($container);
-        } else {
-            $translationFiles = $this->getTranslationFiles($container);
-        }
+        $translationFiles = $this->getTranslationFilesFromAddResourceCalls($container);
+        $translationFiles = array_merge($translationFiles, $this->getTranslationFiles($container));
 
         $container->getDefinition('bazinga.jstranslation.translation_finder')->replaceArgument(0, $translationFiles);
     }
 
-    private function getTranslationFilesFromOlderSymfonyVersions(ContainerBuilder $container)
+    private function getTranslationFilesFromAddResourceCalls(ContainerBuilder $container)
     {
         $translationFiles = array();
 
