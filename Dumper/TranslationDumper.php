@@ -118,21 +118,29 @@ class TranslationDumper
      * Dump all translation files.
      *
      * @param string $target Target directory.
+     * @param boolean $js Dump JS files.
+     * @param boolean $json Dump JSON files.
+     * @param boolean $merge Merge domains.
      */
-    public function dump($target = 'web/js')
+    public function dump($target = 'web/js', $formats, $merge)
     {
         $route         = $this->router->getRouteCollection()->get('bazinga_jstranslation_js');
-        $requirements  = $route->getRequirements();
-        $formats       = explode('|', $requirements['_format']);
-
-        $routeDefaults = $route->getDefaults();
-        $defaultFormat = $routeDefaults['_format'];
+        //$requirements  = $route->getRequirements();
 
         $parts = array_filter(explode('/', $route->getPath()));
         $this->filesystem->remove($target. '/' . current($parts));
 
+        //$routeFormats  = explode('|', $requirements['_format']);
+
         $this->dumpConfig($route, $formats, $target);
-        $this->dumpTranslations($route, $formats, $target);
+
+        if ($merge) {
+            $this->dumpMergedTranslations($route, $formats, $target);
+        }
+        else {
+            $this->dumpTranslations($route, $formats, $target);
+        }
+
     }
 
     private function dumpConfig($route, array $formats, $target)
@@ -190,6 +198,32 @@ class TranslationDumper
 
                     file_put_contents($file, $content);
                 }
+            }
+        }
+    }
+
+    private function dumpMergedTranslations($route, array $formats, $target)
+    {
+        foreach ($this->getTranslations() as $locale => $domains) {
+            foreach ($formats as $format) {
+                $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $format . '.twig', array(
+                    'translations'   => array($locale => $domains),
+                    'include_config' => false,
+                ));
+
+                $file = sprintf('%s/%s',
+                    $target,
+                    strtr($route->getPath(), array(
+                        '{domain}'  => sprintf('%s/%s', $locale, $locale),
+                        '{_format}' => $format
+                    ))
+                );
+
+                if (file_exists($file)) {
+                    $this->filesystem->remove($file);
+                }
+
+                file_put_contents($file, $content);
             }
         }
     }
