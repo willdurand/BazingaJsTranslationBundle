@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DumpCommand extends ContainerAwareCommand
 {
-    private $formats = ['js', 'json'];
     private $targetPath;
 
     /**
@@ -32,20 +31,25 @@ class DumpCommand extends ContainerAwareCommand
             ))
             ->setDescription('Dumps all JS translation files to the filesystem')
             ->addOption(
+                'locales',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'If set, only the passed locales will be generated',
+                array()
+            )
+            ->addOption(
+                'formats',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'If set, only the passed formats will be generated',
+                array()
+            )
+            ->addOption(
                 'merge',
                 null,
                 InputOption::VALUE_NONE,
                 'If set, all domains will be merged into a single file per language'
             );
-
-        foreach ($this->formats as $format) {
-            $this->addOption(
-                $format,
-                null,
-                InputOption::VALUE_NONE,
-                "If set, only the $format files will be generated for every domain"
-            );
-        }
     }
 
     /**
@@ -64,24 +68,15 @@ class DumpCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dumpFormats = array();
-        $dumpMerge = $input->getOption('merge');
+        $locales = $input->getOption('locales');
+        $formats = $input->getOption('formats');
+        $merge = $input->getOption('merge');
 
         if (!is_dir($dir = dirname($this->targetPath))) {
             $output->writeln('<info>[dir+]</info>  ' . $dir);
             if (false === @mkdir($dir, 0777, true)) {
                 throw new \RuntimeException('Unable to create directory ' . $dir);
             }
-        }
-
-        foreach ($this->formats as $format) {
-            if ($input->getOption($format)) {
-                $dumpFormats[] = $format;
-            }
-        }
-
-        if (empty($dumpFormats)) {
-            $dumpFormats = $this->formats;
         }
 
         $output->writeln(sprintf(
@@ -92,6 +87,6 @@ class DumpCommand extends ContainerAwareCommand
         $this
             ->getContainer()
             ->get('bazinga.jstranslation.translation_dumper')
-            ->dump($this->targetPath, $dumpFormats, $dumpMerge);
+            ->dump($this->targetPath, $locales, $formats, $merge);
     }
 }

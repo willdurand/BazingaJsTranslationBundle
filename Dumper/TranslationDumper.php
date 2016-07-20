@@ -118,27 +118,37 @@ class TranslationDumper
      * Dump all translation files.
      *
      * @param string $target Target directory.
-     * @param boolean $js Dump JS files.
-     * @param boolean $json Dump JSON files.
+     * @param array $locales Locales to generate.
+     * @param array $formats Formats to generate.
      * @param boolean $merge Merge domains.
      */
-    public function dump($target = 'web/js', $formats, $merge)
+    public function dump($target = 'web/js', array $locales = [], array $formats = [], $merge = false)
     {
-        $route         = $this->router->getRouteCollection()->get('bazinga_jstranslation_js');
-        //$requirements  = $route->getRequirements();
+        $route = $this->router->getRouteCollection()->get('bazinga_jstranslation_js');
+        $requirements = $route->getRequirements();
+
+        $availableFormats  = explode('|', $requirements['_format']);
 
         $parts = array_filter(explode('/', $route->getPath()));
         $this->filesystem->remove($target. '/' . current($parts));
 
-        //$routeFormats  = explode('|', $requirements['_format']);
+        foreach ($formats as $format) {
+            if (!in_array($format, $availableFormats)) {
+                throw new \RuntimeException('The ' . $format . ' format is not available. Use only: ' . implode(', ', $availableFormats) . '.');
+            }
+        }
+
+        if (empty($formats)) {
+            $formats = $availableFormats;
+        }
 
         $this->dumpConfig($route, $formats, $target);
 
         if ($merge) {
-            $this->dumpMergedTranslations($route, $formats, $target);
+            $this->dumpMergedTranslations($route, $locales, $formats, $target);
         }
         else {
-            $this->dumpTranslations($route, $formats, $target);
+            $this->dumpTranslations($route, $locales, $formats, $target);
         }
 
     }
@@ -170,24 +180,63 @@ class TranslationDumper
         }
     }
 
-    private function dumpTranslations($route, array $formats, $target)
+    private function dumpTranslations($route, array $locales, array $formats, $target)
     {
         foreach ($this->getTranslations() as $locale => $domains) {
-            foreach ($domains as $domain => $translations) {
-                foreach ($formats as $format) {
-                    $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $format . '.twig', array(
-                        'translations'   => array($locale => array(
-                            $domain => $translations,
-                        )),
-                        'include_config' => false,
-                    ));
+            if (empty($locales) || in_array($locale, $locales)) {
+                foreach ($domains as $domain => $translations) {
+                    foreach ($formats as $format) {
+                        $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $format . '.twig', array(
+                            'translations'   => array($locale => array(
+                                $domain => $translations,
+                            )),
+                            'include_config' => false,
+                        ));
 
-                    $file = sprintf('%s/%s',
+                        $file = sprintf('%s/%s',
+                            $target,
+                            strtr($route->getPath(), array(
+                                '{domain}'  => sprintf('%s/%s', $domain, $locale),
+                                '{_format}' => $format
+                            ))
+                        );
+
+                        $this->filesystem->mkdir(dirname($file));
+
+                        if (file_exists($file)) {
+                            $this->filesystem->remove($file);
+                        }
+
+                        file_put_contents($file, $content);
+                    }
+                }
+            }
+        }
+    }
+
+    private function dumpMergedTranslations($route, array $locales, array $formats, $target)
+    {
+        foreach ($this->getTranslations() as $locale => $domains) {
+            if (empty($locales) || in_array($locale, $locales)) {
+                foreach ($formats as $format) {
+                    $content = $this->engine->render(
+                        'BazingaJsTranslationBundle::getTranslations.' . $format . '.twig',
+                        array(
+                            'translations' => array($locale => $domains),
+                            'include_config' => false,
+                        )
+                    );
+
+                    $file = sprintf(
+                        '%s/%s',
                         $target,
-                        strtr($route->getPath(), array(
-                            '{domain}'  => sprintf('%s/%s', $domain, $locale),
-                            '{_format}' => $format
-                        ))
+                        strtr(
+                            $route->getPath(),
+                            array(
+                                '{domain}' => sprintf('%s/%s', $locale, $locale),
+                                '{_format}' => $format
+                            )
+                        )
                     );
 
                     $this->filesystem->mkdir(dirname($file));
@@ -198,32 +247,6 @@ class TranslationDumper
 
                     file_put_contents($file, $content);
                 }
-            }
-        }
-    }
-
-    private function dumpMergedTranslations($route, array $formats, $target)
-    {
-        foreach ($this->getTranslations() as $locale => $domains) {
-            foreach ($formats as $format) {
-                $content = $this->engine->render('BazingaJsTranslationBundle::getTranslations.' . $format . '.twig', array(
-                    'translations'   => array($locale => $domains),
-                    'include_config' => false,
-                ));
-
-                $file = sprintf('%s/%s',
-                    $target,
-                    strtr($route->getPath(), array(
-                        '{domain}'  => sprintf('%s/%s', $locale, $locale),
-                        '{_format}' => $format
-                    ))
-                );
-
-                if (file_exists($file)) {
-                    $this->filesystem->remove($file);
-                }
-
-                file_put_contents($file, $content);
             }
         }
     }
