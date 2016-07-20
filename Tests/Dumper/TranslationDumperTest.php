@@ -9,6 +9,135 @@ use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
  */
 class TranslationDumperTest extends WebTestCase
 {
+    const JS_CONFIG = <<<JS
+(function (Translator) {
+    Translator.fallback      = 'en';
+    Translator.defaultDomain = 'messages';
+})(Translator);
+
+JS;
+
+    const JS_EN_MERGED_TRANSLATIONS = <<<JS
+(function (Translator) {
+    // en
+    Translator.add("foo", "bar", "foo", "en");
+    Translator.add("hello", "hello", "messages", "en");
+    Translator.add(7, "Nos occasions", "numerics", "en");
+    Translator.add(8, "Nous contacter", "numerics", "en");
+    Translator.add(12, "pr\u00e9nom", "numerics", "en");
+    Translator.add(13, "nom", "numerics", "en");
+    Translator.add(14, "adresse", "numerics", "en");
+    Translator.add(15, "code postal", "numerics", "en");
+})(Translator);
+
+JS;
+
+    const JS_EN_MESSAGES_TRANSLATIONS = <<<JS
+(function (Translator) {
+    // en
+    Translator.add("hello", "hello", "messages", "en");
+})(Translator);
+
+JS;
+
+    const JS_EN_NUMERICS_TRANSLATIONS = <<<JS
+(function (Translator) {
+    // en
+    Translator.add(7, "Nos occasions", "numerics", "en");
+    Translator.add(8, "Nous contacter", "numerics", "en");
+    Translator.add(12, "pr\u00e9nom", "numerics", "en");
+    Translator.add(13, "nom", "numerics", "en");
+    Translator.add(14, "adresse", "numerics", "en");
+    Translator.add(15, "code postal", "numerics", "en");
+})(Translator);
+
+JS;
+
+    const JS_FR_MERGED_TRANSLATIONS = <<<JS
+(function (Translator) {
+    // fr
+    Translator.add("hello", "bonjour", "messages", "fr");
+    Translator.add(7, "Nos occasions", "numerics", "fr");
+    Translator.add(8, "Nous contacter", "numerics", "fr");
+    Translator.add(12, "pr\u00e9nom", "numerics", "fr");
+    Translator.add(13, "nom", "numerics", "fr");
+    Translator.add(14, "adresse", "numerics", "fr");
+    Translator.add(15, "code postal", "numerics", "fr");
+})(Translator);
+
+JS;
+
+    const JS_FR_MESSAGES_TRANSLATIONS = <<<JS
+(function (Translator) {
+    // fr
+    Translator.add("hello", "bonjour", "messages", "fr");
+})(Translator);
+
+JS;
+
+    const JS_FR_NUMERICS_TRANSLATIONS = <<<JS
+(function (Translator) {
+    // fr
+    Translator.add(7, "Nos occasions", "numerics", "fr");
+    Translator.add(8, "Nous contacter", "numerics", "fr");
+    Translator.add(12, "pr\u00e9nom", "numerics", "fr");
+    Translator.add(13, "nom", "numerics", "fr");
+    Translator.add(14, "adresse", "numerics", "fr");
+    Translator.add(15, "code postal", "numerics", "fr");
+})(Translator);
+
+JS;
+
+    const JSON_CONFIG = <<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages"
+}
+
+JSON;
+
+    const JSON_EN_MERGED_TRANSLATIONS = <<<JSON
+{
+    "translations": {"en":{"foo":{"foo":"bar"},"messages":{"hello":"hello"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+}
+
+JSON;
+
+    const JSON_EN_MESSAGES_TRANSLATIONS = <<<JSON
+{
+    "translations": {"en":{"messages":{"hello":"hello"}}}
+}
+
+JSON;
+
+    const JSON_EN_NUMERICS_TRANSLATIONS = <<<JSON
+{
+    "translations": {"en":{"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+}
+
+JSON;
+
+    const JSON_FR_MERGED_TRANSLATIONS = <<<JSON
+{
+    "translations": {"fr":{"messages":{"hello":"bonjour"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+}
+
+JSON;
+
+    const JSON_FR_MESSAGES_TRANSLATIONS = <<<JSON
+{
+    "translations": {"fr":{"messages":{"hello":"bonjour"}}}
+}
+
+JSON;
+
+    const JSON_FR_NUMERICS_TRANSLATIONS = <<<JSON
+{
+    "translations": {"fr":{"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+}
+
+JSON;
+
     private $target;
 
     private $filesystem;
@@ -61,65 +190,25 @@ class TranslationDumperTest extends WebTestCase
             $this->assertFileNotExists($this->target . '/translations/' . $file);
         }
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    // fr
-    Translator.add("hello", "bonjour", "messages", "fr");
-})(Translator);
+        $this->assertEquals(self::JS_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.js'));
 
-JS
-        , file_get_contents($this->target . '/translations/messages/fr.js'));
+        $this->assertEquals(self::JS_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.js'));
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    // en
-    Translator.add("hello", "hello", "messages", "en");
-})(Translator);
+        $this->assertEquals(self::JS_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.js'));
 
-JS
-        , file_get_contents($this->target . '/translations/messages/en.js'));
+        $this->assertEquals(self::JS_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.js'));
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    Translator.fallback      = 'en';
-    Translator.defaultDomain = 'messages';
-})(Translator);
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
 
-JS
-        , file_get_contents($this->target . '/translations/config.js'));
+        $this->assertEquals(self::JSON_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.json'));
 
-        $this->assertEquals(<<<JSON
-{
-    "translations": {"fr":{"messages":{"hello":"bonjour"}}}
-}
+        $this->assertEquals(self::JSON_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.json'));
 
-JSON
-        , file_get_contents($this->target . '/translations/messages/fr.json'));
+        $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.json'));
 
-        $this->assertEquals(<<<JSON
-{
-    "translations": {"en":{"messages":{"hello":"hello"}}}
-}
+        $this->assertEquals(self::JSON_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.json'));
 
-JSON
-        , file_get_contents($this->target . '/translations/messages/en.json'));
-
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages"
-}
-
-JSON
-        , file_get_contents($this->target . '/translations/config.json'));
-
-        $this->assertEquals(<<<JSON
-{
-    "translations": {"en":{"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
-}
-
-JSON
-        , file_get_contents($this->target . '/translations/numerics/en.json'));
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
 
     }
 
@@ -143,70 +232,17 @@ JSON
             $this->assertFileNotExists($this->target . '/translations/' . $file);
         }
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    // en
-    Translator.add("foo", "bar", "foo", "en");
-    Translator.add("hello", "hello", "messages", "en");
-    Translator.add("7", "Nos occasions", "numerics", "en");
-    Translator.add("8", "Nous contacter", "numerics", "en");
-    Translator.add("12", "prénom", "numerics", "en");
-    Translator.add("13", "nom", "numerics", "en");
-    Translator.add("14", "adresse", "numerics", "en");
-    Translator.add("15", "code postal", "numerics", "en");
-})(Translator);
+        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en/en.js'));
 
-JS
-            , file_get_contents($this->target . '/translations/en/en.js'));
+        $this->assertEquals(self::JS_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr/fr.js'));
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    // fr
-    Translator.add("hello", "bonjour", "messages", "fr");
-    Translator.add("7", "Nos occasions", "numerics", "fr");
-    Translator.add("8", "Nous contacter", "numerics", "fr");
-    Translator.add("12", "prénom", "numerics", "fr");
-    Translator.add("13", "nom", "numerics", "fr");
-    Translator.add("14", "adresse", "numerics", "fr");
-    Translator.add("15", "code postal", "numerics", "fr");
-})(Translator);
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
 
-JS
-            , file_get_contents($this->target . '/translations/fr/fr.js'));
+        $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en/en.json'));
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    Translator.fallback      = 'en';
-    Translator.defaultDomain = 'messages';
-})(Translator);
+        $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr/fr.json'));
 
-JS
-            , file_get_contents($this->target . '/translations/config.js'));
-
-        $this->assertEquals(<<<JSON
-{
-    "translations": {"en":{"foo":{"foo":"bar"},"messages":{"hello":"hello"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
-}
-
-JSON
-            , file_get_contents($this->target . '/translations/en/en.json'));
-
-        $this->assertEquals(<<<JSON
-{
-    "translations": {"fr":{"messages":{"hello":"bonjour"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
-}
-
-JSON
-            , file_get_contents($this->target . '/translations/fr/fr.json'));
-
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages"
-}
-
-JSON
-            , file_get_contents($this->target . '/translations/config.json'));
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
 
     }
 
@@ -240,30 +276,11 @@ JSON
             $this->assertFileNotExists($this->target . '/translations/' . $file);
         }
 
-        $this->assertEquals(<<<JSON
-{
-    "translations": {"en":{"messages":{"hello":"hello"}}}
-}
+        $this->assertEquals(self::JSON_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.json'));
 
-JSON
-            , file_get_contents($this->target . '/translations/messages/en.json'));
+        $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.json'));
 
-        $this->assertEquals(<<<JSON
-{
-    "translations": {"en":{"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
-}
-
-JSON
-            , file_get_contents($this->target . '/translations/numerics/en.json'));
-
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages"
-}
-
-JSON
-            , file_get_contents($this->target . '/translations/config.json'));
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
 
     }
 
@@ -287,30 +304,9 @@ JSON
             $this->assertFileNotExists($this->target . '/translations/' . $file);
         }
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    // en
-    Translator.add("foo", "bar", "foo", "en");
-    Translator.add("hello", "hello", "messages", "en");
-    Translator.add("7", "Nos occasions", "numerics", "en");
-    Translator.add("8", "Nous contacter", "numerics", "en");
-    Translator.add("12", "prénom", "numerics", "en");
-    Translator.add("13", "nom", "numerics", "en");
-    Translator.add("14", "adresse", "numerics", "en");
-    Translator.add("15", "code postal", "numerics", "en");
-})(Translator);
+        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en/en.js'));
 
-JS
-            , file_get_contents($this->target . '/translations/en/en.js'));
-
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    Translator.fallback      = 'en';
-    Translator.defaultDomain = 'messages';
-})(Translator);
-
-JS
-            , file_get_contents($this->target . '/translations/config.js'));
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
 
     }
 
@@ -344,37 +340,11 @@ JS
             $this->assertFileNotExists($this->target . '/translations/' . $file);
         }
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    // fr
-    Translator.add("hello", "bonjour", "messages", "fr");
-})(Translator);
+        $this->assertEquals(self::JS_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.js'));
 
-JS
-            , file_get_contents($this->target . '/translations/messages/fr.js'));
+        $this->assertEquals(self::JS_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.js'));
 
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    // fr
-    Translator.add("7", "Nos occasions", "numerics", "fr");
-    Translator.add("8", "Nous contacter", "numerics", "fr");
-    Translator.add("12", "prénom", "numerics", "fr");
-    Translator.add("13", "nom", "numerics", "fr");
-    Translator.add("14", "adresse", "numerics", "fr");
-    Translator.add("15", "code postal", "numerics", "fr");
-})(Translator);
-
-JS
-            , file_get_contents($this->target . '/translations/numerics/fr.js'));
-
-        $this->assertEquals(<<<JS
-(function (Translator) {
-    Translator.fallback      = 'en';
-    Translator.defaultDomain = 'messages';
-})(Translator);
-
-JS
-            , file_get_contents($this->target . '/translations/config.js'));
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
 
     }
 
@@ -398,22 +368,9 @@ JS
             $this->assertFileNotExists($this->target . '/translations/' . $file);
         }
 
-        $this->assertEquals(<<<JSON
-{
-    "translations": {"fr":{"messages":{"hello":"bonjour"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
-}
+        $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr/fr.json'));
 
-JSON
-            , file_get_contents($this->target . '/translations/fr/fr.json'));
-
-        $this->assertEquals(<<<JSON
-{
-    "fallback": "en",
-    "defaultDomain": "messages"
-}
-
-JSON
-            , file_get_contents($this->target . '/translations/config.json'));
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
 
     }
 }
