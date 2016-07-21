@@ -214,7 +214,7 @@ JSON;
 
     public function testDumpAllMerged()
     {
-        $this->dumper->dump($this->target, [], [], true);
+        $this->dumper->dump($this->target, [], true);
 
         foreach (array(
                      'en/en.js',
@@ -246,101 +246,41 @@ JSON;
 
     }
 
-    public function testDumpEnJson()
+    public function testDumpJs()
     {
-        $this->dumper->dump($this->target, ['en'], ['json']);
-
-        foreach (array(
-                     'messages/en.json',
-                     'foo/en.json',
-                     'numerics/en.json',
-                 ) as $file) {
-            $this->assertFileExists($this->target . '/translations/' . $file);
-        }
+        $this->dumper->dump($this->target, ['js']);
 
         foreach (array(
                      'foo/en.js',
-                     'front/en.js',
-                     'front/en.json',
-                     'front/fr.js',
-                     'front/fr.json',
                      'messages/en.js',
-                     'messages/es.js',
-                     'messages/es.json',
                      'messages/fr.js',
-                     'messages/fr.json',
                      'numerics/en.js',
                      'numerics/fr.js',
-                     'numerics/fr.json',
-                 ) as $file) {
-            $this->assertFileNotExists($this->target . '/translations/' . $file);
-        }
-
-        $this->assertEquals(self::JSON_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.json'));
-
-        $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.json'));
-
-        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
-
-    }
-
-    public function testDumpEnJsMerged()
-    {
-        $this->dumper->dump($this->target, ['en'], ['js'], true);
-
-        foreach (array(
-                     'en/en.js',
                  ) as $file) {
             $this->assertFileExists($this->target . '/translations/' . $file);
         }
 
         foreach (array(
-                     'en/en.json',
-                     'es/es.js',
-                     'es/es.json',
-                     'fr/fr.js',
-                     'fr/fr.json',
-                 ) as $file) {
-            $this->assertFileNotExists($this->target . '/translations/' . $file);
-        }
-
-        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en/en.js'));
-
-        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
-
-    }
-
-    public function testDumpFrJs()
-    {
-        $this->dumper->dump($this->target, ['fr'], ['js']);
-
-        foreach (array(
-                     'messages/fr.js',
-                     'numerics/fr.js',
-                 ) as $file) {
-            $this->assertFileExists($this->target . '/translations/' . $file);
-        }
-
-        foreach (array(
-                     'foo/en.js',
                      'foo/en.json',
                      'front/en.js',
                      'front/en.json',
                      'front/fr.js',
                      'front/fr.json',
-                     'messages/en.js',
                      'messages/en.json',
                      'messages/es.js',
                      'messages/es.json',
                      'messages/fr.json',
-                     'numerics/en.js',
                      'numerics/en.json',
                      'numerics/fr.json',
                  ) as $file) {
             $this->assertFileNotExists($this->target . '/translations/' . $file);
         }
+
+        $this->assertEquals(self::JS_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.js'));
 
         $this->assertEquals(self::JS_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.js'));
+
+        $this->assertEquals(self::JS_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.js'));
 
         $this->assertEquals(self::JS_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.js'));
 
@@ -348,11 +288,82 @@ JSON;
 
     }
 
-    public function testDumpFrJsonMerge()
+    public function testDumpJson()
     {
-        $this->dumper->dump($this->target, ['fr'], ['json'], true);
+        $this->dumper->dump($this->target, ['json']);
 
         foreach (array(
+                     'foo/en.json',
+                     'messages/en.json',
+                     'messages/fr.json',
+                     'numerics/en.json',
+                     'numerics/fr.json',
+                 ) as $file) {
+            $this->assertFileExists($this->target . '/translations/' . $file);
+        }
+
+        foreach (array(
+                     'foo/en.js',
+                     'front/en.js',
+                     'front/en.json',
+                     'front/fr.js',
+                     'front/fr.json',
+                     'messages/en.js',
+                     'messages/es.js',
+                     'messages/es.json',
+                     'messages/fr.js',
+                     'numerics/en.js',
+                     'numerics/fr.js',
+                 ) as $file) {
+            $this->assertFileNotExists($this->target . '/translations/' . $file);
+        }
+
+        $this->assertEquals(self::JSON_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.json'));
+
+        $this->assertEquals(self::JSON_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.json'));
+
+        $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.json'));
+
+        $this->assertEquals(self::JSON_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.json'));
+
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
+
+    }
+
+    public function testDumpJsMerged()
+    {
+        $this->dumper->dump($this->target, ['js'], true);
+
+        foreach (array(
+                     'en/en.js',
+                     'fr/fr.js',
+                 ) as $file) {
+            $this->assertFileExists($this->target . '/translations/' . $file);
+        }
+
+        foreach (array(
+                     'en/en.json',
+                     'es/es.js',
+                     'es/es.json',
+                     'fr/fr.json',
+                 ) as $file) {
+            $this->assertFileNotExists($this->target . '/translations/' . $file);
+        }
+
+        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en/en.js'));
+
+        $this->assertEquals(self::JS_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr/fr.js'));
+
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
+
+    }
+
+    public function testDumpJsonMerged()
+    {
+        $this->dumper->dump($this->target, ['json'], true);
+
+        foreach (array(
+                     'en/en.json',
                      'fr/fr.json',
                  ) as $file) {
             $this->assertFileExists($this->target . '/translations/' . $file);
@@ -360,13 +371,14 @@ JSON;
 
         foreach (array(
                      'en/en.js',
-                     'en/en.json',
                      'es/es.js',
                      'es/es.json',
                      'fr/fr.js',
                  ) as $file) {
             $this->assertFileNotExists($this->target . '/translations/' . $file);
         }
+
+        $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en/en.json'));
 
         $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr/fr.json'));
 

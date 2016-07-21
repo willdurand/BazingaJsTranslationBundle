@@ -31,14 +31,7 @@ class DumpCommand extends ContainerAwareCommand
             ))
             ->setDescription('Dumps all JS translation files to the filesystem')
             ->addOption(
-                'locales',
-                null,
-                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'If set, only the passed locales will be generated',
-                array()
-            )
-            ->addOption(
-                'formats',
+                'format',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'If set, only the passed formats will be generated',
@@ -68,8 +61,7 @@ class DumpCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $locales = $input->getOption('locales');
-        $formats = $input->getOption('formats');
+        $formats = $input->getOption('format');
         $merge = $input->getOption('merge');
 
         if (!is_dir($dir = dirname($this->targetPath))) {
@@ -87,6 +79,6 @@ class DumpCommand extends ContainerAwareCommand
         $this
             ->getContainer()
             ->get('bazinga.jstranslation.translation_dumper')
-            ->dump($this->targetPath, $locales, $formats, $merge);
+            ->dump($this->targetPath, $formats, $merge);
     }
 }
