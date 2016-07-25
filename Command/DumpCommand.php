@@ -38,7 +38,7 @@ class DumpCommand extends ContainerAwareCommand
                 array()
             )
             ->addOption(
-                'merge',
+                'merge-domains',
                 null,
                 InputOption::VALUE_NONE,
                 'If set, all domains will be merged into a single file per language'
@@ -62,7 +62,9 @@ class DumpCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $formats = $input->getOption('format');
-        $merge = $input->getOption('merge');
+        $merge = (object) [
+            'domains' => $input->getOption('merge-domains')
+        ];
 
         if (!is_dir($dir = dirname($this->targetPath))) {
             $output->writeln('<info>[dir+]</info>  ' . $dir);

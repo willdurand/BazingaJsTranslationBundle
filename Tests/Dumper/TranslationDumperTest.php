@@ -162,7 +162,7 @@ JSON;
         }
     }
 
-    public function testDumpAll()
+    public function testDumpPerDomain()
     {
         $this->dumper->dump($this->target);
 
@@ -212,9 +212,9 @@ JSON;
 
     }
 
-    public function testDumpAllMerged()
+    public function testDumpPerLocale()
     {
-        $this->dumper->dump($this->target, [], true);
+        $this->dumper->dump($this->target, [], (object) ['domains' => true]);
 
         foreach (array(
                      'en/en.js',
@@ -246,7 +246,7 @@ JSON;
 
     }
 
-    public function testDumpJs()
+    public function testDumpJsPerDomain()
     {
         $this->dumper->dump($this->target, ['js']);
 
@@ -288,7 +288,7 @@ JSON;
 
     }
 
-    public function testDumpJson()
+    public function testDumpJsonPerDomain()
     {
         $this->dumper->dump($this->target, ['json']);
 
@@ -330,9 +330,9 @@ JSON;
 
     }
 
-    public function testDumpJsMerged()
+    public function testDumpJsPerLocale()
     {
-        $this->dumper->dump($this->target, ['js'], true);
+        $this->dumper->dump($this->target, ['js'], (object) ['domains' => true]);
 
         foreach (array(
                      'en/en.js',
@@ -358,9 +358,9 @@ JSON;
 
     }
 
-    public function testDumpJsonMerged()
+    public function testDumpJsonPerLocale()
     {
-        $this->dumper->dump($this->target, ['json'], true);
+        $this->dumper->dump($this->target, ['json'], (object) ['domains' => true]);
 
         foreach (array(
                      'en/en.json',

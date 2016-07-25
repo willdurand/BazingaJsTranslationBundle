@@ -118,10 +118,10 @@ class TranslationDumper
      * Dump all translation files.
      *
      * @param string $target Target directory.
-     * @param array $formats Formats to generate.
-     * @param boolean $merge Merge domains.
+     * @param string[] $formats Formats to generate.
+     * @param \stdClass $merge Merge options.
      */
-    public function dump($target = 'web/js', array $formats = [], $merge = false)
+    public function dump($target = 'web/js', array $formats = [], \stdClass $merge = null)
     {
         $route = $this->router->getRouteCollection()->get('bazinga_jstranslation_js');
         $requirements = $route->getRequirements();
@@ -143,11 +143,11 @@ class TranslationDumper
 
         $this->dumpConfig($route, $formats, $target);
 
-        if ($merge) {
-            $this->dumpMergedTranslations($route, $formats, $target);
+        if (!$merge) {
+            $this->dumpTranslationsPerDomain($route, $formats, $target);
         }
-        else {
-            $this->dumpTranslations($route, $formats, $target);
+        else if ($merge->domains) {
+            $this->dumpTranslationsPerLocale($route, $formats, $target);
         }
 
     }
@@ -179,7 +179,7 @@ class TranslationDumper
         }
     }
 
-    private function dumpTranslations($route, array $formats, $target)
+    private function dumpTranslationsPerDomain($route, array $formats, $target)
     {
         foreach ($this->getTranslations() as $locale => $domains) {
             foreach ($domains as $domain => $translations) {
@@ -211,7 +211,7 @@ class TranslationDumper
         }
     }
 
-    private function dumpMergedTranslations($route, array $formats, $target)
+    private function dumpTranslationsPerLocale($route, array $formats, $target)
     {
         foreach ($this->getTranslations() as $locale => $domains) {
             foreach ($formats as $format) {
