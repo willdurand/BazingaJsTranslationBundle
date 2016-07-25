@@ -46,11 +46,16 @@ Publish assets:
 
     php app/console assets:install --symlink web
 
-### Require via NPM
+### Require via NPM (optional)
 
 Install the package:
 
     npm install bazinga-translator --save
+    
+This step is optional because the files exposed by the npm package are also part of the composer bundle.
+Normally you would do this if you prefer to keep all your front-end dependencies in one place, or if you wish to include the `Translator` object as a module dependency in your JS files.
+
+**Important**: it is strongly recommended that you use the same version of the composer bundle and the npm package.
 
 
 Usage
