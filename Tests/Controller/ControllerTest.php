@@ -286,7 +286,7 @@ JSON
     public function testGetTranslationsOutsideResourcesFolder()
     {
         if (Kernel::VERSION_ID < 20800) {
-            return;
+            $this->markTestSkipped('This Symfony version do not support framework.paths configuration');
         }
 
         $client  = static::createClient();
@@ -299,6 +299,27 @@ JSON
     "fallback": "en",
     "defaultDomain": "messages",
     "translations": {"en":{"outsider":{"frontpage.hi":"hi"}}}
+}
+
+JSON
+            , $response->getContent());
+    }
+
+    /**
+     * Test the bar domain from another bundle using a compiler pass to add into the definition using a method call.
+     */
+    public function testGetTranslationsFromCompilerPassAnotherBundle()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/bar.json');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en":{"bar":{"bye":"bye"}}}
 }
 
 JSON
