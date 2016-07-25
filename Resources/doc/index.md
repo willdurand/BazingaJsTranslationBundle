@@ -14,6 +14,8 @@ guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGR
 Installation
 ------------
 
+### Require via Composer
+
 Install the bundle:
 
     composer require "willdurand/js-translation-bundle"
@@ -44,14 +46,34 @@ Publish assets:
 
     php app/console assets:install --symlink web
 
+### Require via NPM
+
+Install the package:
+
+    npm install bazinga-translator --save
+
 
 Usage
 -----
 
-First, add the following line to your template. It will load the JS `Translator`:
+To use the `Translator` object in your JS files you can either load it globally or `require` / `import` it as a module.
+
+* To load it globally add the following line to your template:
 
 ``` html
 <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
+```
+
+* To load it as a module you must be using a module bundler, like `webpack` and it is recommended that you install the translator via `npm`. Then in your JS files you can do:
+
+``` js
+// ES2015
+import Translator from 'bazinga-translator';
+```
+
+``` js
+// ES5
+var Translator = require('bazinga-translator');
 ```
 
 Then add the current application's locale into your layout, by adding a `lang`
@@ -110,7 +132,7 @@ file of your project.
 #### Loading via JSON
 
 Alternatively, you can load your translated messages via JSON (e.g. using
-jQuery's `ajax()` or RequireJS's text plugin). Just amend the above mentioned
+the `fetch` API, jQuery's `ajax()` or RequireJS's text plugin). Just amend the above mentioned
 URLs to also contain the `'_format': 'json'` parameter like so:
 
 ``` html
