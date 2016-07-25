@@ -132,7 +132,7 @@ directory.
 The `--format` option allows you to specify which formats must be included in the output.
 If you only need JSON files in your project you can do `--format=json`.
 
-The `--merge` option when set will generate only one file per locale with all the domains in it.
+The `--merge-domains` option when set will generate only one file per locale with all the domains in it.
 For cases where you prefer to load all language strings at once.
 
 You have to load a `config.js` file, which contains the configuration for the
