@@ -229,7 +229,7 @@ class TranslationDumper
                     strtr(
                         $route->getPath(),
                         array(
-                            '{domain}' => sprintf('%s/%s', $locale, $locale),
+                            '{domain}' => $locale,
                             '{_format}' => $format
                         )
                     )
