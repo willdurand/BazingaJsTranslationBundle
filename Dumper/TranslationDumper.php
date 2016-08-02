@@ -235,8 +235,6 @@ class TranslationDumper
                     )
                 );
 
-                $this->filesystem->mkdir(dirname($file));
-
                 if (file_exists($file)) {
                     $this->filesystem->remove($file);
                 }
