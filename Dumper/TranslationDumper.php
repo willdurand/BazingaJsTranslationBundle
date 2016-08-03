@@ -143,11 +143,11 @@ class TranslationDumper
 
         $this->dumpConfig($route, $formats, $target);
 
-        if (!$merge) {
-            $this->dumpTranslationsPerDomain($route, $formats, $target);
-        }
-        else if ($merge->domains) {
+        if ($merge && $merge->domains) {
             $this->dumpTranslationsPerLocale($route, $formats, $target);
+        }
+        else {
+            $this->dumpTranslationsPerDomain($route, $formats, $target);
         }
 
     }
