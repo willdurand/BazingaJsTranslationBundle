@@ -51,7 +51,7 @@ Publish assets:
 Install the package:
 
     npm install bazinga-translator --save
-    
+
 This step is optional because the files exposed by the npm package are also part of the composer bundle.
 Normally you would do this if you prefer to keep all your front-end dependencies in one place, or if you wish to include the `Translator` object as a module dependency in your JS files.
 
@@ -150,7 +150,7 @@ Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 This bundle provides a command to dump the translation files:
 
-    php app/console bazinga:js-translation:dump [target] [--format=js|json] [--merge]
+    php app/console bazinga:js-translation:dump [target] [--format=js|json] [--merge-domains]
 
 The optional `target` argument allows you to override the target directory to
 dump JS translation files in. By default, it generates files in the `web/js/`
@@ -184,7 +184,7 @@ The command below is useful if you use
 In the example above, all translation files from your entire project will be
 loaded. Of course you can load specific domains: `js/translations/admin/*.js`.
 
-The default translation URLs let a controller dump the translations. If you 
+The default translation URLs let a controller dump the translations. If you
 make use of the Assetic, you need to manually dump the translations each time
 a translation changes because the Assetic links will point to a static file.
 
@@ -355,7 +355,7 @@ bazinga_js_translation:
 
 #### Active locales
 
-By default, all locales are dumped. 
+By default, all locales are dumped.
 You can define an array of active locales:
 
 ``` yaml
@@ -367,7 +367,7 @@ bazinga_js_translation:
 
 #### Active Domains
 
-By default, all domains are dumped. 
+By default, all domains are dumped.
 You can define an array of active domains:
 
 ``` yaml
