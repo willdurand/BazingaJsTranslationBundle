@@ -62,9 +62,9 @@ class DumpCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $formats = $input->getOption('format');
-        $merge = (object) [
+        $merge = (object) array (
             'domains' => $input->getOption('merge-domains')
-        ];
+        );
 
         if (!is_dir($dir = dirname($this->targetPath))) {
             $output->writeln('<info>[dir+]</info>  ' . $dir);
