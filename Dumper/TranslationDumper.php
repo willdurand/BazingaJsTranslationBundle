@@ -121,7 +121,7 @@ class TranslationDumper
      * @param string[] $formats Formats to generate.
      * @param \stdClass $merge Merge options.
      */
-    public function dump($target = 'web/js', array $formats = [], \stdClass $merge = null)
+    public function dump($target = 'web/js', array $formats = array(), \stdClass $merge = null)
     {
         $route = $this->router->getRouteCollection()->get('bazinga_jstranslation_js');
         $requirements = $route->getRequirements();

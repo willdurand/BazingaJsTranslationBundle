@@ -214,7 +214,7 @@ JSON;
 
     public function testDumpPerLocale()
     {
-        $this->dumper->dump($this->target, [], (object) ['domains' => true]);
+        $this->dumper->dump($this->target, array(), (object) array('domains' => true));
 
         foreach (array(
                      'en.js',
@@ -248,7 +248,7 @@ JSON;
 
     public function testDumpJsPerDomain()
     {
-        $this->dumper->dump($this->target, ['js']);
+        $this->dumper->dump($this->target, array('js'));
 
         foreach (array(
                      'foo/en.js',
@@ -290,7 +290,7 @@ JSON;
 
     public function testDumpJsonPerDomain()
     {
-        $this->dumper->dump($this->target, ['json']);
+        $this->dumper->dump($this->target, array('json'));
 
         foreach (array(
                      'foo/en.json',
@@ -332,7 +332,7 @@ JSON;
 
     public function testDumpJsPerLocale()
     {
-        $this->dumper->dump($this->target, ['js'], (object) ['domains' => true]);
+        $this->dumper->dump($this->target, array('js'), (object) array('domains' => true));
 
         foreach (array(
                      'en.js',
@@ -360,7 +360,7 @@ JSON;
 
     public function testDumpJsonPerLocale()
     {
-        $this->dumper->dump($this->target, ['json'], (object) ['domains' => true]);
+        $this->dumper->dump($this->target, array('json'), (object) array('domains' => true));
 
         foreach (array(
                      'en.json',
