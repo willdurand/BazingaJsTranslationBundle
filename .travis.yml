@@ -19,7 +19,7 @@ before_install:
     - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION}; fi;
 
 install:
-    - composer install --prefer-source
+    - composer install
 
 script:
     - phpunit --coverage-text
