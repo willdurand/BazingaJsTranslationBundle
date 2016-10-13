@@ -1,6 +1,6 @@
-/*!
- * William DURAND <william.durand1@gmail.com>
- * MIT Licensed
+/**
+ * @author William DURAND <william.durand1@gmail.com>
+ * @license MIT Licensed
  */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -19,6 +19,7 @@
     "use strict";
 
     var _messages     = {},
+        _fallbackLocale = 'en',
         _domains      = [],
         _sPluralRegex = new RegExp(/^\w+\: +(.+)$/),
         _cPluralRegex = new RegExp(/^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/),
@@ -39,7 +40,7 @@
          * @type {String}
          * @api public
          */
-        fallback: 'en',
+        fallback: _fallbackLocale,
 
         /**
          * Placeholder prefix.
@@ -599,6 +600,9 @@
     function get_current_locale() {
         if (typeof document !== 'undefined') {
             return document.documentElement.lang.replace('-', '_');
+        }
+        else {
+            return _fallbackLocale;
         }
     }
 
