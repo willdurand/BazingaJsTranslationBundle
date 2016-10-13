@@ -26,6 +26,6 @@
     "uglify-js": "^2.7.3"
   },
   "scripts": {
-    "build": "uglifyjs js/translator.js --compress --mangle --output=public/js/translator.min.js"
+    "build": "uglifyjs js/translator.js --comments --compress --mangle --output=public/js/translator.min.js"
   }
 }
