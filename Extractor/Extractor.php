@@ -50,7 +50,7 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
         $this->prefix = $prefix;
     }
 
-    protected function parseMessagesFromContent($fileContent, MessageCatalogue $catalogue)
+    private function parseMessagesFromContent($fileContent, MessageCatalogue $catalogue)
     {
         $messages = $this->getMessagesForSequence($fileContent, $this->sequence);
 
