@@ -6,7 +6,8 @@ final class CoffeeExtractor extends Extractor
 {
     protected $sequence = '\\.trans(?:Choice)?\\s';
 
-    protected $supportedFileExtensions = [
-        'coffee',
-    ];
+    protected function getSupportedFileExtensions()
+    {
+        return array('coffee');
+    }
 }
