@@ -3,7 +3,6 @@
 namespace Bazinga\JsTranslationBundle\Tests\Extractor;
 
 use PHPUnit_Framework_TestCase;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Translation\MessageCatalogue;
 use Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory;
 use Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem;
@@ -42,8 +41,8 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->filesystem = $this->prophesize(Filesystem::class);
-        $this->finderFactory = $this->prophesize(FinderFactory::class);
+        $this->filesystem = $this->prophesize('Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem');
+        $this->finderFactory = $this->prophesize('Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory');
         $this->messageCatalogue = new MessageCatalogue(self::TEST_LOCALE);
 
         $this->sut = new JsExtractor(
@@ -144,7 +143,7 @@ STRING;
 
     private function thenTheFinderWillFindAJsFile()
     {
-        $finder = $this->prophesize(Finder::class);
+        $finder = $this->prophesize('Symfony\Component\Finder\Finder');
 
         $finder
             ->files()
@@ -161,7 +160,7 @@ STRING;
         $finder
             ->in(self::TRANSLATION_PATH_PUBLIC)
             ->shouldBeCalled()
-            ->willReturn([$this->fileName]);
+            ->willReturn(array($this->fileName));
 
         $this->finderFactory->createNewFinder()->willReturn($finder->reveal());
     }

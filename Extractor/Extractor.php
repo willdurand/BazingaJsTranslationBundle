@@ -59,11 +59,16 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
         }
     }
 
+    /**
+     * @return array
+     */
+    abstract protected function getSupportedFileExtensions();
+
     protected function canBeExtracted($file)
     {
         return $this->isFile($file) && in_array(
             pathinfo($file, PATHINFO_EXTENSION),
-            $this->supportedFileExtensions
+            $this->getSupportedFileExtensions()
         );
     }
 
@@ -78,7 +83,7 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
 
         $finder->files();
 
-        foreach ($this->supportedFileExtensions as $supportedExtension) {
+        foreach ($this->getSupportedFileExtensions() as $supportedExtension) {
             $finder->name(sprintf('*.%s', $supportedExtension));
         }
 
@@ -98,6 +103,6 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
             return $matches[1];
         }
 
-        return [];
+        return array();
     }
 }

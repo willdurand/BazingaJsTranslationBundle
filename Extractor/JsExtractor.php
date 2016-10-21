@@ -6,8 +6,8 @@ final class JsExtractor extends Extractor
 {
     protected $sequence = '\\.trans(?:Choice)?\\(';
 
-    protected $supportedFileExtensions = [
-        'js',
-        'jsx',
-    ];
+    protected function getSupportedFileExtensions()
+    {
+        return array('js', 'jsx');
+    }
 }
