@@ -17,7 +17,7 @@ final class CoffeeExtractorTest extends PHPUnit_Framework_TestCase
     const TRANSLATION_PATH_PUBLIC = '/translation-path/public';
 
     /**
-     * @var JsExtractor
+     * @var CoffeeExtractor
      */
     private $sut;
 
@@ -52,22 +52,51 @@ final class CoffeeExtractorTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testExtractShouldNotRetrieveTransKey()
+    {
+        $this->givenASourceFolderWithNotValidTransFunctionUsage();
+        $this->thenTheFinderWillFindACoffeeFile();
+        $this->andTheFilesystemWillGrabItsContent();
+        $this->whenUsingTheExtractFromTheSut();
+        $this->assertTheMessageCatalogueIsEmpty();
+    }
+
     public function testExtractShouldRetrieveTransKey()
     {
         $this->givenASourceFolderWithATransFunctionUsage();
-        $this->thenTheFinderWillFindAJsFile();
+        $this->thenTheFinderWillFindACoffeeFile();
         $this->andTheFilesystemWillGrabItsContent();
         $this->whenUsingTheExtractFromTheSut();
         $this->assertTheTransKeyIsInMessageCatalogue();
     }
 
+    public function testExtractShouldNotRetrieveTransChoiceKey()
+    {
+        $this->givenASourceFolderWithNotValidTransChoiceFunctionUsage();
+        $this->thenTheFinderWillFindACoffeeFile();
+        $this->andTheFilesystemWillGrabItsContent();
+        $this->whenUsingTheExtractFromTheSut();
+        $this->assertTheMessageCatalogueIsEmpty();
+    }
+
     public function testExtractShouldRetrieveTransChoiceKey()
     {
         $this->givenASourceFolderWithATransChoiceFunctionUsage();
-        $this->thenTheFinderWillFindAJsFile();
+        $this->thenTheFinderWillFindACoffeeFile();
         $this->andTheFilesystemWillGrabItsContent();
         $this->whenUsingTheExtractFromTheSut();
         $this->assertTheTransChoiceKeyIsInMessageCatalogue();
+    }
+
+    private function givenASourceFolderWithNotValidTransFunctionUsage()
+    {
+        $this->givenASourceFolder();
+
+        $this->fileContent = <<<STRING
+        Translator.tras 'test-key-1'
+        Translator.tans
+        Translator.tran variable
+STRING;
     }
 
     private function givenASourceFolderWithATransFunctionUsage()
@@ -81,6 +110,7 @@ final class CoffeeExtractorTest extends PHPUnit_Framework_TestCase
 STRING;
     }
 
+
     private function givenASourceFolderWithATransChoiceFunctionUsage()
     {
         $this->givenASourceFolder();
@@ -89,6 +119,17 @@ STRING;
         Translator.transChoice 'test-key-1', 5
         Translator.transChoice
         Translator.transChoice variable, 5
+STRING;
+    }
+
+    private function givenASourceFolderWithNotValidTransChoiceFunctionUsage()
+    {
+        $this->givenASourceFolder();
+
+        $this->fileContent = <<<STRING
+        Translator.transChice 'test-key-1', 5
+        Translator.transChoce
+        Translator.transCoice variable, 5
 STRING;
     }
 
@@ -101,7 +142,7 @@ STRING;
             ->willReturn(true);
     }
 
-    private function thenTheFinderWillFindAJsFile()
+    private function thenTheFinderWillFindACoffeeFile()
     {
         $finder = $this->prophesize(Finder::class);
 
@@ -131,6 +172,11 @@ STRING;
     private function whenUsingTheExtractFromTheSut()
     {
         $this->sut->extract($this->folder, $this->messageCatalogue);
+    }
+
+    private function assertTheMessageCatalogueIsEmpty()
+    {
+        $this->assertEmpty($this->messageCatalogue->all());
     }
 
     private function assertTheTransKeyIsInMessageCatalogue()
