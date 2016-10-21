@@ -22,8 +22,8 @@
             <argument></argument> <!-- active locales -->
             <argument></argument> <!-- active domains -->
         </service>
-        <service id="bazinga.jstranslation.filesystem" class="Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem"></service>
-        <service id="bazinga.jstranslation.finder_factory" class="Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory"></service>
+        <service id="bazinga.jstranslation.filesystem" class="Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem" public="false"></service>
+        <service id="bazinga.jstranslation.finder_factory" class="Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory" public="false"></service>
         <service id="bazinga.jstranslation.translation_js_extractor" class="Bazinga\Bundle\JsTranslationBundle\Extractor\JsExtractor">
             <argument type="service" id="bazinga.jstranslation.filesystem"></argument>
             <argument type="service" id="bazinga.jstranslation.finder_factory"></argument>
