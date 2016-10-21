@@ -52,6 +52,15 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testExtractShouldNotRetrieveTransKey()
+    {
+        $this->givenASourceFolderWithNotValidTransFunctionUsage();
+        $this->thenTheFinderWillFindAJsFile();
+        $this->andTheFilesystemWillGrabItsContent();
+        $this->whenUsingTheExtractFromTheSut();
+        $this->assertTheMessageCatalogueIsEmpty();
+    }
+
     public function testExtractShouldRetrieveTransKey()
     {
         $this->givenASourceFolderWithATransFunctionUsage();
@@ -59,6 +68,15 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
         $this->andTheFilesystemWillGrabItsContent();
         $this->whenUsingTheExtractFromTheSut();
         $this->assertTheTransKeyIsInMessageCatalogue();
+    }
+
+    public function testExtractShouldNotRetrieveTransChoiceKey()
+    {
+        $this->givenASourceFolderWithNotValidTransChoiceFunctionUsage();
+        $this->thenTheFinderWillFindAJsFile();
+        $this->andTheFilesystemWillGrabItsContent();
+        $this->whenUsingTheExtractFromTheSut();
+        $this->assertTheMessageCatalogueIsEmpty();
     }
 
     public function testExtractShouldRetrieveTransChoiceKey()
@@ -78,6 +96,29 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
         Translator.trans('test-key-1');
         Translator.trans();
         Translator.trans(variable);
+STRING;
+    }
+
+
+    private function givenASourceFolderWithNotValidTransFunctionUsage()
+    {
+        $this->givenASourceFolder();
+
+        $this->fileContent = <<<STRING
+        Translator.tras('test-key-1');
+        Translator.trns();
+        Translator.tans(variable);
+STRING;
+    }
+
+    private function givenASourceFolderWithNotValidTransChoiceFunctionUsage()
+    {
+        $this->givenASourceFolder();
+
+        $this->fileContent = <<<STRING
+        Translator.transChice('test-key-1', 5);
+        Translator.transCohie();
+        Translator.transChoce(variable, 5);
 STRING;
     }
 
@@ -135,6 +176,11 @@ STRING;
     private function whenUsingTheExtractFromTheSut()
     {
         $this->sut->extract($this->folder, $this->messageCatalogue);
+    }
+
+    private function assertTheMessageCatalogueIsEmpty()
+    {
+        $this->assertEmpty($this->messageCatalogue->all());
     }
 
     private function assertTheTransKeyIsInMessageCatalogue()
