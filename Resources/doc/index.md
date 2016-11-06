@@ -103,6 +103,35 @@ Loading translations is a matter of adding a new `script` tag as follows:
 This will use the current `locale` and will return the translated messages found
 in each `messages.CURRENT_LOCALE.*` files of your project.
 
+In case you do not want to expose an entire translation domain to your frontend,
+you can manually add translations to the translator collections. This simulates
+the way how the above script would add translations, but allows you to use any
+other renderer (like `Twig` or `php`) to make translations accessible
+
+```twig
+<script>
+/**
+ * Adds a translation entry.
+ *
+ * @param {String} id         The message id
+ * @param {String} message    The message to register for the given id
+ * @param {String} [domain]   The domain for the message or null to use the default
+ * @param {String} [locale]   The locale or null to use the default
+ * @return {Object}           Translator
+ * @api public
+ */
+Translator.add(
+    'translation_key',
+    '{{ 'translation_key'|trans }}',
+    'messages',
+    'en'
+);
+</script>
+```
+Manually adding single translations allows your translators to change the translation
+or placeholder ordering without the need of a separate translation domain, or without
+having to change the `Twig` or `js` view.
+
 #### Domains
 
 You can add translations that are bound to a given
