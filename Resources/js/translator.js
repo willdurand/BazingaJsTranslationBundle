@@ -149,6 +149,11 @@
             );
 
             var _number  = parseInt(number, 10);
+            parameters = parameters || {};
+
+            if (parameters.count === undefined) {
+                parameters.count = number;
+            }
 
             if (typeof _message !== 'undefined' && !isNaN(_number)) {
                 _message = pluralize(
@@ -158,7 +163,7 @@
                 );
             }
 
-            return replace_placeholders(_message, parameters || {});
+            return replace_placeholders(_message, parameters);
         },
 
         /**
