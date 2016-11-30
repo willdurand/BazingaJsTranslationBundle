@@ -3,6 +3,7 @@
 namespace Bazinga\JsTranslationBundle\Tests\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
+use Symfony\Component\HttpKernel\Kernel;
 
 class ControllerTest extends WebTestCase
 {
@@ -243,5 +244,48 @@ JSON
             'locale with three parts separeted by undescore' => array('ha_Latn_NE'),
             'locale with three parts separeted by undescore with long last part' => array('ja_J2P_TRADITIONAL')
         );
+    }
+
+    public function testGetTranslationsOutsideResourcesFolder()
+    {
+        if (Kernel::VERSION_ID < 20800) {
+            $this->markTestSkipped('This Symfony version do not support framework.paths configuration');
+        }
+
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/outsider.json');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en":{"outsider":{"frontpage.hi":"hi"}}}
+}
+
+JSON
+            , $response->getContent());
+    }
+
+    /**
+     * Test the bar domain from another bundle using a compiler pass to add into the definition using a method call.
+     */
+    public function testGetTranslationsFromCompilerPassAnotherBundle()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/bar.json');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en":{"bar":{"bye":"bye"}}}
+}
+
+JSON
+            , $response->getContent());
     }
 }
