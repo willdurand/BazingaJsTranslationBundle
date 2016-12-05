@@ -4,6 +4,7 @@ framework:
     templating:    { engines: [ 'twig' ] }
     test:          ~
     translator:    { enabled: true }
+    validation:    { enabled: false }
 
 # Twig Configuration
 twig:

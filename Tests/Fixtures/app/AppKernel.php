@@ -66,6 +66,10 @@ class AppKernel extends Kernel
         } else {
             $loader->load(__DIR__.'/config/'.$this->environment.'.yml');
         }
+
+        if (self::VERSION_ID > 30200) {
+            $loader->load(__DIR__.'/config/disable_annotations.yml');
+        }
     }
 
     public function serialize()
