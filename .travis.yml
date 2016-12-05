@@ -3,13 +3,21 @@ language: php
 php:
     - 5.5
     - 5.6
+    - 7.0
     - hhvm
 
-env:
-    - SYMFONY_VERSION=2.3.*
+sudo: false
 
-before_script:
-    - composer require symfony/symfony:${SYMFONY_VERSION} --no-interaction --prefer-source --dev
+cache:
+    directories:
+        - $HOME/.composer/cache/files
+
+before_install:
+    - composer self-update
+    - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION}; fi;
+
+install:
+    - composer install
 
 script:
     - phpunit --coverage-text
@@ -17,15 +25,15 @@ script:
     - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index-with-es5-shim.html
 
 matrix:
-    allow_failures:
-        - env: SYMFONY_VERSION=dev-master
-        - php: hhvm
+    fast_finish: true
     include:
       - php: 5.6
-        env: SYMFONY_VERSION=2.5.*
+        env: SYMFONY_VERSION='~2.3.0'
       - php: 5.6
-        env: SYMFONY_VERSION=2.6.*
+        env: SYMFONY_VERSION='~2.5.0'
       - php: 5.6
-        env: SYMFONY_VERSION=dev-master
-      - php: hhvm
-        env: SYMFONY_VERSION=dev-master
+        env: SYMFONY_VERSION='~2.7.0'
+      - php: 5.6
+        env: SYMFONY_VERSION='~2.8.0'
+      - php: 5.6
+        env: SYMFONY_VERSION='~3.0.0'

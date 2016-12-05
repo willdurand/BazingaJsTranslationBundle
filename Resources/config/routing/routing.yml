@@ -4,6 +4,7 @@ bazinga_jstranslation_js:
     methods:  [ GET ]
     options:
         i18n: false
+        expose: true
     requirements:
         _format: js|json
-        domain: "[\w]+"
+        domain: "[\\w]+"

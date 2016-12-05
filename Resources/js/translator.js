@@ -104,7 +104,7 @@ var Translator = (function(document, undefined) {
 
     /**
      * Just look for a specific locale / domain / id if the message is available,
-     * helpfull for message availability validation
+     * helpful for message availability validation
      *
      * @param {String} locale           The locale
      * @param {String} domain           The domain for the message
@@ -211,7 +211,7 @@ var Translator = (function(document, undefined) {
      * Convert number as String, "Inf" and "-Inf"
      * values to number values.
      *
-     * @param {String} number   A litteral number
+     * @param {String} number   A literal number
      * @return {Number}         The int value of the number
      * @api private
      */
@@ -446,7 +446,7 @@ var Translator = (function(document, undefined) {
         defaultDomain: 'messages',
 
         /**
-         * Plurar separator.
+         * Plural separator.
          *
          * @type {String}
          * @api public
@@ -456,11 +456,11 @@ var Translator = (function(document, undefined) {
         /**
          * Adds a translation entry.
          *
-         * @param {String} id       The message id
-         * @param {String} message  The message to register for the given id
-         * @param {String} domain   The domain for the message or null to use the default
-         * @param {String} locale   The locale or null to use the default
-         * @return {Object}         Translator
+         * @param {String} id         The message id
+         * @param {String} message    The message to register for the given id
+         * @param {String} [domain]   The domain for the message or null to use the default
+         * @param {String} [locale]   The locale or null to use the default
+         * @return {Object}           Translator
          * @api public
          */
         add: function(id, message, domain, locale) {
@@ -488,11 +488,11 @@ var Translator = (function(document, undefined) {
         /**
          * Translates the given message.
          *
-         * @param {String} id             The message id
-         * @param {Object} parameters     An array of parameters for the message
-         * @param {String} domain         The domain for the message or null to guess it
-         * @param {String} locale         The locale or null to use the default
-         * @return {String}               The translated string
+         * @param {String} id               The message id
+         * @param {Object} [parameters]     An array of parameters for the message
+         * @param {String} [domain]         The domain for the message or null to guess it
+         * @param {String} [locale]         The locale or null to use the default
+         * @return {String}                 The translated string
          * @api public
          */
         trans: function(id, parameters, domain, locale) {
@@ -510,12 +510,12 @@ var Translator = (function(document, undefined) {
         /**
          * Translates the given choice message by choosing a translation according to a number.
          *
-         * @param {String} id             The message id
-         * @param {Number} number         The number to use to find the indice of the message
-         * @param {Object} parameters     An array of parameters for the message
-         * @param {String} domain         The domain for the message or null to guess it
-         * @param {String} locale         The locale or null to use the default
-         * @return {String}               The translated string
+         * @param {String} id               The message id
+         * @param {Number} number           The number to use to find the indice of the message
+         * @param {Object} [parameters]     An array of parameters for the message
+         * @param {String} [domain]         The domain for the message or null to guess it
+         * @param {String} [locale]         The locale or null to use the default
+         * @return {String}                 The translated string
          * @api public
          */
         transChoice: function(id, number, parameters, domain, locale) {
@@ -548,7 +548,7 @@ var Translator = (function(document, undefined) {
          * @api public
          */
         fromJSON: function(data) {
-            if(typeof data === 'string') {
+            if (typeof data === 'string') {
                 data = JSON.parse(data);
             }
 
@@ -592,4 +592,11 @@ if (typeof window.define === 'function' && window.define.amd) {
     window.define('Translator', [], function() {
         return Translator;
     });
+}
+
+// Export the Translator object for Node.js
+if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = Translator;
+    }
 }
