@@ -22,7 +22,7 @@ install:
     - composer install
 
 script:
-    - phpunit --coverage-text
+    - vendor/bin/phpunit --coverage-text
     - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index.html
     - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index-with-es5-shim.html
 
