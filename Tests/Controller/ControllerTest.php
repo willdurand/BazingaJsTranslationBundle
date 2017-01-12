@@ -325,4 +325,22 @@ JSON
 JSON
             , $response->getContent());
     }
+
+    public function testGetTranslationsWithThreeLettersLocale()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=ach_UG');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"ach_UG":{"messages":{"hello":"hello"}}}
+}
+
+JSON
+            , $response->getContent());
+    }
 }
