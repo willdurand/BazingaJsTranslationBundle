@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
+ * @author Hugo Monteiro <hugo.monteiro@gmail.com>
  */
 class DumpCommand extends ContainerAwareCommand
 {
@@ -42,6 +43,11 @@ class DumpCommand extends ContainerAwareCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If set, all domains will be merged into a single file per language'
+            )->addOption(
+                'path',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'If set, all the translations are in a different folder (default is "translations")'
             );
     }
 
@@ -81,6 +87,20 @@ class DumpCommand extends ContainerAwareCommand
         $this
             ->getContainer()
             ->get('bazinga.jstranslation.translation_dumper')
-            ->dump($this->targetPath, $formats, $merge);
+            ->dump($this->targetPath, $this->getTranslationsPath($input->getOption('path')), $formats, $merge);
+    }
+
+    /**
+     * Get translations path from the router defined or use the default one.
+     */
+    private function getTranslationsPath($path)
+    {
+        $translationsPathOverriden = empty($path) ? 'translations' : $path;
+        $route = $this->getContainer()->get('router')->getRouteCollection()->get('bazinga_jstranslation_js');
+        if (empty($route)) {
+            return $translationsPathOverriden;
+        }
+
+        return $route->getPath();
     }
 }

@@ -6,6 +6,7 @@ use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
+ * @author Hugo Monteiro <hugo.monteiro@gmail.com>
  */
 class TranslationDumperTest extends WebTestCase
 {
@@ -144,6 +145,11 @@ JSON;
 
     private $dumper;
 
+    /**
+     * @var string translations path
+     */
+    private $path;
+
     public function setUp()
     {
         $container = $this->getContainer();
@@ -151,6 +157,7 @@ JSON;
         $this->target     = sys_get_temp_dir() . '/bazinga/js-translation-bundle';
         $this->filesystem = $container->get('filesystem');
         $this->dumper     = $container->get('bazinga.jstranslation.translation_dumper');
+        $this->path       = 'translations';
 
         $this->filesystem->mkdir($this->target);
     }
@@ -176,7 +183,7 @@ JSON;
             'numerics/en.js',
             'numerics/en.json',
         ) as $file) {
-            $this->assertFileExists($this->target . '/translations/' . $file);
+            $this->assertFileExists($this->target . '/' . $this->path . '/' . $file);
         }
 
         foreach (array(
@@ -187,34 +194,34 @@ JSON;
             'messages/es.js',
             'messages/es.json',
         ) as $file) {
-            $this->assertFileNotExists($this->target . '/translations/' . $file);
+            $this->assertFileNotExists($this->target . '/' . $this->path . '/' . $file);
         }
 
-        $this->assertEquals(self::JS_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.js'));
+        $this->assertEquals(self::JS_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/messages/en.js'));
 
-        $this->assertEquals(self::JS_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.js'));
+        $this->assertEquals(self::JS_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/messages/fr.js'));
 
-        $this->assertEquals(self::JS_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.js'));
+        $this->assertEquals(self::JS_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/numerics/en.js'));
 
-        $this->assertEquals(self::JS_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.js'));
+        $this->assertEquals(self::JS_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/numerics/fr.js'));
 
-        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/' . $this->path . '/config.js'));
 
-        $this->assertEquals(self::JSON_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.json'));
+        $this->assertEquals(self::JSON_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/messages/en.json'));
 
-        $this->assertEquals(self::JSON_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.json'));
+        $this->assertEquals(self::JSON_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/messages/fr.json'));
 
-        $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.json'));
+        $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/numerics/en.json'));
 
-        $this->assertEquals(self::JSON_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.json'));
+        $this->assertEquals(self::JSON_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/numerics/fr.json'));
 
-        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/' . $this->path . '/config.json'));
 
     }
 
     public function testDumpPerLocale()
     {
-        $this->dumper->dump($this->target, array(), (object) array('domains' => true));
+        $this->dumper->dump($this->target, $this->path, array(), (object) array('domains' => true));
 
         foreach (array(
                      'en.js',
@@ -222,33 +229,33 @@ JSON;
                      'fr.js',
                      'fr.json',
                  ) as $file) {
-            $this->assertFileExists($this->target . '/translations/' . $file);
+            $this->assertFileExists($this->target . '/' . $this->path . '/' . $file);
         }
 
         foreach (array(
                      'es.js',
                      'es.json',
                  ) as $file) {
-            $this->assertFileNotExists($this->target . '/translations/' . $file);
+            $this->assertFileNotExists($this->target . '/' . $this->path . '/' . $file);
         }
 
-        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en.js'));
+        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/en.js'));
 
-        $this->assertEquals(self::JS_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr.js'));
+        $this->assertEquals(self::JS_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/fr.js'));
 
-        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/' . $this->path . '/config.js'));
 
-        $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en.json'));
+        $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/en.json'));
 
-        $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr.json'));
+        $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/fr.json'));
 
-        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/' . $this->path . '/config.json'));
 
     }
 
     public function testDumpJsPerDomain()
     {
-        $this->dumper->dump($this->target, array('js'));
+        $this->dumper->dump($this->target, $this->path, array('js'));
 
         foreach (array(
                      'foo/en.js',
@@ -257,7 +264,7 @@ JSON;
                      'numerics/en.js',
                      'numerics/fr.js',
                  ) as $file) {
-            $this->assertFileExists($this->target . '/translations/' . $file);
+            $this->assertFileExists($this->target . '/' . $this->path . '/' . $file);
         }
 
         foreach (array(
@@ -273,24 +280,24 @@ JSON;
                      'numerics/en.json',
                      'numerics/fr.json',
                  ) as $file) {
-            $this->assertFileNotExists($this->target . '/translations/' . $file);
+            $this->assertFileNotExists($this->target . '/' . $this->path . '/' . $file);
         }
 
-        $this->assertEquals(self::JS_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.js'));
+        $this->assertEquals(self::JS_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/messages/en.js'));
 
-        $this->assertEquals(self::JS_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.js'));
+        $this->assertEquals(self::JS_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/messages/fr.js'));
 
-        $this->assertEquals(self::JS_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.js'));
+        $this->assertEquals(self::JS_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/numerics/en.js'));
 
-        $this->assertEquals(self::JS_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.js'));
+        $this->assertEquals(self::JS_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/numerics/fr.js'));
 
-        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/' . $this->path . '/config.js'));
 
     }
 
     public function testDumpJsonPerDomain()
     {
-        $this->dumper->dump($this->target, array('json'));
+        $this->dumper->dump($this->target, $this->path, array('json'));
 
         foreach (array(
                      'foo/en.json',
@@ -299,7 +306,7 @@ JSON;
                      'numerics/en.json',
                      'numerics/fr.json',
                  ) as $file) {
-            $this->assertFileExists($this->target . '/translations/' . $file);
+            $this->assertFileExists($this->target . '/' . $this->path . '/' . $file);
         }
 
         foreach (array(
@@ -315,30 +322,30 @@ JSON;
                      'numerics/en.js',
                      'numerics/fr.js',
                  ) as $file) {
-            $this->assertFileNotExists($this->target . '/translations/' . $file);
+            $this->assertFileNotExists($this->target . '/' . $this->path . '/' . $file);
         }
 
-        $this->assertEquals(self::JSON_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/en.json'));
+        $this->assertEquals(self::JSON_EN_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/messages/en.json'));
 
-        $this->assertEquals(self::JSON_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.json'));
+        $this->assertEquals(self::JSON_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/messages/fr.json'));
 
-        $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.json'));
+        $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/numerics/en.json'));
 
-        $this->assertEquals(self::JSON_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.json'));
+        $this->assertEquals(self::JSON_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/numerics/fr.json'));
 
-        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/' . $this->path . '/config.json'));
 
     }
 
     public function testDumpJsPerLocale()
     {
-        $this->dumper->dump($this->target, array('js'), (object) array('domains' => true));
+        $this->dumper->dump($this->target, $this->path, array('js'), (object) array('domains' => true));
 
         foreach (array(
                      'en.js',
                      'fr.js',
                  ) as $file) {
-            $this->assertFileExists($this->target . '/translations/' . $file);
+            $this->assertFileExists($this->target . '/' . $this->path . '/' . $file);
         }
 
         foreach (array(
@@ -347,26 +354,26 @@ JSON;
                      'es.json',
                      'fr.json',
                  ) as $file) {
-            $this->assertFileNotExists($this->target . '/translations/' . $file);
+            $this->assertFileNotExists($this->target . '/'. $this->path . '/' . $file);
         }
 
-        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en.js'));
+        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/en.js'));
 
-        $this->assertEquals(self::JS_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr.js'));
+        $this->assertEquals(self::JS_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/fr.js'));
 
-        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/' . $this->path . '/config.js'));
 
     }
 
     public function testDumpJsonPerLocale()
     {
-        $this->dumper->dump($this->target, array('json'), (object) array('domains' => true));
+        $this->dumper->dump($this->target, $this->path, array('json'), (object) array('domains' => true));
 
         foreach (array(
                      'en.json',
                      'fr.json',
                  ) as $file) {
-            $this->assertFileExists($this->target . '/translations/' . $file);
+            $this->assertFileExists($this->target . '/' . $this->path . '/' . $file);
         }
 
         foreach (array(
@@ -375,14 +382,14 @@ JSON;
                      'es.json',
                      'fr.js',
                  ) as $file) {
-            $this->assertFileNotExists($this->target . '/translations/' . $file);
+            $this->assertFileNotExists($this->target . '/' . $this->path . '/' . $file);
         }
 
-        $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en.json'));
+        $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/en.json'));
 
-        $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr.json'));
+        $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/' . $this->path . '/fr.json'));
 
-        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/' . $this->path . '/config.json'));
 
     }
 }
