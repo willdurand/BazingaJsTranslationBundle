@@ -255,17 +255,23 @@
         var _locale = locale || currentLocale || localeFallback,
             _domain = domain;
 
-        if (!(_locale in _messages)) {
-            if (!(localeFallback in _messages)) {
-                return id;
-            }
+        var nationalLocaleFallback = _locale.split('_')[0];
 
-            _locale = localeFallback;
+        if (!(_locale in _messages)) {
+            if (!(nationalLocaleFallback in _messages)) {
+                if (!(localeFallback in _messages)) {
+                    return id;
+                }
+                _locale = localeFallback;
+            } else {
+                _locale = nationalLocaleFallback;
+            }
         }
 
         if (typeof _domain === 'undefined' || null === _domain) {
             for (var i = 0; i < _domains.length; i++) {
                 if (has_message(_locale, _domains[i], id) ||
+                    has_message(nationalLocaleFallback, _domains[i], id) ||
                     has_message(localeFallback, _domains[i], id)) {
                     _domain = _domains[i];
 

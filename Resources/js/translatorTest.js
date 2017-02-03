@@ -285,3 +285,17 @@ test('works with given optional parameters', function() {
 
     equal(Translator.trans('symfony2.great', {}, 'messages', 'de_DE'), 'Symfony2 ist gigantisch');
 });
+
+test('searches in country fallback, if not exists in full domain', function() {
+    expect(1);
+
+    Translator.fromJSON({
+        "fallback": "en"
+    });
+
+    Translator.add('symfony2.great', 'I like Symfony2', 'messages', 'en');
+    Translator.add('symfony2.great', 'Symfony2 ist groß', 'messages', 'de');
+
+    Translator.locale = 'de_CH';
+    equal(Translator.trans('symfony2.great'), 'Symfony2 ist groß');
+});
