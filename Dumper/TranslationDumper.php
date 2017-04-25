@@ -3,6 +3,7 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Dumper;
 
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,6 +14,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class TranslationDumper
 {
+    const DEFAULT_TRANSLATION_PATTERN = '/translations/{domain}.{_format}';
+
     /**
      * @var EngineInterface
      */
@@ -111,18 +114,19 @@ class TranslationDumper
      * Dump all translation files.
      *
      * @param string $target Target directory.
-     * @param string $path translations path
+     * @param string $pattern e.g.
      * @param string[] $formats Formats to generate.
      * @param \stdClass $merge Merge options.
      */
     public function dump(
         $target = 'web/js',
-        $path = 'translations',
+        $pattern = self::DEFAULT_TRANSLATION_PATTERN,
         array $formats = array(),
         \stdClass $merge = null
     ) {
         $availableFormats  = array('js', 'json');
-        $parts = array_filter(explode('/', $path));
+
+        $parts = array_filter(explode('/', $pattern));
         $this->filesystem->remove($target. '/' . current($parts));
 
         foreach ($formats as $format) {
@@ -135,25 +139,24 @@ class TranslationDumper
             $formats = $availableFormats;
         }
 
-        $this->dumpConfig($path, $formats, $target);
+        $this->dumpConfig($pattern, $formats, $target);
 
         if ($merge && $merge->domains) {
-            $this->dumpTranslationsPerLocale($path, $formats, $target);
+            $this->dumpTranslationsPerLocale($pattern, $formats, $target);
+        } else {
+            $this->dumpTranslationsPerDomain($pattern, $formats, $target);
         }
-        else {
-            $this->dumpTranslationsPerDomain($path, $formats, $target);
-        }
-
     }
 
-    private function dumpConfig($path, array $formats, $target)
+    private function dumpConfig($pattern, array $formats, $target)
     {
         foreach ($formats as $format) {
-            $file = sprintf('%s/%s/%s.%s',
+            $file = sprintf('%s/%s',
                 $target,
-                $path,
-                'config',
-                $format
+                strtr($pattern, array(
+                    '{domain}'  => 'config',
+                    '{_format}' => $format
+                ))
             );
 
             $this->filesystem->mkdir(dirname($file));
@@ -172,7 +175,7 @@ class TranslationDumper
         }
     }
 
-    private function dumpTranslationsPerDomain($path, array $formats, $target)
+    private function dumpTranslationsPerDomain($pattern, array $formats, $target)
     {
         foreach ($this->getTranslations() as $locale => $domains) {
             foreach ($domains as $domain => $translations) {
@@ -184,11 +187,12 @@ class TranslationDumper
                         'include_config' => false,
                     ));
 
-                    $file = sprintf('%s/%s/%s.%s',
+                    $file = sprintf('%s/%s',
                         $target,
-                        $path,
-                        sprintf('%s/%s', $domain, $locale),
-                        $format
+                        strtr($pattern, array(
+                            '{domain}'  => sprintf('%s/%s', $domain, $locale),
+                            '{_format}' => $format
+                        ))
                     );
 
                     $this->filesystem->mkdir(dirname($file));
@@ -203,7 +207,7 @@ class TranslationDumper
         }
     }
 
-    private function dumpTranslationsPerLocale($path, array $formats, $target)
+    private function dumpTranslationsPerLocale($pattern, array $formats, $target)
     {
         foreach ($this->getTranslations() as $locale => $domains) {
             foreach ($formats as $format) {
@@ -216,11 +220,15 @@ class TranslationDumper
                 );
 
                 $file = sprintf(
-                    '%s/%s/%s.%s',
+                    '%s/%s',
                     $target,
-                    $path,
-                    $locale,
-                    $format
+                    strtr(
+                        $pattern,
+                        array(
+                            '{domain}' => $locale,
+                            '{_format}' => $format
+                        )
+                    )
                 );
 
                 if (file_exists($file)) {
@@ -243,7 +251,7 @@ class TranslationDumper
         foreach ($this->finder->all() as $filename) {
             list($extension, $locale, $domain) = $this->getFileInfo($filename);
 
-            if ( (count($activeLocales) > 0 && !in_array($locale, $activeLocales)) || (count($activeDomains) > 0 && !in_array($domain, $activeDomains)) ) {
+            if ((count($activeLocales) > 0 && !in_array($locale, $activeLocales)) || (count($activeDomains) > 0 && !in_array($domain, $activeDomains))) {
                 continue;
             }
 
