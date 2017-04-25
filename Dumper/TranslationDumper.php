@@ -114,7 +114,7 @@ class TranslationDumper
      * Dump all translation files.
      *
      * @param string $target Target directory.
-     * @param string $pattern e.g.
+     * @param string $pattern route path
      * @param string[] $formats Formats to generate.
      * @param \stdClass $merge Merge options.
      */
