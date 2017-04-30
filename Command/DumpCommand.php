@@ -35,9 +35,8 @@ class DumpCommand extends ContainerAwareCommand
             ->addOption(
                 'pattern',
                 null,
-                InputOption::VALUE_OPTIONAL,
-                'the route pattern',
-                TranslationDumper::DEFAULT_TRANSLATION_PATTERN
+                InputOption::VALUE_REQUIRED,
+                'The route pattern: e.g. "/translations/{domain}.{_format}"'
             )
             ->addOption(
                 'format',
