@@ -34,7 +34,7 @@ public function registerBundles()
 }
 ```
 
-Register the routing in `app/config/routing.yml`:
+Register the routing in `app/config/routing.yml` _(optional: Because the dump command does not depend on the router component)_:
 
 ``` yaml
 # app/config/routing.yml
@@ -179,7 +179,10 @@ Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 This bundle provides a command to dump the translation files:
 
-    php app/console bazinga:js-translation:dump [target] [--format=js|json] [--merge-domains]
+    php app/console bazinga:js-translation:dump [pattern] [target] [--format=js|json] [--merge-domains]
+
+The required `pattern` argument allows you to specify the url pattern that will be generated when generating the file with the translations (E.g: /translations/{domain}.{_format}). 
+There is no dependency with the router component.
 
 The optional `target` argument allows you to override the target directory to
 dump JS translation files in. By default, it generates files in the `web/js/`
