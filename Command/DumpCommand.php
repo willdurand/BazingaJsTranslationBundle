@@ -24,16 +24,20 @@ class DumpCommand extends ContainerAwareCommand
     {
         $this
             ->setName('bazinga:js-translation:dump')
+            ->setDefinition(array(
+                new InputArgument(
+                    'target',
+                    InputArgument::OPTIONAL,
+                    'Override the target directory to dump JS translation files in.'
+                ),
+            ))
             ->setDescription('Dumps all JS translation files to the filesystem')
-            ->addArgument(
+            ->addOption(
                 'pattern',
-                InputArgument::REQUIRED,
-                'The route pattern: e.g. "/translations/{domain}.{_format}"'
-            )
-            ->addArgument(
-                'target',
-                InputArgument::OPTIONAL,
-                'Override the target directory to dump JS translation files in.'
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The route pattern: e.g. "/translations/{domain}.{_format}"',
+                TranslationDumper::DEFAULT_TRANSLATION_PATTERN
             )
             ->addOption(
                 'format',
@@ -86,6 +90,6 @@ class DumpCommand extends ContainerAwareCommand
         $this
             ->getContainer()
             ->get('bazinga.jstranslation.translation_dumper')
-            ->dump($this->targetPath, $input->getArgument('pattern'), $formats, $merge);
+            ->dump($this->targetPath, $input->getOption('pattern'), $formats, $merge);
     }
 }
