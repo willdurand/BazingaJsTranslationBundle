@@ -5,7 +5,6 @@ namespace Bazinga\Bundle\JsTranslationBundle\Dumper;
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
