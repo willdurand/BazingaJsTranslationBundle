@@ -33,10 +33,9 @@ function waitFor(testFx, onReady, timeOutMillis) {
                 }
             }
         }, 100); //< repeat check every 250ms
-};
+}
 
-
-if (system.args.length === 0 || system.args.length > 2) {
+if (system.args.length === 1 || system.args.length > 3) {
     console.log('Usage: run-qunit.js URL');
     phantom.exit();
 }
@@ -48,7 +47,7 @@ page.onConsoleMessage = function(msg) {
     console.log(msg);
 };
 
-page.open(system.args[0], function(status){
+page.open(system.args[1], function(status){
     if (status !== "success") {
         console.log("Unable to access network");
         phantom.exit();
