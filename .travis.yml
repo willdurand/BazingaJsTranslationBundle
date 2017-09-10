@@ -28,7 +28,6 @@ matrix:
     fast_finish: true
     include:
       - php: 5.3
-        sudo: false
         dist: trusty
         env: SYMFONY_VERSION='~2.7.0'
       - php: 5.6
