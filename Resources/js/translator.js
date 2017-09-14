@@ -522,7 +522,7 @@
             case 'tk':
             case 'ur':
             case 'zu':
-                return (number == 1) ? 0 : 1;
+                return number;
 
             case 'am':
             case 'bh':
