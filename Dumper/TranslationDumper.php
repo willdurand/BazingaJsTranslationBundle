@@ -207,24 +207,23 @@ class TranslationDumper
         }
     }
 
-    private function dumpTranslationsPerLocale($pattern, array $formats, $target, bool $mergeFallback)
+    private function dumpTranslationsPerLocale($pattern, array $formats, $target, $mergeFallback)
     {
         $allTranslations = $this->getTranslations();
 
         foreach ($allTranslations as $locale => $domains) {
             $translations = array($locale => $domains);
 
-            if ($mergeFallback && $locale !== $this->localeFallback) {
-                foreach ($allTranslations[$this->localeFallback] as $domainIndex => $domainValue) {
-                    if (!isset($translations[$locale])) {
-                        $translations[$this->localeFallback] = array();
-                    }
-                    if (!isset($translations[$locale][$domainIndex])) {
-                        $translations[$this->localeFallback][$domainIndex] = array();
-                    }
-                    foreach ($domainValue as $translationIndex => $translationValue) {
-                        if (!isset($translations[$locale][$domainIndex][$translationIndex])) {
-                            $translations[$this->localeFallback][$domainIndex][$translationIndex] = $translationValue;
+            if ($mergeFallback) {
+                $localesFallback = array_unique(array(current(explode('_', $locale)), $this->localeFallback));
+                foreach ($localesFallback as $localeFallback) {
+                    if (!empty($localeFallback) && $locale !== $localeFallback && isset($allTranslations[$localeFallback])) {
+                        foreach ($allTranslations[$localeFallback] as $domain => $messages) {
+                            foreach ($messages as $key => $message) {
+                                if (!isset($translations[$locale][$domain][$key])) {
+                                    $translations[$localeFallback][$domain][$key] = $message;
+                                }
+                            }
                         }
                     }
                 }

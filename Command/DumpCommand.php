@@ -79,7 +79,7 @@ class DumpCommand extends ContainerAwareCommand
         $formats = $input->getOption('format');
         $merge = (object) array(
             'domains' => $input->getOption('merge-domains'),
-            'fallback' => $input->getOption('merge-fallback')
+            'fallback' => $input->getOption('merge-fallback'),
         );
 
         if (!is_dir($dir = dirname($this->targetPath))) {
