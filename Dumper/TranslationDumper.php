@@ -142,7 +142,7 @@ class TranslationDumper
         $this->dumpConfig($pattern, $formats, $target);
 
         if ($merge && $merge->domains) {
-            $this->dumpTranslationsPerLocale($pattern, $formats, $target);
+            $this->dumpTranslationsPerLocale($pattern, $formats, $target, $merge->fallback);
         } else {
             $this->dumpTranslationsPerDomain($pattern, $formats, $target);
         }
@@ -207,14 +207,34 @@ class TranslationDumper
         }
     }
 
-    private function dumpTranslationsPerLocale($pattern, array $formats, $target)
+    private function dumpTranslationsPerLocale($pattern, array $formats, $target, bool $mergeFallback)
     {
-        foreach ($this->getTranslations() as $locale => $domains) {
+        $allTranslations = $this->getTranslations();
+
+        foreach ($allTranslations as $locale => $domains) {
+            $translations = array($locale => $domains);
+
+            if ($mergeFallback && $locale !== $this->localeFallback) {
+                foreach ($allTranslations[$this->localeFallback] as $domainIndex => $domainValue) {
+                    if (!isset($translations[$locale])) {
+                        $translations[$this->localeFallback] = array();
+                    }
+                    if (!isset($translations[$locale][$domainIndex])) {
+                        $translations[$this->localeFallback][$domainIndex] = array();
+                    }
+                    foreach ($domainValue as $translationIndex => $translationValue) {
+                        if (!isset($translations[$locale][$domainIndex][$translationIndex])) {
+                            $translations[$this->localeFallback][$domainIndex][$translationIndex] = $translationValue;
+                        }
+                    }
+                }
+            }
+
             foreach ($formats as $format) {
                 $content = $this->engine->render(
                     'BazingaJsTranslationBundle::getTranslations.' . $format . '.twig',
                     array(
-                        'translations' => array($locale => $domains),
+                        'translations' => $translations,
                         'include_config' => false,
                     )
                 );

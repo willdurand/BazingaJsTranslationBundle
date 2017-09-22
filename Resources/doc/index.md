@@ -179,7 +179,7 @@ Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 This bundle provides a command to dump the translation files:
 
-    php app/console bazinga:js-translation:dump [target] [--format=js|json] [--pattern=/translations/{domain}.{_format}] [--merge-domains]
+    php app/console bazinga:js-translation:dump [target] [--format=js|json] [--pattern=/translations/{domain}.{_format}] [--merge-domains] [--merge-fallback]
 
 The optional `target` argument allows you to override the target directory to
 dump JS translation files in. By default, it generates files in the `web/js/`
@@ -192,6 +192,9 @@ The `--pattern` option allows you to specify the url pattern that will be genera
 
 The `--merge-domains` option when set will generate only one file per locale with all the domains in it.
 For cases where you prefer to load all language strings at once.
+
+The `--merge-fallback` option when set will include fallback translations into locales which are missing translations.
+Currently, working only with `--merge-domains` option.
 
 You have to load a `config.js` file, which contains the configuration for the
 JS Translator, then you can load all translation files that have been dumped.
