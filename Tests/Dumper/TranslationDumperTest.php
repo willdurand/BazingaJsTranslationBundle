@@ -221,7 +221,7 @@ JSON;
             $this->target,
             TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
             array(),
-            (object) array('domains' => true, 'fallback' => true)
+            (object) array('domains' => true, 'fallback' => false)
         );
 
         foreach (array(
@@ -349,7 +349,7 @@ JSON;
             $this->target,
             TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
             array('js'),
-            (object) array('domains' => true, 'fallback' => true)
+            (object) array('domains' => true, 'fallback' => false)
         );
 
         foreach (array(
@@ -381,7 +381,7 @@ JSON;
             $this->target,
             TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
             array('json'),
-            (object) array('domains' => true, 'fallback' => true)
+            (object) array('domains' => true, 'fallback' => false)
         );
 
         foreach (array(
