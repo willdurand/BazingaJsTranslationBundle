@@ -21,5 +21,8 @@
             <argument></argument> <!-- active locales -->
             <argument></argument> <!-- active domains -->
         </service>
+        <service id="bazinga.jstranslation.dump_command" class="Bazinga\Bundle\JsTranslationBundle\Command\DumpCommand">
+            <tag name="console.command" command="bazinga:js-translation:dump" />
+        </service>
     </services>
 </container>
