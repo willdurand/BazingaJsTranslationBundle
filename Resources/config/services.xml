@@ -22,6 +22,8 @@
             <argument></argument> <!-- active domains -->
         </service>
         <service id="bazinga.jstranslation.dump_command" class="Bazinga\Bundle\JsTranslationBundle\Command\DumpCommand">
+            <argument type="service" id="bazinga.jstranslation.translation_dumper" />
+            <argument>%kernel.root_dir%</argument>
             <tag name="console.command" command="bazinga:js-translation:dump" />
         </service>
     </services>
