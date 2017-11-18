@@ -34,6 +34,21 @@ t.add(15, "code postal", "numerics", "en");
 
 JS;
 
+    const JS_EN_MERGED_TRANSLATIONS_PHP7 = <<<JS
+(function (t) {
+// en
+t.add("hello", "hello", "messages", "en");
+t.add(7, "Nos occasions", "numerics", "en");
+t.add(8, "Nous contacter", "numerics", "en");
+t.add(12, "pr\u00e9nom", "numerics", "en");
+t.add(13, "nom", "numerics", "en");
+t.add(14, "adresse", "numerics", "en");
+t.add(15, "code postal", "numerics", "en");
+t.add("foo", "bar", "foo", "en");
+})(Translator);
+
+JS;
+
     const JS_EN_MESSAGES_TRANSLATIONS = <<<JS
 (function (t) {
 // en
@@ -65,6 +80,19 @@ t.add(12, "pr\u00e9nom", "numerics", "fr");
 t.add(13, "nom", "numerics", "fr");
 t.add(14, "adresse", "numerics", "fr");
 t.add(15, "code postal", "numerics", "fr");
+})(Translator);
+
+JS;
+    const JS_FR_MERGED_TRANSLATIONS_PHP7 = <<<JS
+(function (t) {
+// fr
+t.add(7, "Nos occasions", "numerics", "fr");
+t.add(8, "Nous contacter", "numerics", "fr");
+t.add(12, "pr\u00e9nom", "numerics", "fr");
+t.add(13, "nom", "numerics", "fr");
+t.add(14, "adresse", "numerics", "fr");
+t.add(15, "code postal", "numerics", "fr");
+t.add("hello", "bonjour", "messages", "fr");
 })(Translator);
 
 JS;
@@ -104,6 +132,12 @@ JSON;
 }
 
 JSON;
+    const JSON_EN_MERGED_TRANSLATIONS_PHP7 = <<<JSON
+{
+    "translations": {"en":{"messages":{"hello":"hello"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"},"foo":{"foo":"bar"}}}
+}
+
+JSON;
 
     const JSON_EN_MESSAGES_TRANSLATIONS = <<<JSON
 {
@@ -122,6 +156,13 @@ JSON;
     const JSON_FR_MERGED_TRANSLATIONS = <<<JSON
 {
     "translations": {"fr":{"messages":{"hello":"bonjour"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+}
+
+JSON;
+
+    const JSON_FR_MERGED_TRANSLATIONS_PHP7 = <<<JSON
+{
+    "translations": {"fr":{"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"},"messages":{"hello":"bonjour"}}}
 }
 
 JSON;
@@ -217,6 +258,10 @@ JSON;
 
     public function testDumpPerLocale()
     {
+        if (PHP_VERSION_ID >= 70000) {
+            $this->markTestSkipped('Sorting order changed in php7.0');
+        }
+
         $this->dumper->dump(
             $this->target,
             TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
@@ -249,6 +294,48 @@ JSON;
         $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en.json'));
 
         $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr.json'));
+
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
+    }
+
+    public function testDumpPerLocalePhp7()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Sorting order changed in php7.0');
+        }
+
+        $this->dumper->dump(
+            $this->target,
+            TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
+            array(),
+            (object) array('domains' => true)
+        );
+
+        foreach (array(
+                     'en.js',
+                     'en.json',
+                     'fr.js',
+                     'fr.json',
+                 ) as $file) {
+            $this->assertFileExists($this->target . '/translations/' . $file);
+        }
+
+        foreach (array(
+                     'es.js',
+                     'es.json',
+                 ) as $file) {
+            $this->assertFileNotExists($this->target . '/translations/' . $file);
+        }
+
+        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS_PHP7, file_get_contents($this->target . '/translations/en.js'));
+
+        $this->assertEquals(self::JS_FR_MERGED_TRANSLATIONS_PHP7, file_get_contents($this->target . '/translations/fr.js'));
+
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
+
+        $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS_PHP7, file_get_contents($this->target . '/translations/en.json'));
+
+        $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS_PHP7, file_get_contents($this->target . '/translations/fr.json'));
 
         $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
     }
@@ -345,6 +432,10 @@ JSON;
 
     public function testDumpJsPerLocale()
     {
+        if (PHP_VERSION_ID >= 70000) {
+            $this->markTestSkipped('Sorting order changed in php7.0');
+        }
+
         $this->dumper->dump(
             $this->target,
             TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
@@ -375,8 +466,48 @@ JSON;
         $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
     }
 
+    public function testDumpJsPerLocalePhp7()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Sorting order changed in php7.0');
+        }
+
+        $this->dumper->dump(
+            $this->target,
+            TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
+            array('js'),
+            (object) array('domains' => true)
+        );
+
+        foreach (array(
+                     'en.js',
+                     'fr.js',
+                 ) as $file) {
+            $this->assertFileExists($this->target . '/translations/' . $file);
+        }
+
+        foreach (array(
+                     'en.json',
+                     'es.js',
+                     'es.json',
+                     'fr.json',
+                 ) as $file) {
+            $this->assertFileNotExists($this->target . '/translations/' . $file);
+        }
+
+        $this->assertEquals(self::JS_EN_MERGED_TRANSLATIONS_PHP7, file_get_contents($this->target . '/translations/en.js'));
+
+        $this->assertEquals(self::JS_FR_MERGED_TRANSLATIONS_PHP7, file_get_contents($this->target . '/translations/fr.js'));
+
+        $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
+    }
+
     public function testDumpJsonPerLocale()
     {
+        if (PHP_VERSION_ID >= 70000) {
+            $this->markTestSkipped('Sorting order changed in php7.0');
+        }
+
         $this->dumper->dump(
             $this->target,
             TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
@@ -403,6 +534,42 @@ JSON;
         $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/en.json'));
 
         $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS, file_get_contents($this->target . '/translations/fr.json'));
+
+        $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
+    }
+
+    public function testDumpJsonPerLocalePhp7()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Sorting order changed in php7.0');
+        }
+
+        $this->dumper->dump(
+            $this->target,
+            TranslationDumper::DEFAULT_TRANSLATION_PATTERN,
+            array('json'),
+            (object) array('domains' => true)
+        );
+
+        foreach (array(
+                     'en.json',
+                     'fr.json',
+                 ) as $file) {
+            $this->assertFileExists($this->target . '/translations/' . $file);
+        }
+
+        foreach (array(
+                     'en.js',
+                     'es.js',
+                     'es.json',
+                     'fr.js',
+                 ) as $file) {
+            $this->assertFileNotExists($this->target . '/translations/' . $file);
+        }
+
+        $this->assertEquals(self::JSON_EN_MERGED_TRANSLATIONS_PHP7, file_get_contents($this->target . '/translations/en.json'));
+
+        $this->assertEquals(self::JSON_FR_MERGED_TRANSLATIONS_PHP7, file_get_contents($this->target . '/translations/fr.json'));
 
         $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
     }
