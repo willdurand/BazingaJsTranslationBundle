@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Flex\Recipe;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
@@ -86,7 +87,11 @@ class DumpCommand extends Command
     {
         parent::initialize($input, $output);
 
-        $this->targetPath = $input->getArgument('target') ?: sprintf('%s/../web/js', $this->kernelRootDir);
+        $this->targetPath = $input->getArgument('target') ?: sprintf(
+            '%s/../%s/js',
+            $this->kernelRootDir,
+            class_exists('Symfony\Flex\Recipe') ? 'public' : 'web'
+        );
     }
 
     /**

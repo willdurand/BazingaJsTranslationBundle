@@ -58,9 +58,13 @@ _bazinga_jstranslation:
     resource: "@BazingaJsTranslationBundle/Resources/config/routing/routing.yml"
 ```
 
-Publish assets:
+Publish assets Symfony 2 & 3:
 
     php bin/console assets:install --symlink web
+
+Publish assets Symfony 4+ with Flex:
+
+    php app/console assets:install --symlink public
 
 ### Require via NPM (optional)
 
@@ -199,7 +203,7 @@ This bundle provides a command to dump the translation files:
 
 The optional `target` argument allows you to override the target directory to
 dump JS translation files in. By default, it generates files in the `web/js/`
-directory.
+directory for Symfony versions prior to 4.0, and `public/js/` for Flex installs.
 
 The `--format` option allows you to specify which formats must be included in the output.
 If you only need JSON files in your project you can do `--format=json`.
