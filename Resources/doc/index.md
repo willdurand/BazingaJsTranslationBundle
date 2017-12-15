@@ -44,7 +44,7 @@ _bazinga_jstranslation:
 
 Publish assets:
 
-    php app/console assets:install --symlink web
+    php bin/console assets:install --symlink web
 
 ### Require via NPM (optional)
 
@@ -179,7 +179,7 @@ Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 This bundle provides a command to dump the translation files:
 
-    php app/console bazinga:js-translation:dump [target] [--format=js|json] [--pattern=/translations/{domain}.{_format}] [--merge-domains]
+    php bin/console bazinga:js-translation:dump [target] [--format=js|json] [--pattern=/translations/{domain}.{_format}] [--merge-domains]
 
 The optional `target` argument allows you to override the target directory to
 dump JS translation files in. By default, it generates files in the `web/js/`
