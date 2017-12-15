@@ -89,7 +89,7 @@ attribute to the `html` tag:
 ```
 
 Now, you are done with the basic setup, and you can specify the [translation
-files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions)
+files](http://symfony.com/doc/current/translation.html#translation-resource-file-names-and-locations)
 you want to load.
 
 ### Load Translations
