@@ -5,6 +5,7 @@ php:
     - 5.5
     - 5.6
     - 7.1
+    - 7.2
 
 sudo: false
 
@@ -14,8 +15,8 @@ cache:
 
 before_install:
     - composer self-update
+    - if [ "$STABILITY" = "dev" ]; then composer config minimum-stability dev; fi;
     - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION}; fi;
-    - if [ "$DEPENDENCIES" = "beta" ]; then composer config minimum-stability beta; fi;
 
 install:
     - composer install
@@ -34,3 +35,5 @@ matrix:
         env: SYMFONY_VERSION='~2.8.0'
       - php: 5.6
         env: SYMFONY_VERSION='~3.4.0'
+      - php: 7.2
+        env: STABILITY=dev
