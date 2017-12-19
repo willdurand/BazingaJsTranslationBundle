@@ -10,22 +10,22 @@ of this bundle. For version `1.x`, please read:
 Also, you might be interested in this [UPGRADE
 guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGRADE.md).
 
-- [Installation](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#installation)
-- [Usage](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#usage)
-    - [Load Translations](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#load-translations)
-        - [Domains](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#domains)
-        - [Locales](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#locales)
-        - [Loading via JSON](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#loading-via-json)
-    - [The dump Command](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#the-dump-command)
-        - [Assetic](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#assetic)
-    - [The JS Translator](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#the-js-translator)
-        - [Message Placeholders / Parameters](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#message-placeholders--parameters)
-        - [Pluralization](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#pluralization)
-        - [Get The Locale](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#get-the-locale)
-- [Examples](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#examples)
-- [More configuration](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#more-configuration)
-- [Reference Configuration](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#reference-configuration)
-- [Testing](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#testing)
+- [Installation](/blob/master/Resources/doc/index.md#installation)
+- [Usage](/blob/master/Resources/doc/index.md#usage)
+    - [Load Translations](/blob/master/Resources/doc/index.md#load-translations)
+        - [Domains](/blob/master/Resources/doc/index.md#domains)
+        - [Locales](/blob/master/Resources/doc/index.md#locales)
+        - [Loading via JSON](/blob/master/Resources/doc/index.md#loading-via-json)
+    - [The dump Command](/blob/master/Resources/doc/index.md#the-dump-command)
+        - [Assetic](/blob/master/Resources/doc/index.md#assetic)
+    - [The JS Translator](/blob/master/Resources/doc/index.md#the-js-translator)
+        - [Message Placeholders / Parameters](/blob/master/Resources/doc/index.md#message-placeholders--parameters)
+        - [Pluralization](/blob/master/Resources/doc/index.md#pluralization)
+        - [Get The Locale](/blob/master/Resources/doc/index.md#get-the-locale)
+- [Examples](/blob/master/Resources/doc/index.md#examples)
+- [More configuration](/blob/master/Resources/doc/index.md#more-configuration)
+- [Reference Configuration](/blob/master/Resources/doc/index.md#reference-configuration)
+- [Testing](/blob/master/Resources/doc/index.md#testing)
 
 Installation
 ------------
