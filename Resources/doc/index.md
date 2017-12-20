@@ -10,6 +10,22 @@ of this bundle. For version `1.x`, please read:
 Also, you might be interested in this [UPGRADE
 guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGRADE.md).
 
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Load Translations](#load-translations)
+        - [Domains](#domains)
+        - [Locales](#locales)
+        - [Loading via JSON](#loading-via-json)
+    - [The dump Command](#the-dump-command)
+        - [Assetic](#assetic)
+    - [The JS Translator](#the-js-translator)
+        - [Message Placeholders / Parameters](#message-placeholders--parameters)
+        - [Pluralization](#pluralization)
+        - [Get The Locale](#get-the-locale)
+- [Examples](#examples)
+- [More configuration](#more-configuration)
+- [Reference Configuration](#reference-configuration)
+- [Testing](#testing)
 
 Installation
 ------------
