@@ -89,7 +89,7 @@ attribute to the `html` tag:
 ```
 
 Now, you are done with the basic setup, and you can specify the [translation
-files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions)
+files](https://symfony.com/doc/current/translation.html#translation-resource-file-names-and-locations)
 you want to load.
 
 ### Load Translations
@@ -255,7 +255,7 @@ Translator.transChoice('key', 123, { "foo" : "bar" }, 'DOMAIN_NAME');
 ```
 
 > Read the official documentation about Symfony2 [message
-placeholders](http://symfony.com/doc/current/book/translation.html#message-placeholders).
+placeholders](https://symfony.com/doc/current/translation.html#message-placeholders).
 
 #### Pluralization
 
@@ -294,7 +294,7 @@ Translator.transChoice('apples', 100, {"count" : 100});
 ```
 
 For more information, read the official documentation  about
-[pluralization](http://symfony.com/doc/current/book/translation.html#pluralization).
+[pluralization](https://symfony.com/doc/current/translation.html#pluralization).
 
 #### Get The Locale
 
@@ -424,7 +424,7 @@ Testing
 
 ### PHP
 
-Setup the test suite using [Composer](http://getcomposer.org/):
+Setup the test suite using [Composer](https://getcomposer.org/):
 
     $ composer install --dev
 
