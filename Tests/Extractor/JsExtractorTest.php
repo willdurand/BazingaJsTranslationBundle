@@ -3,7 +3,6 @@
 namespace Bazinga\JsTranslationBundle\Tests\Extractor;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\MessageCatalogue;
 use Bazinga\Bundle\JsTranslationBundle\Extractor\JsExtractor;
@@ -17,6 +16,7 @@ final class JsExtractorTest extends TestCase
      * @var JsExtractor
      */
     private $extractor;
+
     public function setUp()
     {
         $this->extractor = new JsExtractor(
@@ -72,6 +72,7 @@ final class JsExtractorTest extends TestCase
             array(new \SplFileInfo(__DIR__.'/../Fixtures/Extractor/NotValidTransFunctionUsage/test.js')),
         );
     }
+
     public function resourcesWithATransFunctionUsage()
     {
         return array(
@@ -80,6 +81,7 @@ final class JsExtractorTest extends TestCase
             array(new \SplFileInfo(__DIR__.'/../Fixtures/Extractor/ATransFunctionUsage/test.js')),
         );
     }
+
     public function resourcesWithNotValidTransChoiceFunctionUsage()
     {
         return array(
@@ -88,6 +90,7 @@ final class JsExtractorTest extends TestCase
             array(new \SplFileInfo(__DIR__.'/../Fixtures/Extractor/NotValidTransChoiceFunctionUsage/test.js')),
         );
     }
+
     public function resourcesWithATransChoiceFunctionUsage()
     {
         return array(

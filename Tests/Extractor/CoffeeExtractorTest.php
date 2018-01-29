@@ -2,189 +2,101 @@
 
 namespace Bazinga\JsTranslationBundle\Tests\Extractor;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\MessageCatalogue;
-use Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory;
-use Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem;
 use Bazinga\Bundle\JsTranslationBundle\Extractor\CoffeeExtractor;
 
-final class CoffeeExtractorTest extends PHPUnit_Framework_TestCase
+final class CoffeeExtractorTest extends TestCase
 {
     const TEST_LOCALE = 'en';
     const TEST_KEY_1 = 'test-key-1';
-    const TRANSLATION_PATH_VIEWS = '/translation-path/views';
-    const TRANSLATION_PATH_PUBLIC = '/translation-path/public';
 
     /**
      * @var CoffeeExtractor
      */
     private $extractor;
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * @var FinderFactory
-     */
-    private $finderFactory;
-
-    /**
-     * @var MessageCatalogue
-     */
-    private $messageCatalogue;
-
-    private $folder;
-    private $fileName;
-    private $fileContent;
-
     public function setUp()
     {
-        $this->filesystem = $this->prophesize('Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem');
-        $this->finderFactory = $this->prophesize('Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory');
-        $this->messageCatalogue = new MessageCatalogue(self::TEST_LOCALE);
-
         $this->extractor = new CoffeeExtractor(
-            $this->filesystem->reveal(),
-            $this->finderFactory->reveal()
+            new Filesystem()
         );
     }
 
-    public function testExtractShouldNotRetrieveTransKey()
+    /**
+     * @dataProvider resourcesWithNotValidTransFunctionUsage
+     */
+    public function testExtractShouldNotRetrieveTransKey($resources)
     {
-        $this->givenASourceFolderWithNotValidTransFunctionUsage();
-        $this->thenTheFinderWillFindACoffeeFile();
-        $this->andTheFilesystemWillGrabItsContent();
-        $this->whenUsingTheExtractFromTheSut();
-        $this->assertTheMessageCatalogueIsEmpty();
+        $catalogue = new MessageCatalogue(self::TEST_LOCALE);
+        $this->extractor->extract($resources, $catalogue);
+        $this->assertEmpty($catalogue->all());
     }
 
-    public function testExtractShouldRetrieveTransKey()
+    /**
+     * @dataProvider resourcesWithATransFunctionUsage
+     */
+    public function testExtractShouldRetrieveTransKey($resources)
     {
-        $this->givenASourceFolderWithATransFunctionUsage();
-        $this->thenTheFinderWillFindACoffeeFile();
-        $this->andTheFilesystemWillGrabItsContent();
-        $this->whenUsingTheExtractFromTheSut();
-        $this->assertTheTransKeyIsInMessageCatalogue();
+        $catalogue = new MessageCatalogue(self::TEST_LOCALE);
+        $this->extractor->extract($resources, $catalogue);
+        $this->assertTrue($catalogue->has(self::TEST_KEY_1));
     }
 
-    public function testExtractShouldNotRetrieveTransChoiceKey()
+    /**
+     * @dataProvider resourcesWithNotValidTransChoiceFunctionUsage
+     */
+    public function testExtractShouldNotRetrieveTransChoiceKey($resources)
     {
-        $this->givenASourceFolderWithNotValidTransChoiceFunctionUsage();
-        $this->thenTheFinderWillFindACoffeeFile();
-        $this->andTheFilesystemWillGrabItsContent();
-        $this->whenUsingTheExtractFromTheSut();
-        $this->assertTheMessageCatalogueIsEmpty();
+        $catalogue = new MessageCatalogue(self::TEST_LOCALE);
+        $this->extractor->extract($resources, $catalogue);
+        $this->assertEmpty($catalogue->all());
     }
 
-    public function testExtractShouldRetrieveTransChoiceKey()
+    /**
+     * @dataProvider resourcesWithATransChoiceFunctionUsage
+     */
+    public function testExtractShouldRetrieveTransChoiceKey($resources)
     {
-        $this->givenASourceFolderWithATransChoiceFunctionUsage();
-        $this->thenTheFinderWillFindACoffeeFile();
-        $this->andTheFilesystemWillGrabItsContent();
-        $this->whenUsingTheExtractFromTheSut();
-        $this->assertTheTransChoiceKeyIsInMessageCatalogue();
+        $catalogue = new MessageCatalogue(self::TEST_LOCALE);
+        $this->extractor->extract($resources, $catalogue);
+        $this->assertTrue($catalogue->has(self::TEST_KEY_1));
     }
 
-    private function givenASourceFolderWithNotValidTransFunctionUsage()
+    public function resourcesWithNotValidTransFunctionUsage()
     {
-        $this->givenASourceFolder();
-
-        $this->fileContent = <<<STRING
-        Translator.tras 'test-key-1'
-        Translator.tans
-        Translator.tran variable
-STRING;
+        return array(
+            array(__DIR__.'/../Fixtures/Extractor/NotValidTransFunctionUsage'),
+            array(__DIR__.'/../Fixtures/Extractor/NotValidTransFunctionUsage/test.coffee'),
+            array(new \SplFileInfo(__DIR__.'/../Fixtures/Extractor/NotValidTransFunctionUsage/test.coffee')),
+        );
     }
 
-    private function givenASourceFolderWithATransFunctionUsage()
+    public function resourcesWithATransFunctionUsage()
     {
-        $this->givenASourceFolder();
-
-        $this->fileContent = <<<STRING
-        Translator.trans 'test-key-1'
-        Translator.trans
-        Translator.trans variable
-STRING;
+        return array(
+            array(__DIR__.'/../Fixtures/Extractor/ATransFunctionUsage'),
+            array(__DIR__.'/../Fixtures/Extractor/ATransFunctionUsage/test.coffee'),
+            array(new \SplFileInfo(__DIR__.'/../Fixtures/Extractor/ATransFunctionUsage/test.coffee')),
+        );
     }
 
-
-    private function givenASourceFolderWithATransChoiceFunctionUsage()
+    public function resourcesWithNotValidTransChoiceFunctionUsage()
     {
-        $this->givenASourceFolder();
-
-        $this->fileContent = <<<STRING
-        Translator.transChoice 'test-key-1', 5
-        Translator.transChoice
-        Translator.transChoice variable, 5
-STRING;
+        return array(
+            array(__DIR__.'/../Fixtures/Extractor/NotValidTransChoiceFunctionUsage'),
+            array(__DIR__.'/../Fixtures/Extractor/NotValidTransChoiceFunctionUsage/test.coffee'),
+            array(new \SplFileInfo(__DIR__.'/../Fixtures/Extractor/NotValidTransChoiceFunctionUsage/test.coffee')),
+        );
     }
 
-    private function givenASourceFolderWithNotValidTransChoiceFunctionUsage()
+    public function resourcesWithATransChoiceFunctionUsage()
     {
-        $this->givenASourceFolder();
-
-        $this->fileContent = <<<STRING
-        Translator.transChice 'test-key-1', 5
-        Translator.transChoce
-        Translator.transCoice variable, 5
-STRING;
-    }
-
-    private function givenASourceFolder()
-    {
-        $this->folder = self::TRANSLATION_PATH_VIEWS;
-        $this->fileName = 'test.js';
-        $this->filesystem
-            ->exists(self::TRANSLATION_PATH_PUBLIC)
-            ->willReturn(true);
-    }
-
-    private function thenTheFinderWillFindACoffeeFile()
-    {
-        $finder = $this->prophesize('Symfony\Component\Finder\Finder');
-
-        $finder
-            ->files()
-            ->shouldBeCalled();
-
-        $finder
-            ->name('*.coffee')
-            ->shouldBeCalled();
-
-        $finder
-            ->in(self::TRANSLATION_PATH_PUBLIC)
-            ->shouldBeCalled()
-            ->willReturn(array($this->fileName));
-
-        $this->finderFactory->createNewFinder()->willReturn($finder->reveal());
-    }
-
-    private function andTheFilesystemWillGrabItsContent()
-    {
-        $this->filesystem
-            ->getContents($this->fileName)
-            ->willReturn($this->fileContent);
-    }
-
-    private function whenUsingTheExtractFromTheSut()
-    {
-        $this->extractor->extract($this->folder, $this->messageCatalogue);
-    }
-
-    private function assertTheMessageCatalogueIsEmpty()
-    {
-        $this->assertEmpty($this->messageCatalogue->all());
-    }
-
-    private function assertTheTransKeyIsInMessageCatalogue()
-    {
-        $this->assertTrue($this->messageCatalogue->has(self::TEST_KEY_1));
-    }
-
-    private function assertTheTransChoiceKeyIsInMessageCatalogue()
-    {
-        $this->assertTrue($this->messageCatalogue->has(self::TEST_KEY_1));
+        return array(
+            array(__DIR__.'/../Fixtures/Extractor/ATransChoiceFunctionUsage'),
+            array(__DIR__.'/../Fixtures/Extractor/ATransChoiceFunctionUsage/test.coffee'),
+            array(new \SplFileInfo(__DIR__.'/../Fixtures/Extractor/ATransChoiceFunctionUsage/test.coffee')),
+        );
     }
 }
