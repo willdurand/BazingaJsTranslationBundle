@@ -18,7 +18,7 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
     /**
      * @var JsExtractor
      */
-    private $sut;
+    private $extractor;
 
     /**
      * @var Filesystem
@@ -45,7 +45,7 @@ final class JsExtractorTest extends PHPUnit_Framework_TestCase
         $this->finderFactory = $this->prophesize('Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory');
         $this->messageCatalogue = new MessageCatalogue(self::TEST_LOCALE);
 
-        $this->sut = new JsExtractor(
+        $this->extractor = new JsExtractor(
             $this->filesystem->reveal(),
             $this->finderFactory->reveal()
         );
@@ -174,7 +174,7 @@ STRING;
 
     private function whenUsingTheExtractFromTheSut()
     {
-        $this->sut->extract($this->folder, $this->messageCatalogue);
+        $this->extractor->extract($this->folder, $this->messageCatalogue);
     }
 
     private function assertTheMessageCatalogueIsEmpty()
