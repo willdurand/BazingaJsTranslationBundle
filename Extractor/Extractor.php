@@ -2,11 +2,11 @@
 
 namespace Bazinga\Bundle\JsTranslationBundle\Extractor;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Translation\Extractor\AbstractFileExtractor;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Extractor\ExtractorInterface;
-use Bazinga\Bundle\JsTranslationBundle\Finder\FinderFactory;
-use Bazinga\Bundle\JsTranslationBundle\Filesystem\Filesystem;
 
 abstract class Extractor extends AbstractFileExtractor implements ExtractorInterface
 {
@@ -17,11 +17,11 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
 
     private $filesystem;
 
-    private $finderFactory;
+    private $finder;
 
-    public function __construct(Filesystem $filesystem, FinderFactory $finderFactory) {
+    public function __construct(Filesystem $filesystem, Finder $finder) {
         $this->filesystem = $filesystem;
-        $this->finderFactory = $finderFactory;
+        $this->finder = $finder;
     }
 
     /**
@@ -29,16 +29,10 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
      */
     public function extract($resource, MessageCatalogue $catalogue)
     {
-        $assetsPath = dirname($resource) . '/public';
-
-        if (!$this->filesystem->exists($assetsPath)) {
-            return;
-        }
-
-        $files = $this->extractFiles($assetsPath);
+        $files = $this->extractFiles($resource);
 
         foreach ($files as $file) {
-            $this->parseMessagesFromContent($this->filesystem->getContents($file), $catalogue);
+            $this->parseMessagesFromContent(file_get_contents($file), $catalogue);
         }
     }
 
@@ -79,15 +73,13 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
 
     protected function extractFromDirectory($directory)
     {
-        $finder = $this->finderFactory->createNewFinder();
-
-        $finder->files();
+        $this->finder->files();
 
         foreach ($this->getSupportedFileExtensions() as $supportedExtension) {
-            $finder->name(sprintf('*.%s', $supportedExtension));
+            $this->finder->name(sprintf('*.%s', $supportedExtension));
         }
 
-        return $finder->in($directory);
+        return $this->finder->in($directory);
     }
 
     private function getMessagesForSequence($fileContent, $sequence)
