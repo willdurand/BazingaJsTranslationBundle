@@ -20,8 +20,7 @@ final class JsExtractorTest extends TestCase
     public function setUp()
     {
         $this->extractor = new JsExtractor(
-            new Filesystem(),
-            new Finder()
+            new Filesystem()
         );
     }
 

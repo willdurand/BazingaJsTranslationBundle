@@ -17,11 +17,8 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
 
     private $filesystem;
 
-    private $finder;
-
-    public function __construct(Filesystem $filesystem, Finder $finder) {
-        $this->filesystem = $filesystem;
-        $this->finder = $finder;
+    public function __construct(Filesystem $filesystem) {
+        $this->filesystem = $filesystem;;
     }
 
     /**
@@ -73,13 +70,15 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
 
     protected function extractFromDirectory($directory)
     {
-        $this->finder->files();
+        $finder = new Finder();
+
+        $finder->files();
 
         foreach ($this->getSupportedFileExtensions() as $supportedExtension) {
-            $this->finder->name(sprintf('*.%s', $supportedExtension));
+            $finder->name(sprintf('*.%s', $supportedExtension));
         }
 
-        return $this->finder->in($directory);
+        return $finder->in($directory);
     }
 
     private function getMessagesForSequence($fileContent, $sequence)
