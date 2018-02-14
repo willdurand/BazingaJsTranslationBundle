@@ -35,7 +35,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->arrayNode('frontend')
-                  ->arrayPrototype()
+                  ->prototype('array')
                     ->children()
                       ->arrayNode('extensions')
                         ->prototype('scalar')
