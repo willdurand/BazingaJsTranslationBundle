@@ -8,7 +8,7 @@ use Symfony\Component\Translation\Extractor\AbstractFileExtractor;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Extractor\ExtractorInterface;
 
-abstract class Extractor extends AbstractFileExtractor implements ExtractorInterface
+final class FrontendExtractor extends AbstractFileExtractor implements ExtractorInterface
 {
     const FUNCTION_STRING_ARGUMENT_REGEX = '\s?[\'"]([^"\'),]+)[\'"]\s?';
     const REGEX_DELIMITER = '/';
@@ -17,8 +17,11 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
 
     private $filesystem;
 
-    public function __construct(Filesystem $filesystem) {
-        $this->filesystem = $filesystem;;
+    private $configuration;
+
+    public function __construct(Filesystem $filesystem, array $configuration = []) {
+        $this->filesystem = $filesystem;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -29,7 +32,14 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
         $files = $this->extractFiles($resource);
 
         foreach ($files as $file) {
-            $this->parseMessagesFromContent(file_get_contents($file), $catalogue);
+            foreach ($this->configuration as $configuration)
+            {
+              $pathInfo = pathinfo($file);
+              if (in_array($pathInfo['extension'], $configuration['extensions'], true))
+              {
+                $this->parseMessagesFromContent(file_get_contents($file), $catalogue, $configuration['sequence']);
+              }
+            }
         }
     }
 
@@ -41,9 +51,9 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
         $this->prefix = $prefix;
     }
 
-    private function parseMessagesFromContent($fileContent, MessageCatalogue $catalogue)
+    private function parseMessagesFromContent($fileContent, MessageCatalogue $catalogue, $sequence)
     {
-        $messages = $this->getMessagesForSequence($fileContent, $this->sequence);
+        $messages = $this->getMessagesForSequence($fileContent, $sequence);
 
         foreach ($messages as $message) {
             $catalogue->set($message, $this->prefix.$message);
@@ -53,7 +63,10 @@ abstract class Extractor extends AbstractFileExtractor implements ExtractorInter
     /**
      * @return array
      */
-    abstract protected function getSupportedFileExtensions();
+    protected function getSupportedFileExtensions()
+    {
+      return call_user_func_array('array_merge', array_column($this->configuration, 'extensions'));
+    }
 
     protected function canBeExtracted($file)
     {

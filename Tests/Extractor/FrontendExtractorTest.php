@@ -2,19 +2,25 @@
 
 namespace Bazinga\JsTranslationBundle\Tests\Extractor;
 
-use PHPUnit\Framework\TestCase;
+use Bazinga\Bundle\JsTranslationBundle\Extractor\FrontendExtractor;
+use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
 use Symfony\Component\Translation\MessageCatalogue;
-use Bazinga\Bundle\JsTranslationBundle\Extractor\Extractor;
 
-abstract class AbstractExtractorTest extends TestCase
+final class FrontendExtractorTest extends WebTestCase
 {
     const TEST_LOCALE = 'en';
     const TEST_KEY_1 = 'test-key-1';
 
     /**
-     * @var Extractor
+     * @var FrontendExtractor
      */
     protected $extractor;
+
+    public function setUp()
+    {
+      $container = $this->getContainer();
+      $this->extractor = $container->get('bazinga.jstranslation.translation_frontend_extractor');
+    }
 
     /**
      * @dataProvider resourcesWithNotValidTransFunctionUsage

@@ -34,6 +34,17 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')
                     ->end()
                 ->end()
+                ->arrayNode('frontend')
+                  ->arrayPrototype()
+                    ->children()
+                      ->arrayNode('extensions')
+                        ->prototype('scalar')
+                        ->end()
+                      ->end()
+                      ->scalarNode('sequence')->end()
+                    ->end()
+                  ->end()
+                ->end()
             ->end();
 
         return $builder;

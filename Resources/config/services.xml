@@ -26,13 +26,10 @@
             <argument>%kernel.root_dir%</argument>
             <tag name="console.command" command="bazinga:js-translation:dump" />
         </service>
-        <service id="bazinga.jstranslation.translation_js_extractor" class="Bazinga\Bundle\JsTranslationBundle\Extractor\JsExtractor">
+        <service id="bazinga.jstranslation.translation_frontend_extractor" class="Bazinga\Bundle\JsTranslationBundle\Extractor\FrontendExtractor" public="true">
             <argument type="service" id="filesystem"></argument>
-            <tag name="translation.extractor" alias="js" />
-        </service>
-        <service id="bazinga.jstranslation.translation_coffee_extractor" class="Bazinga\Bundle\JsTranslationBundle\Extractor\CoffeeExtractor">
-            <argument type="service" id="filesystem"></argument>
-            <tag name="translation.extractor" alias="coffee" />
+            <tag name="translation.extractor" alias="frontend" />
+            <argument></argument> <!-- frontend -->
         </service>
     </services>
 </container>
