@@ -17,11 +17,14 @@ final class FrontendExtractor extends AbstractFileExtractor implements Extractor
 
     private $filesystem;
 
-    private $configuration;
+    private $extensions;
 
-    public function __construct(Filesystem $filesystem, array $configuration = []) {
+    private $sequence;
+
+    public function __construct(Filesystem $filesystem, array $extensions, $sequence) {
         $this->filesystem = $filesystem;
-        $this->configuration = $configuration;
+        $this->extensions = $extensions;
+        $this->sequence = $sequence;
     }
 
     /**
@@ -32,14 +35,7 @@ final class FrontendExtractor extends AbstractFileExtractor implements Extractor
         $files = $this->extractFiles($resource);
 
         foreach ($files as $file) {
-            foreach ($this->configuration as $configuration)
-            {
-              $pathInfo = pathinfo($file);
-              if (in_array($pathInfo['extension'], $configuration['extensions'], true))
-              {
-                $this->parseMessagesFromContent(file_get_contents($file), $catalogue, $configuration['sequence']);
-              }
-            }
+            $this->parseMessagesFromContent(file_get_contents($file), $catalogue);
         }
     }
 
@@ -51,28 +47,20 @@ final class FrontendExtractor extends AbstractFileExtractor implements Extractor
         $this->prefix = $prefix;
     }
 
-    private function parseMessagesFromContent($fileContent, MessageCatalogue $catalogue, $sequence)
+    private function parseMessagesFromContent($fileContent, MessageCatalogue $catalogue)
     {
-        $messages = $this->getMessagesForSequence($fileContent, $sequence);
+        $messages = $this->getMessagesForSequence($fileContent);
 
         foreach ($messages as $message) {
             $catalogue->set($message, $this->prefix.$message);
         }
     }
 
-    /**
-     * @return array
-     */
-    protected function getSupportedFileExtensions()
-    {
-      return call_user_func_array('array_merge', array_column($this->configuration, 'extensions'));
-    }
-
     protected function canBeExtracted($file)
     {
         return $this->isFile($file) && in_array(
             pathinfo($file, PATHINFO_EXTENSION),
-            $this->getSupportedFileExtensions()
+            $this->extensions
         );
     }
 
@@ -87,17 +75,17 @@ final class FrontendExtractor extends AbstractFileExtractor implements Extractor
 
         $finder->files();
 
-        foreach ($this->getSupportedFileExtensions() as $supportedExtension) {
+        foreach ($this->extensions as $supportedExtension) {
             $finder->name(sprintf('*.%s', $supportedExtension));
         }
 
         return $finder->in($directory);
     }
 
-    private function getMessagesForSequence($fileContent, $sequence)
+    private function getMessagesForSequence($fileContent)
     {
         $argumentsRegex = self::REGEX_DELIMITER
-            .$sequence
+            .$this->sequence
             .self::FUNCTION_STRING_ARGUMENT_REGEX
             .self::REGEX_DELIMITER;
 

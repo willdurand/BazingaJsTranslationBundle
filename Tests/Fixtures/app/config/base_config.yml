@@ -19,6 +19,3 @@ bazinga_js_translation:
         - messages
         - numerics
         - foo
-    frontend:
-        - { extensions: [ 'coffee' ], sequence: '\.trans(?:Choice)?\s' }
-        - { extensions: [ 'js', 'jsx', 'ts' ], sequence: '\.trans(?:Choice)?\(' }

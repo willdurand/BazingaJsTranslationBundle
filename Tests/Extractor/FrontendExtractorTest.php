@@ -3,10 +3,11 @@
 namespace Bazinga\JsTranslationBundle\Tests\Extractor;
 
 use Bazinga\Bundle\JsTranslationBundle\Extractor\FrontendExtractor;
-use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\MessageCatalogue;
 
-final class FrontendExtractorTest extends WebTestCase
+final class FrontendExtractorTest extends TestCase
 {
     const TEST_LOCALE = 'en';
     const TEST_KEY_1 = 'test-key-1';
@@ -14,79 +15,39 @@ final class FrontendExtractorTest extends WebTestCase
     /**
      * @var FrontendExtractor
      */
-    protected $extractor;
+    private $extractor;
 
     public function setUp()
     {
-      $container = $this->getContainer();
-      $this->extractor = $container->get('bazinga.jstranslation.translation_frontend_extractor');
+        $filesystem = new Filesystem();
+        $this->extractor = new FrontendExtractor($filesystem, array('js', 'jsx', 'ts'), '\.trans(?:Choice)?\(');
     }
 
-    /**
-     * @dataProvider resourcesWithNotValidTransFunctionUsage
-     */
-    public function testExtractShouldNotRetrieveTransKey($resources)
+    public function testExtractShouldNotRetrieveTransKey()
     {
         $catalogue = new MessageCatalogue(self::TEST_LOCALE);
-        $this->extractor->extract($resources, $catalogue);
+        $this->extractor->extract(__DIR__.'/../Fixtures/Extractor/NotValidTransFunctionUsage', $catalogue);
         $this->assertEmpty($catalogue->all());
     }
 
-    /**
-     * @dataProvider resourcesWithATransFunctionUsage
-     */
-    public function testExtractShouldRetrieveTransKey($resources)
+    public function testExtractShouldRetrieveTransKey()
     {
         $catalogue = new MessageCatalogue(self::TEST_LOCALE);
-        $this->extractor->extract($resources, $catalogue);
+        $this->extractor->extract(__DIR__.'/../Fixtures/Extractor/ATransFunctionUsage', $catalogue);
         $this->assertTrue($catalogue->has(self::TEST_KEY_1));
     }
 
-    /**
-     * @dataProvider resourcesWithNotValidTransChoiceFunctionUsage
-     */
-    public function testExtractShouldNotRetrieveTransChoiceKey($resources)
+    public function testExtractShouldNotRetrieveTransChoiceKey()
     {
         $catalogue = new MessageCatalogue(self::TEST_LOCALE);
-        $this->extractor->extract($resources, $catalogue);
+        $this->extractor->extract(__DIR__.'/../Fixtures/Extractor/NotValidTransChoiceFunctionUsage', $catalogue);
         $this->assertEmpty($catalogue->all());
     }
 
-    /**
-     * @dataProvider resourcesWithATransChoiceFunctionUsage
-     */
-    public function testExtractShouldRetrieveTransChoiceKey($resources)
+    public function testExtractShouldRetrieveTransChoiceKey()
     {
         $catalogue = new MessageCatalogue(self::TEST_LOCALE);
-        $this->extractor->extract($resources, $catalogue);
+        $this->extractor->extract(__DIR__.'/../Fixtures/Extractor/ATransChoiceFunctionUsage', $catalogue);
         $this->assertTrue($catalogue->has(self::TEST_KEY_1));
-    }
-
-    public function resourcesWithNotValidTransFunctionUsage()
-    {
-        return array(
-            array(__DIR__.'/../Fixtures/Extractor/NotValidTransFunctionUsage'),
-        );
-    }
-
-    public function resourcesWithATransFunctionUsage()
-    {
-        return array(
-            array(__DIR__.'/../Fixtures/Extractor/ATransFunctionUsage'),
-        );
-    }
-
-    public function resourcesWithNotValidTransChoiceFunctionUsage()
-    {
-        return array(
-            array(__DIR__.'/../Fixtures/Extractor/NotValidTransChoiceFunctionUsage'),
-        );
-    }
-
-    public function resourcesWithATransChoiceFunctionUsage()
-    {
-        return array(
-            array(__DIR__.'/../Fixtures/Extractor/ATransChoiceFunctionUsage'),
-        );
     }
 }

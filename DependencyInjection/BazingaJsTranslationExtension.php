@@ -44,9 +44,5 @@ class BazingaJsTranslationExtension extends Extension
             ->replaceArgument(4, $config['default_domain'])
             ->replaceArgument(5, $config['active_locales'])
             ->replaceArgument(6, $config['active_domains']);
-
-        $container
-          ->getDefinition('bazinga.jstranslation.translation_frontend_extractor')
-          ->replaceArgument(1, $config['frontend']);
     }
 }
