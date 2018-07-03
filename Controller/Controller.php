@@ -179,7 +179,7 @@ class Controller
         );
         $response->prepare($request);
         $response->setPublic();
-        $response->setETag(md5($response->getContent()));
+        $response->setEtag(md5($response->getContent()));
         $response->isNotModified($request);
         $response->setExpires($expirationTime);
 
