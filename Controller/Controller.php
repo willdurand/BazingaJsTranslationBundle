@@ -3,7 +3,6 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Config\ConfigCache;
@@ -17,11 +16,6 @@ use Twig_Environment;
  */
 class Controller
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
     /**
      * @var Twig_Environment
      */
@@ -62,7 +56,6 @@ class Controller
     private $httpCacheTime;
 
     /**
-     * @param TranslatorInterface $translator        The translator.
      * @param Twig_Environment    $twig              The twig environment.
      * @param TranslationFinder   $translationFinder The translation finder.
      * @param string              $cacheDir
@@ -72,7 +65,6 @@ class Controller
      * @param int                 $httpCacheTime
      */
     public function __construct(
-        TranslatorInterface $translator,
         Twig_Environment $twig,
         TranslationFinder $translationFinder,
         $cacheDir,
@@ -81,7 +73,6 @@ class Controller
         $defaultDomain  = '',
         $httpCacheTime  = 86400
     ) {
-        $this->translator        = $translator;
         $this->twig              = $twig;
         $this->translationFinder = $translationFinder;
         $this->cacheDir          = $cacheDir;
