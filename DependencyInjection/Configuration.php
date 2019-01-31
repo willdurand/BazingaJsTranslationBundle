@@ -17,9 +17,16 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $builder = new TreeBuilder();
+        $treeBuilder = new TreeBuilder();
 
-        $builder->root('bazinga_js_translation')
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('bazinga_js_translation');
+        }
+
+        $rootNode
             ->fixXmlConfig('active_locale')
             ->fixXmlConfig('active_domain')
             ->children()
@@ -36,6 +43,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end();
 
-        return $builder;
+        return $rootNode;
     }
 }
