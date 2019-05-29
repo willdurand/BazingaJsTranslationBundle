@@ -94,7 +94,7 @@ class AppKernel extends Kernel
     private static function recurseCopy($src, $dst)
     {
         $dir = opendir($src);
-        @mkdir($dst, 0644, true);
+        @mkdir($dst, 0777, true);
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
                 if (is_dir($src.'/'.$file)) {
