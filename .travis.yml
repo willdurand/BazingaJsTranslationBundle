@@ -7,7 +7,7 @@ php:
   - 7.2
   - 7.3
 
-sudo: false
+sudo: true
 
 cache:
     directories:
@@ -17,7 +17,8 @@ before_install:
     - composer self-update
     - if [ "$STABILITY" = "dev" ]; then composer config minimum-stability dev; fi;
     - if [ "$SYMFONY_VERSION" != "" ]; then COMPOSER_MEMORY_LIMIT=-1 composer require symfony/symfony:${SYMFONY_VERSION}; fi;
-    - chmod -R 777 Tests/Fixtures
+    - sudo chmod -R 777 Tests
+    - sudo chown -R $USER Tests
 
 install:
     - COMPOSER_MEMORY_LIMIT=-1 composer install $COMPOSER_FLAGS --prefer-dist --no-interaction
