@@ -91,7 +91,7 @@ class AppKernel extends Kernel
         call_user_func_array(array($this, '__construct'), unserialize($str));
     }
 
-    private static function recurseCopy(string $src, string $dst)
+    private static function recurseCopy(\string $src, \string $dst)
     {
         $dir = opendir($src);
         @mkdir($dst, 0644, true);
