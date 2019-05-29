@@ -22,7 +22,8 @@ install:
     - COMPOSER_MEMORY_LIMIT=-1 composer install $COMPOSER_FLAGS --prefer-dist --no-interaction
 
 script:
-    - chmod -R 777 Tests
+    - echo "$(pwd)"
+    - chmod -R 777 *
     - vendor/bin/phpunit --coverage-text
     - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index.html
     - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index-with-es5-shim.html
