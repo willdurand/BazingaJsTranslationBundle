@@ -7,7 +7,7 @@ php:
   - 7.2
   - 7.3
 
-sudo: true
+sudo: false
 
 cache:
     directories:
@@ -17,12 +17,12 @@ before_install:
     - composer self-update
     - if [ "$STABILITY" = "dev" ]; then composer config minimum-stability dev; fi;
     - if [ "$SYMFONY_VERSION" != "" ]; then COMPOSER_MEMORY_LIMIT=-1 composer require symfony/symfony:${SYMFONY_VERSION}; fi;
-    - sudo chmod -R 777 *
 
 install:
     - COMPOSER_MEMORY_LIMIT=-1 composer install $COMPOSER_FLAGS --prefer-dist --no-interaction
 
 script:
+    - chmod -R 777 Tests
     - vendor/bin/phpunit --coverage-text
     - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index.html
     - phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index-with-es5-shim.html
