@@ -14,7 +14,8 @@ cache:
         - $HOME/.composer/cache/files
 
 before_install:
-    - composer self-update
+  - phpenv config-rm xdebug.ini
+  - composer self-update
     - if [ "$STABILITY" = "dev" ]; then composer config minimum-stability dev; fi;
     - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION}; fi;
 
