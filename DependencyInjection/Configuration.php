@@ -17,9 +17,9 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $builder = new TreeBuilder();
+        $builder = new TreeBuilder('bazinga_js_translation');
 
-        $builder->root('bazinga_js_translation')
+        $builder->getRootNode()
             ->fixXmlConfig('active_locale')
             ->fixXmlConfig('active_domain')
             ->children()
