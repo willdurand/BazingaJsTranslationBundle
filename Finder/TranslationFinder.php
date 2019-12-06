@@ -2,8 +2,6 @@
 
 namespace Bazinga\Bundle\JsTranslationBundle\Finder;
 
-use Symfony\Component\Finder\Finder;
-
 /**
  * @author William DURAND <william.durand1@gmail.com>
  * @author Markus Poerschke <markus@eluceo.de>
