@@ -10,7 +10,7 @@ use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Twig_Environment;
+use Twig\Environment;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
@@ -23,7 +23,7 @@ class Controller
     private $translator;
 
     /**
-     * @var Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -63,7 +63,7 @@ class Controller
 
     /**
      * @param TranslatorInterface $translator        The translator.
-     * @param Twig_Environment    $twig              The twig environment.
+     * @param Environment         $twig              The twig environment.
      * @param TranslationFinder   $translationFinder The translation finder.
      * @param string              $cacheDir
      * @param boolean             $debug
@@ -73,7 +73,7 @@ class Controller
      */
     public function __construct(
         TranslatorInterface $translator,
-        Twig_Environment $twig,
+        Environment $twig,
         TranslationFinder $translationFinder,
         $cacheDir,
         $debug          = false,

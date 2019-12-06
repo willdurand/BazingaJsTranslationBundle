@@ -5,7 +5,7 @@ namespace Bazinga\Bundle\JsTranslationBundle\Dumper;
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Twig_Environment;
+use Twig\Environment;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
@@ -16,7 +16,7 @@ class TranslationDumper
     const DEFAULT_TRANSLATION_PATTERN = '/translations/{domain}.{_format}';
 
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -56,14 +56,14 @@ class TranslationDumper
     private $defaultDomain;
 
     /**
-     * @param Twig_Environment  $twig           The twig environment.
+     * @param Environment       $twig           The twig environment.
      * @param TranslationFinder $finder         The translation finder.
      * @param FileSystem        $filesystem     The file system.
      * @param string            $localeFallback
      * @param string            $defaultDomain
      */
     public function __construct(
-        Twig_Environment $twig,
+        Environment $twig,
         TranslationFinder $finder,
         Filesystem $filesystem,
         $localeFallback = '',
