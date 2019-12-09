@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
             $rootNode = $treeBuilder->root('bazinga_js_translation');
         }
 
-        $rootNode->getRootNode()
+        $rootNode
             ->fixXmlConfig('active_locale')
             ->fixXmlConfig('active_domain')
             ->children()
