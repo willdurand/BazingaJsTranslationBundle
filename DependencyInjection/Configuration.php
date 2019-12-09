@@ -17,9 +17,9 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $builder = new TreeBuilder('bazinga_js_translation');
+        $treeBuilder = new TreeBuilder('bazinga_js_translation');
 
-        $builder->getRootNode()
+        $treeBuilder->getRootNode()
             ->fixXmlConfig('active_locale')
             ->fixXmlConfig('active_domain')
             ->children()
@@ -36,6 +36,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end();
 
-        return $builder;
+        return $treeBuilder;
     }
 }
