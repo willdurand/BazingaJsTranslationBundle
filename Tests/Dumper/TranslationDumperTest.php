@@ -157,7 +157,7 @@ JSON;
         $this->filesystem->mkdir($this->target);
     }
 
-    public function tearDown(): void
+    public function tearDown()
     {
         if (is_dir($this->target)) {
             $this->filesystem->remove($this->target);
