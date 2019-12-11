@@ -23,7 +23,7 @@
         </service>
         <service id="bazinga.jstranslation.dump_command" class="Bazinga\Bundle\JsTranslationBundle\Command\DumpCommand" public="true">
             <argument type="service" id="bazinga.jstranslation.translation_dumper" />
-            <argument>%kernel.root_dir%</argument>
+            <argument>%kernel.project_dir%</argument>
             <tag name="console.command" command="bazinga:js-translation:dump" />
         </service>
     </services>
