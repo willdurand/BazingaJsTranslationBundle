@@ -119,7 +119,7 @@ class Controller
         $locales = $this->getLocales($request);
 
         if (0 === count($locales)) {
-            throw new NotFoundHttpException();
+            return (new Response())->setStatusCode(Response::HTTP_NOT_FOUND);
         }
 
         $cache = new ConfigCache(sprintf('%s/%s.%s.%s',
@@ -170,7 +170,7 @@ class Controller
             try {
                 $cache->write($content, $resources);
             } catch (IOException $e) {
-                throw new NotFoundHttpException();
+                return (new Response())->setStatusCode(Response::HTTP_NOT_FOUND);
             }
         }
 
