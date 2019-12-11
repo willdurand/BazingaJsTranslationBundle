@@ -11,6 +11,7 @@ cache:
         - $HOME/.composer/cache/files
 
 before_install:
+    - COMPOSER_MEMORY_LIMIT=-1
     - composer self-update
     - if [ "$STABILITY" = "dev" ]; then composer config minimum-stability dev; fi;
     - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION}; fi;
