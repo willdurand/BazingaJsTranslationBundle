@@ -23,7 +23,7 @@ class Controller
     private $translator;
 
     /**
-     * @var Environment
+     * @var Environment|Twig_Environment
      */
     private $twig;
 
@@ -62,18 +62,19 @@ class Controller
     private $httpCacheTime;
 
     /**
-     * @param TranslatorInterface $translator        The translator.
-     * @param Environment         $twig              The twig environment.
-     * @param TranslationFinder   $translationFinder The translation finder.
-     * @param string              $cacheDir
-     * @param boolean             $debug
-     * @param string              $localeFallback
-     * @param string              $defaultDomain
-     * @param int                 $httpCacheTime
+     * @param TranslatorInterface           $translator        The translator.
+     * @param Environment|Twig_Environment  $twig              The twig environment.
+     * @param TranslationFinder             $translationFinder The translation finder.
+     * @param string                        $cacheDir
+     * @param boolean                       $debug
+     * @param string                        $localeFallback
+     * @param string                        $defaultDomain
+     * @param int                           $httpCacheTime
+     * @throws InvalidArgumentException
      */
     public function __construct(
         TranslatorInterface $translator,
-        Environment $twig,
+        $twig,
         TranslationFinder $translationFinder,
         $cacheDir,
         $debug          = false,
@@ -81,6 +82,10 @@ class Controller
         $defaultDomain  = '',
         $httpCacheTime  = 86400
     ) {
+        if (!$twig instanceof \Twig_Environment && !$twig instanceof Environment) {
+            throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as twig is not supported.', get_class($twig)));
+        }
+
         $this->translator        = $translator;
         $this->twig              = $twig;
         $this->translationFinder = $translationFinder;
