@@ -24,7 +24,8 @@
         "symfony/yaml": "~3.4|~4.0|~5.0",
         "symfony/browser-kit": "~3.4|~4.0|~5.0",
         "symfony/twig-bundle": "~3.4|~4.0|~5.0",
-        "symfony/phpunit-bridge": "~3.4|~4.0|~5.0"
+        "symfony/phpunit-bridge": "~3.4|~4.0|~5.0",
+        "phpunit/phpunit": "^3.4.24|^4.0|^5.0"
     },
     "replace": {
         "willdurand/expose-translation-bundle": "2.5.*"
