@@ -3,7 +3,8 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Config\ConfigCache;
@@ -73,7 +74,7 @@ class Controller
      * @throws InvalidArgumentException
      */
     public function __construct(
-        TranslatorInterface $translator,
+        $translator,
         $twig,
         TranslationFinder $translationFinder,
         $cacheDir,
@@ -84,6 +85,10 @@ class Controller
     ) {
         if (!$twig instanceof \Twig_Environment && !$twig instanceof Environment) {
             throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as twig is not supported.', get_class($twig)));
+        }
+
+        if (!$translator instanceof TranslatorInterface && !$translator instanceof LegacyTranslatorInterface) {
+            throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as translator is not supported.', get_class($translator)));
         }
 
         $this->translator        = $translator;
