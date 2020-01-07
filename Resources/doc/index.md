@@ -281,7 +281,7 @@ component.
 
 ``` yaml
 # app/Resources/messages.en.yml
-apples: "{0} There is no apples|{1} There is one apple|]1,19] There are %count% apples|[20,Inf] There are many apples"
+apples: "{0} There is no apples|{1} There is one apple|[1,19] There are %count% apples|[20,Inf] There are many apples"
 ```
 
 ``` javascript
