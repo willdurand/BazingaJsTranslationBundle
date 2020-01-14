@@ -5,4 +5,4 @@ framework:
     translator:
         fallbacks: ['en']
         paths:
-            - "%kernel.root_dir%/Infrastructure/Ui/Translations"
+            - "%kernel.project_dir%/app/Infrastructure/Ui/Translations"

@@ -1,6 +1,6 @@
 framework:
     secret:        test
-    router:        { resource: "%kernel.root_dir%/config/routing.yml" }
+    router:        { resource: "%kernel.project_dir%/app/config/routing.yml" }
     test:          ~
     translator:    { enabled: true }
     validation:    { enabled: false }

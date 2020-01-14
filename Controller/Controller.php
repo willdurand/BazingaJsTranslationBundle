@@ -3,14 +3,16 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Twig_Environment;
+use Twig\Environment;
+use Twig\Loader\LoaderInterface;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
@@ -23,7 +25,7 @@ class Controller
     private $translator;
 
     /**
-     * @var Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -62,18 +64,19 @@ class Controller
     private $httpCacheTime;
 
     /**
-     * @param TranslatorInterface $translator        The translator.
-     * @param Twig_Environment    $twig              The twig environment.
-     * @param TranslationFinder   $translationFinder The translation finder.
-     * @param string              $cacheDir
-     * @param boolean             $debug
-     * @param string              $localeFallback
-     * @param string              $defaultDomain
-     * @param int                 $httpCacheTime
+     * @param TranslatorInterface           $translator        The translator.
+     * @param Environment                   $twig              The twig environment.
+     * @param TranslationFinder             $translationFinder The translation finder.
+     * @param string                        $cacheDir
+     * @param boolean                       $debug
+     * @param string                        $localeFallback
+     * @param string                        $defaultDomain
+     * @param int                           $httpCacheTime
+     * @throws \InvalidArgumentException
      */
     public function __construct(
-        TranslatorInterface $translator,
-        Twig_Environment $twig,
+        $translator,
+        Environment $twig,
         TranslationFinder $translationFinder,
         $cacheDir,
         $debug          = false,
@@ -81,6 +84,10 @@ class Controller
         $defaultDomain  = '',
         $httpCacheTime  = 86400
     ) {
+        if (!$translator instanceof TranslatorInterface && !$translator instanceof LegacyTranslatorInterface) {
+            throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as translator is not supported.', get_class($translator)));
+        }
+
         $this->translator        = $translator;
         $this->twig              = $twig;
         $this->translationFinder = $translationFinder;

@@ -1,9 +1,6 @@
 language: php
 
 php:
-    - 5.4
-    - 5.5
-    - 5.6
     - 7.1
     - 7.2
 
@@ -14,6 +11,7 @@ cache:
         - $HOME/.composer/cache/files
 
 before_install:
+    - COMPOSER_MEMORY_LIMIT=-1
     - composer self-update
     - if [ "$STABILITY" = "dev" ]; then composer config minimum-stability dev; fi;
     - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION}; fi;
@@ -29,11 +27,11 @@ script:
 matrix:
     fast_finish: true
     include:
-      - php: 5.6
-        env: SYMFONY_VERSION='~2.7.0'
-      - php: 5.6
-        env: SYMFONY_VERSION='~2.8.0'
-      - php: 5.6
-        env: SYMFONY_VERSION='~3.4.0'
+      - php: 7.2
+        env: SYMFONY_VERSION='^3.4.0'
+      - php: 7.2
+        env: SYMFONY_VERSION='^4.0'
+      - php: 7.2
+        env: SYMFONY_VERSION='^5.0'
       - php: 7.2
         env: STABILITY=dev
