@@ -169,7 +169,7 @@ class Controller
             } catch (IOException $e) {
                 throw new NotFoundHttpException();
             }
-        }    
+        }
 
         if (method_exists($cache, 'getPath')) {
             $cachePath = $cache->getPath();
