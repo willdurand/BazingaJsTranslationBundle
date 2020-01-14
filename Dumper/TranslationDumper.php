@@ -16,7 +16,7 @@ class TranslationDumper
     const DEFAULT_TRANSLATION_PATTERN = '/translations/{domain}.{_format}';
 
     /**
-     * @var Environment|Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -56,14 +56,14 @@ class TranslationDumper
     private $defaultDomain;
 
     /**
-     * @param Environment|Twig_Environment  $twig           The twig environment.
+     * @param Environment                   $twig           The twig environment.
      * @param TranslationFinder             $finder         The translation finder.
      * @param FileSystem                    $filesystem     The file system.
      * @param string                        $localeFallback
      * @param string                        $defaultDomain
      */
     public function __construct(
-        $twig,
+        Environment $twig,
         TranslationFinder $finder,
         Filesystem $filesystem,
         $localeFallback = '',
@@ -71,10 +71,6 @@ class TranslationDumper
         array $activeLocales = array(),
         array $activeDomains = array()
     ) {
-        if (!$twig instanceof \Twig_Environment && !$twig instanceof Environment) {
-            throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as twig is not supported.', get_class($twig)));
-        }
-        
         $this->twig           = $twig;
         $this->finder         = $finder;
         $this->filesystem     = $filesystem;
