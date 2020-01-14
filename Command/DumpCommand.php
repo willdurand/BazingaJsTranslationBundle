@@ -112,5 +112,7 @@ class DumpCommand extends Command
         ));
 
         $this->dumper->dump($this->targetPath, $input->getOption('pattern'), $formats, $merge);
+        
+        return 0;
     }
 }
