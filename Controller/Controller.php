@@ -3,6 +3,7 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,8 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig\Environment;
+use Twig\Loader\LoaderInterface;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
@@ -24,7 +25,7 @@ class Controller
     private $translator;
 
     /**
-     * @var Environment|Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -64,18 +65,18 @@ class Controller
 
     /**
      * @param TranslatorInterface           $translator        The translator.
-     * @param Environment|Twig_Environment  $twig              The twig environment.
+     * @param Environment                   $twig              The twig environment.
      * @param TranslationFinder             $translationFinder The translation finder.
      * @param string                        $cacheDir
      * @param boolean                       $debug
      * @param string                        $localeFallback
      * @param string                        $defaultDomain
      * @param int                           $httpCacheTime
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         $translator,
-        $twig,
+        Environment $twig,
         TranslationFinder $translationFinder,
         $cacheDir,
         $debug          = false,
@@ -83,10 +84,6 @@ class Controller
         $defaultDomain  = '',
         $httpCacheTime  = 86400
     ) {
-        if (!$twig instanceof \Twig_Environment && !$twig instanceof Environment) {
-            throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as twig is not supported.', get_class($twig)));
-        }
-
         if (!$translator instanceof TranslatorInterface && !$translator instanceof LegacyTranslatorInterface) {
             throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as translator is not supported.', get_class($translator)));
         }
@@ -119,7 +116,7 @@ class Controller
         $locales = $this->getLocales($request);
 
         if (0 === count($locales)) {
-            return (new Response())->setStatusCode(Response::HTTP_NOT_FOUND);
+            throw new NotFoundHttpException();
         }
 
         $cache = new ConfigCache(sprintf('%s/%s.%s.%s',
@@ -170,9 +167,9 @@ class Controller
             try {
                 $cache->write($content, $resources);
             } catch (IOException $e) {
-                return (new Response())->setStatusCode(Response::HTTP_NOT_FOUND);
+                throw new NotFoundHttpException();
             }
-        }
+        }    
 
         if (method_exists($cache, 'getPath')) {
             $cachePath = $cache->getPath();

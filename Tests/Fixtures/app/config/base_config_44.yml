@@ -1,0 +1,6 @@
+# for symfony version >= 4.4. 
+imports:
+  - { resource: base_config.yml }
+
+twig:
+    exception_controller: null
