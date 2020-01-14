@@ -1,8 +1,6 @@
 framework:
     secret:        test
-    router:        
-      resource: "%kernel.project_dir%/app/config/routing.yml"
-      utf8:   true
+    router:        { resource: "%kernel.project_dir%/app/config/routing.yml" }
     test:          ~
     translator:    { enabled: true }
     validation:    { enabled: false }
