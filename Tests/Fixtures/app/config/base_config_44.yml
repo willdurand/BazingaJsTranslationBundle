@@ -2,5 +2,9 @@
 imports:
   - { resource: base_config.yml }
 
+framework:
+    router:
+        utf8:   true
+
 twig:
     exception_controller: null

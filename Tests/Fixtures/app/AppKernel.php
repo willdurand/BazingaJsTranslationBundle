@@ -67,12 +67,13 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/'.$this->environment.'.yml');
+        
         if (self::VERSION_ID >= 40400) {
             $loader->load(__DIR__.'/config/base_config_44.yml');
         } else {
             $loader->load(__DIR__.'/config/base_config.yml');
         }
-
+        
         if (self::VERSION_ID > 30200) {
             $loader->load(__DIR__.'/config/disable_annotations.yml');
         }
