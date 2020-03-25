@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\Bundle\JsTranslationBundle\Tests;
+namespace Bazinga\Bundle\JsTranslationBundle\Tests\Fixtures\app;
 
 // get the autoload file
 $dir = __DIR__;

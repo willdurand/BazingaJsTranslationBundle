@@ -5,6 +5,7 @@ namespace Bazinga\Bundle\JsTranslationBundle\Tests;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
+use Bazinga\Bundle\JsTranslationBundle\Tests\Fixtures\app\AppKernel;
 
 abstract class WebTestCase extends BaseWebTestCase
 {
@@ -30,9 +31,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected static function getKernelClass()
     {
-        require_once __DIR__.'/Fixtures/app/AppKernel.php';
-
-        return 'Bazinga\Bundle\JsTranslationBundle\Tests\AppKernel';
+        return AppKernel::class;
     }
 
     protected static function createKernel(array $options = array())
