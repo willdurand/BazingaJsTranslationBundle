@@ -86,7 +86,7 @@ class DumpCommand extends Command
     {
         parent::initialize($input, $output);
 
-        $this->targetPath = $input->getArgument('target') ?: sprintf('%s/../web/js', $this->kernelRootDir);
+        $this->targetPath = $input->getArgument('target') ?: sprintf('%s/../public/js', $this->kernelRootDir);
     }
 
     /**
@@ -112,7 +112,7 @@ class DumpCommand extends Command
         ));
 
         $this->dumper->dump($this->targetPath, $input->getOption('pattern'), $formats, $merge);
-        
+
         return 0;
     }
 }
