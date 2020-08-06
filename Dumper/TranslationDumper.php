@@ -3,6 +3,7 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Dumper;
 
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
+use Bazinga\Bundle\JsTranslationBundle\Util;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig\Environment;
@@ -278,7 +279,7 @@ class TranslationDumper
 
     private function getFileInfo($filename)
     {
-        list($domain, $locale, $extension) = explode('.', basename($filename), 3);
+        list($domain, $locale, $extension) = Util::extractCatalogueInformationFromFilename($filename);
 
         return array($extension, $locale, $domain);
     }
