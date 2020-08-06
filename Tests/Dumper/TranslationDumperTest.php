@@ -59,6 +59,7 @@ JS;
 (function (t) {
 // fr
 t.add("hello", "bonjour", "messages", "fr");
+t.add("hello_name", "bonjour {name} !", "messages", "fr");
 t.add(7, "Nos occasions", "numerics", "fr");
 t.add(8, "Nous contacter", "numerics", "fr");
 t.add(12, "pr\u00e9nom", "numerics", "fr");
@@ -73,6 +74,7 @@ JS;
 (function (t) {
 // fr
 t.add("hello", "bonjour", "messages", "fr");
+t.add("hello_name", "bonjour {name} !", "messages", "fr");
 })(Translator);
 
 JS;
@@ -86,43 +88,6 @@ t.add(12, "pr\u00e9nom", "numerics", "fr");
 t.add(13, "nom", "numerics", "fr");
 t.add(14, "adresse", "numerics", "fr");
 t.add(15, "code postal", "numerics", "fr");
-})(Translator);
-
-JS;
-
-    const JS_IT_MERGED_TRANSLATIONS = <<<JS
-(function (t) {
-// it
-t.add("hello", "ciao", "messages", "it");
-t.add("hello_name", "Ciao {name}!", "messages", "it")
-t.add(7, "Le nostre occasioni", "numerics", "it");
-t.add(8, "Contattaci", "numerics", "it");
-t.add(12, "conome", "numerics", "it");
-t.add(13, "nome", "numerics", "it");
-t.add(14, "indirizzo", "numerics", "it");
-t.add(15, "codice postale", "numerics", "it");
-})(Translator);
-
-JS;
-
-    const JS_IT_MESSAGES_TRANSLATIONS = <<<JS
-(function (t) {
-// it
-t.add("hello", "ciao", "messages", "it");
-t.add("hello_name", "Ciao {name}!", "messages", "it");
-})(Translator);
-
-JS;
-
-    const JS_IT_NUMERICS_TRANSLATIONS = <<<JS
-(function (t) {
-// it
-t.add(7, "Le nostre occasioni", "numerics", "it");
-t.add(8, "Contattaci", "numerics", "it");
-t.add(12, "conome", "numerics", "it");
-t.add(13, "nome", "numerics", "it");
-t.add(14, "indirizzo", "numerics", "it");
-t.add(15, "codice postale", "numerics", "it");
 })(Translator);
 
 JS;
@@ -158,14 +123,14 @@ JSON;
 
     const JSON_FR_MERGED_TRANSLATIONS = <<<JSON
 {
-    "translations": {"fr":{"messages":{"hello":"bonjour"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+    "translations": {"fr":{"messages":{"hello":"bonjour","hello_name":"bonjour {name} !"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
 }
 
 JSON;
 
     const JSON_FR_MESSAGES_TRANSLATIONS = <<<JSON
 {
-    "translations": {"fr":{"messages":{"hello":"bonjour"}}}
+    "translations": {"fr":{"messages":{"hello":"bonjour","hello_name":"bonjour {name} !"}}}
 }
 
 JSON;
@@ -173,27 +138,6 @@ JSON;
     const JSON_FR_NUMERICS_TRANSLATIONS = <<<JSON
 {
     "translations": {"fr":{"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
-}
-
-JSON;
-
-    const JSON_IT_MERGED_TRANSLATIONS = <<<JSON
-{
-    "translations": {"it":{"messages":{"hello":"ciao","hello_name":"Ciao {name}!"},"numerics":{"7":"Le nostre occasioni","8":"Contattaci","12":"conome","13":"nome","14":"indirizzo","15":"codice postale"}}}
-}
-
-JSON;
-
-    const JSON_IT_MESSAGES_TRANSLATIONS = <<<JSON
-{
-    "translations": {"it":{"messages":{"hello":"ciao","hello_name":"Ciao {name}!"}}}
-}
-
-JSON;
-
-    const JSON_IT_NUMERICS_TRANSLATIONS = <<<JSON
-{
-    "translations": {"it":{"numerics":{"7":"Le nostre occasioni","8":"Contattaci","12":"conome","13":"nome","14":"indirizzo","15":"codice postale"}}}
 }
 
 JSON;
@@ -233,8 +177,6 @@ JSON;
                      'messages/en.json',
                      'messages/fr.js',
                      'messages/fr.json',
-                     'messages/it.js',
-                     'messages/it.json',
                      'foo/en.js',
                      'foo/en.json',
                      'numerics/en.js',
@@ -248,8 +190,6 @@ JSON;
                      'front/en.json',
                      'front/fr.js',
                      'front/fr.json',
-                     'front/it.js',
-                     'front/it.json',
                      'messages/es.js',
                      'messages/es.json',
                  ) as $file) {
@@ -260,13 +200,9 @@ JSON;
 
         $this->assertEquals(self::JS_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.js'));
 
-        $this->assertEquals(self::JS_IT_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/it.js'));
-
         $this->assertEquals(self::JS_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.js'));
 
         $this->assertEquals(self::JS_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.js'));
-
-        $this->assertEquals(self::JS_IT_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/it.js'));
 
         $this->assertEquals(self::JS_CONFIG, file_get_contents($this->target . '/translations/config.js'));
 
@@ -274,13 +210,9 @@ JSON;
 
         $this->assertEquals(self::JSON_FR_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/fr.json'));
 
-        $this->assertEquals(self::JSON_IT_MESSAGES_TRANSLATIONS, file_get_contents($this->target . '/translations/messages/it.json'));
-
         $this->assertEquals(self::JSON_EN_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/en.json'));
 
         $this->assertEquals(self::JSON_FR_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/fr.json'));
-
-        $this->assertEquals(self::JSON_IT_NUMERICS_TRANSLATIONS, file_get_contents($this->target . '/translations/numerics/it.json'));
 
         $this->assertEquals(self::JSON_CONFIG, file_get_contents($this->target . '/translations/config.json'));
     }
