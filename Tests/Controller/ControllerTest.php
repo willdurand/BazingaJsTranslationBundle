@@ -29,14 +29,14 @@ JSON
     {
         $client  = static::createClient();
 
-        $crawler  = $client->request('GET', '/translations/messages.json?locales=en,fr');
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=en,fr,it');
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"en":{"messages":{"hello":"hello"}},"fr":{"messages":{"hello":"bonjour"}}}
+    "translations": {"en":{"messages":{"hello":"hello"}},"fr":{"messages":{"hello":"bonjour"}},"it":{"messages":{"hello":"ciao","hello_name":"Ciao {name}!"}}}
 }
 
 JSON
@@ -343,4 +343,23 @@ JSON
 JSON
             , $response->getContent());
     }
+
+    public function testGetIcuTranslationsWithLocale()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=it');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"it":{"messages":{"hello":"ciao","hello_name":"Ciao {name}!"}}}
+}
+
+JSON
+            , $response->getContent());
+    }
+
 }

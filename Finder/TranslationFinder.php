@@ -79,6 +79,12 @@ class TranslationFinder
             foreach ($resourceFilePaths as $filename) {
                 list($currentDomain, $currentLocale) = explode('.', basename($filename), 3);
 
+                // Domains using ICU Message Format suffix their names with "+intl-icu".
+                // See https://symfony.com/doc/current/translation/message_format.html#using-the-icu-message-format
+                if (false !== $icuPos = strpos($currentDomain, '+intl-icu')) {
+                    $currentDomain = substr($currentDomain, 0, $icuPos);
+                }
+
                 if ($currentDomain === $domain && $currentLocale === $locale) {
                     $filteredFilenames[] = $filename;
                 }
