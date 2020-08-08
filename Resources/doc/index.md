@@ -21,6 +21,7 @@ guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGR
     - [The JS Translator](#the-js-translator)
         - [Message Placeholders / Parameters](#message-placeholders--parameters)
         - [Pluralization](#pluralization)
+        - [Using ICU MessageFormat](#using-icu-messageformat)
         - [Get The Locale](#get-the-locale)
 - [Examples](#examples)
 - [More configuration](#more-configuration)
@@ -311,6 +312,55 @@ Translator.transChoice('apples', 100, {"count" : 100});
 
 For more information, read the official documentation  about
 [pluralization](https://symfony.com/doc/current/translation.html#pluralization).
+
+#### Using ICU MessageFormat
+
+Like Symfony, the bundle supports [ICU MessageFormat](http://userguide.icu-project.org/formatparse/messages).
+It's a more advanced syntax that allows you to handle placeholders, singular/plural, number, date, time, conditions, etc... [see some examples](https://format-message.github.io/icu-message-format-for-translators/).
+
+##### Installation
+
+The bundle requires on an external library [`intl-messageformat`](https://formatjs.io/docs/intl-messageformat/).
+
+You can either load it globally, e.g. from a CDN:
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-messageformat/9.0.2/intl-messageformat.min.js" integrity="sha512-uGIOqaLIi8I30qAnPLfrEnecDDi08AcCrg7gzGp/XrDafLJl/NIilHwAm1Wl2FLiTSf10D5vM70108k3oMjK5Q==" crossorigin="anonymous"></script>
+<script src="{{ url('bazinga_jstranslation_js') }}"></script>
+```
+
+Or use NPM if you use an module bundler:
+
+    npm install bazinga-translator --save
+
+##### Usage
+
+You must define your translations key in domain suffixed by `+intl-icu`, e.g.: `messages.en.yaml` becomes `messages+intl-icu.en.yaml`.
+
+Given the following translations file:
+```yaml
+# translations/messages+intl-icu.en.yaml
+hello_name: Hello {name}!
+name_has_x_projects: {name} has {projectCount, plural, =0 {no projects} one {# project} other {# projects}}
+```
+
+Then you can use the Translator like this:
+```javascript
+Translator.trans('hello_name', { name: 'John' }, 'messages');
+// will return "Hello John!"
+
+
+// equivalent to Translator.transChoice() with the "classic" translations format
+Translator.trans('name_has_x_projects', { name: 'John', projectCount: 0 }, 'messages');
+// will return "John has no projects."
+
+Translator.trans('name_has_x_projects', { name: 'John', projectCount: 1 }, 'messages');
+// will return "John has 1 project."
+
+Translator.trans('name_has_x_projects', { name: 'John', projectCount: 4 }, 'messages');
+// will return "John has 4 projects."
+```
+
+For more information, read the [Symfony documentation about ICU MessageFormat](https://symfony.com/doc/current/translation/message_format.html) or the [ICU User Guide](http://userguide.icu-project.org/formatparse/messages).
 
 #### Get The Locale
 
