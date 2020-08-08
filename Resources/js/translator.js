@@ -4,18 +4,18 @@
  */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define('Translator', factory);
+        define(['IntlMessageFormat'], factory);
     }
     else if (typeof module === 'object' && module.exports) {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like environments that support module.exports,
         // like Node.
-        module.exports = factory();
+        module.exports = factory(require('intl-messageformat'));
     }
     else {
-        root.Translator = factory();
+        root.Translator = factory(root.IntlMessageFormat);
     }
-}(this, function () {
+}(this, function (IntlMessageFormat) {
     "use strict";
 
     var _messages     = {},
@@ -23,7 +23,8 @@
         _domains      = [],
         _sPluralRegex = new RegExp(/^\w+\: +(.+)$/),
         _cPluralRegex = new RegExp(/^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/),
-        _iPluralRegex = new RegExp(/^\s*(\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/);
+        _iPluralRegex = new RegExp(/^\s*(\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/),
+        INTL_DOMAIN_SUFFIX = '+intl-icu';
 
     var Translator = {
         /**
@@ -117,13 +118,20 @@
          * @api public
          */
         trans: function(id, parameters, domain, locale) {
+            var _additionalReturn = {};
             var _message = get_message(
                 id,
                 domain,
                 locale,
                 this.locale,
-                this.fallback
+                this.fallback,
+                _additionalReturn
             );
+
+            if (_additionalReturn.isICU) {
+                var mf = new IntlMessageFormat.IntlMessageFormat(_message);
+                return mf.format(parameters || {});
+            }
 
             return replace_placeholders(_message, parameters || {});
         },
@@ -249,14 +257,17 @@
      * @param {String} locale           The locale or null to use the default
      * @param {String} currentLocale    The current locale or null to use the default
      * @param {String} localeFallback   The fallback (default) locale
+     * @param {Object} additionalReturn An object passed by reference, used to return more data than the message
      * @return {String}                 The right message if found, `undefined` otherwise
      * @api private
      */
-    function get_message(id, domain, locale, currentLocale, localeFallback) {
+    function get_message(id, domain, locale, currentLocale, localeFallback, additionalReturn = {}) {
         var _locale = locale || currentLocale || localeFallback,
             _domain = domain;
 
         var nationalLocaleFallback = _locale.split('_')[0];
+
+        additionalReturn.isICU = false;
 
         if (!(_locale in _messages)) {
             if (!(nationalLocaleFallback in _messages)) {
@@ -279,6 +290,11 @@
                     break;
                 }
             }
+        }
+
+        if (has_message(_locale, _domain + INTL_DOMAIN_SUFFIX, id)) {
+            additionalReturn.isICU = true;
+            return _messages[_locale][_domain + INTL_DOMAIN_SUFFIX][id];
         }
 
         if (has_message(_locale, _domain, id)) {
