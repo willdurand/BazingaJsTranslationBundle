@@ -129,7 +129,12 @@
             );
 
             if (_additionalReturn.isICU) {
+                if (typeof IntlMessageFormat === 'undefined') {
+                    throw new Error('The dependency "IntlMessageFormat" is required to use ICU MessageFormat but it has not been found. Please read https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#using-icu-messageformat')
+                }
+
                 var mf = new IntlMessageFormat.IntlMessageFormat(_message);
+
                 return mf.format(parameters || {});
             }
 
