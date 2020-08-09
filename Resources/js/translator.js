@@ -266,13 +266,14 @@
      * @return {String}                 The right message if found, `undefined` otherwise
      * @api private
      */
-    function get_message(id, domain, locale, currentLocale, localeFallback, additionalReturn = {}) {
+    function get_message(id, domain, locale, currentLocale, localeFallback, additionalReturn) {
         var _locale = locale || currentLocale || localeFallback,
-            _domain = domain;
+            _domain = domain,
+            _additionalReturn = additionalReturn || {};
 
         var nationalLocaleFallback = _locale.split('_')[0];
 
-        additionalReturn.isICU = false;
+        _additionalReturn.isICU = false;
 
         if (!(_locale in _messages)) {
             if (!(nationalLocaleFallback in _messages)) {
@@ -298,7 +299,7 @@
         }
 
         if (has_message(_locale, _domain + INTL_DOMAIN_SUFFIX, id)) {
-            additionalReturn.isICU = true;
+            _additionalReturn.isICU = true;
             return _messages[_locale][_domain + INTL_DOMAIN_SUFFIX][id];
         }
 

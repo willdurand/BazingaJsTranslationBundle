@@ -330,7 +330,9 @@ You can either load it globally, e.g. from a CDN:
 
 Or use NPM if you use an module bundler:
 
-    npm install bazinga-translator --save
+    npm install intl-messageformat --save
+
+`intl-messageformat` depends of [`Intl`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl). If you targets old browser you will need to use a polyfill, for example [Andy Earnshaw's `Intl` polyfill](https://github.com/andyearnshaw/Intl.js/).
 
 ##### Usage
 
