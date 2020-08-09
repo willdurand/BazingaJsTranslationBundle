@@ -81,7 +81,7 @@ class TranslationFinder
             foreach ($resourceFilePaths as $filename) {
                 list($currentDomain, $currentLocale) = Util::extractCatalogueInformationFromFilename($filename);
 
-                if ($currentDomain === $domain && $currentLocale === $locale) {
+                if (Util::cleanDomain($currentDomain) === $domain && $currentLocale === $locale) {
                     $filteredFilenames[] = $filename;
                 }
             }

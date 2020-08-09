@@ -3,6 +3,7 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
+use Bazinga\Bundle\JsTranslationBundle\Util;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -135,23 +136,20 @@ class Controller
 
                 $files = $this->translationFinder->get($domain, $locale);
 
-                if (1 > count($files)) {
-                    continue;
-                }
-
-                $translations[$locale][$domain] = array();
-
                 foreach ($files as $filename) {
+                    [$currentDomain] = Util::extractCatalogueInformationFromFilename($filename);
+                    $translations[$locale][$currentDomain] = array();
+
                     $extension = pathinfo($filename, \PATHINFO_EXTENSION);
 
                     if (isset($this->loaders[$extension])) {
                         $resources[] = new FileResource($filename);
                         $catalogue   = $this->loaders[$extension]
-                            ->load($filename, $locale, $domain);
+                            ->load($filename, $locale, $currentDomain);
 
-                        $translations[$locale][$domain] = array_replace_recursive(
-                            $translations[$locale][$domain],
-                            $catalogue->all($domain)
+                        $translations[$locale][$currentDomain] = array_replace_recursive(
+                            $translations[$locale][$currentDomain],
+                            $catalogue->all($currentDomain)
                         );
                     }
                 }

@@ -36,7 +36,7 @@ JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"en":{"messages":{"hello":"hello"}},"fr":{"messages":{"hello":"bonjour","hello_name":"bonjour {name} !"}}}
+    "translations": {"en":{"messages":{"hello":"hello"}},"fr":{"messages+intl-icu":{"hello_name":"bonjour {name} !"},"messages":{"hello":"bonjour"}}}
 }
 
 JSON
@@ -112,8 +112,8 @@ t.defaultDomain = 'messages';
 // en
 t.add("hello", "hello", "messages", "en");
 // fr
+t.add("hello_name", "bonjour {name} !", "messages\u002Bintl\u002Dicu", "fr");
 t.add("hello", "bonjour", "messages", "fr");
-t.add("hello_name", "bonjour {name} !", "messages", "fr");
 })(Translator);
 
 JS
