@@ -3,6 +3,7 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Dumper;
 
 use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
+use Bazinga\Bundle\JsTranslationBundle\Util;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig\Environment;
@@ -178,13 +179,20 @@ class TranslationDumper
     {
         foreach ($this->getTranslations() as $locale => $domains) {
             foreach ($domains as $domain => $translations) {
+
+                $cleanedDomain = Util::cleanDomain($domain);
+                if ($domain !== $cleanedDomain && !in_array($cleanedDomain, $domains, true)) {
+                    // e.g.: skip "messages+intl-icu" if "messages" exists. They will get merged after.
+                    continue;
+                }
+
+                $renderContext = array(
+                    'translations'   => array($locale => $this->filterTranslationsByDomain($domains, $cleanedDomain)),
+                    'include_config' => false,
+                );
+
                 foreach ($formats as $format) {
-                    $content = $this->twig->render('@BazingaJsTranslation/getTranslations.' . $format . '.twig', array(
-                        'translations'   => array($locale => array(
-                            $domain => $translations,
-                        )),
-                        'include_config' => false,
-                    ));
+                    $content = $this->twig->render('@BazingaJsTranslation/getTranslations.' . $format . '.twig', $renderContext);
 
                     $file = sprintf('%s/%s',
                         $target,
@@ -248,9 +256,9 @@ class TranslationDumper
         $activeLocales = $this->activeLocales;
         $activeDomains = $this->activeDomains;
         foreach ($this->finder->all() as $filename) {
-            list($extension, $locale, $domain) = $this->getFileInfo($filename);
+            list($extension, $locale, $domain, $domainCleaned) = $this->getFileInfo($filename);
 
-            if ((count($activeLocales) > 0 && !in_array($locale, $activeLocales)) || (count($activeDomains) > 0 && !in_array($domain, $activeDomains))) {
+            if ((count($activeLocales) > 0 && !in_array($locale, $activeLocales)) || (count($activeDomains) > 0 && !in_array($domainCleaned, $activeDomains))) {
                 continue;
             }
 
@@ -278,8 +286,27 @@ class TranslationDumper
 
     private function getFileInfo($filename)
     {
-        list($domain, $locale, $extension) = explode('.', basename($filename), 3);
+        list($domain, $locale, $extension) = Util::extractCatalogueInformationFromFilename($filename);
 
-        return array($extension, $locale, $domain);
+        return array($extension, $locale, $domain, Util::cleanDomain($domain));
+    }
+
+    /**
+     * Filter an array of translations by $cleanedDomain.
+     *
+     * For example, if $cleanedDomain equals "messages", it will returns translations
+     * from "messages" and "messages+intl-icu" (if exists) catalogues.
+     */
+    private function filterTranslationsByDomain(array $domains, string $cleanedDomain): array
+    {
+        $ret = [];
+
+        foreach ($domains as $domain => $translations) {
+            if (Util::cleanDomain($domain) === $cleanedDomain) {
+                $ret[$domain] = $translations;
+            }
+        }
+
+        return $ret;
     }
 }

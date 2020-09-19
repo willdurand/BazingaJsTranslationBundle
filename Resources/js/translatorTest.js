@@ -21,7 +21,7 @@ test('add()', function() {
 });
 
 test('trans()', function() {
-    expect(11);
+    expect(14);
 
     Translator.add('foo', 'bar', 'Foo');
     Translator.add('foo.with.arg', 'This is Ba %arg%');
@@ -30,6 +30,7 @@ test('trans()', function() {
     Translator.add('foo.with.replaces', '%repeat% %repeat% %repeat% !!!', 'Bar');
     Translator.add('empty', '', 'Foo');
     Translator.add('empty', '');
+    Translator.add('messages.with.args', '{name} has {projectCount, plural, =0 {no projects} one {# project} other {# projects}}.', 'messages+intl-icu');
 
     // Basic
     equal(Translator.trans('foo', {}, 'Foo'), 'bar', 'Returns the correct message for the given key');
@@ -52,6 +53,10 @@ test('trans()', function() {
 
     // special case dollar ($0 is treated specially in reg-exps; especially in IE11)
     equal(Translator.trans('foo.with.arg', { arg: '$0.01' }, 'Foo'), 'This is Ba $0.01', 'Returns the message with correct replaces with $0 present in target value');
+
+    equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 0 }, 'messages'), 'John has no projects.', 'Returns the ICU-formatted message with correct replaces.');
+    equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 1 }, 'messages'), 'John has 1 project.', 'Returns the ICU-formatted message with correct replaces.');
+    equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 4 }, 'messages'), 'John has 4 projects.', 'Returns the ICU-formatted message with correct replaces.');
 });
 
 test('transChoice()', function() {

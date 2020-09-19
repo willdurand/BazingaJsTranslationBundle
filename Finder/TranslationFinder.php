@@ -2,6 +2,8 @@
 
 namespace Bazinga\Bundle\JsTranslationBundle\Finder;
 
+use Bazinga\Bundle\JsTranslationBundle\Util;
+
 /**
  * @author William DURAND <william.durand1@gmail.com>
  * @author Markus Poerschke <markus@eluceo.de>
@@ -77,9 +79,9 @@ class TranslationFinder
 
         foreach ($this->translationFilesByLocale as $localeFromConfig => $resourceFilePaths) {
             foreach ($resourceFilePaths as $filename) {
-                list($currentDomain, $currentLocale) = explode('.', basename($filename), 3);
+                list($currentDomain, $currentLocale) = Util::extractCatalogueInformationFromFilename($filename);
 
-                if ($currentDomain === $domain && $currentLocale === $locale) {
+                if (Util::cleanDomain($currentDomain) === $domain && $currentLocale === $locale) {
                     $filteredFilenames[] = $filename;
                 }
             }
