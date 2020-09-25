@@ -1,5 +1,5 @@
 {
-    "name": "willdurand/js-translation-bundle",
+    "name": "marlord/js-translation-bundle",
     "description": "A pretty nice way to expose your translation messages to your JavaScript.",
     "keywords": [ "translation", "javascript", "symfony" ],
     "type": "symfony-bundle",
