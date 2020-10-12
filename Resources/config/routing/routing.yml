@@ -7,4 +7,5 @@ bazinga_jstranslation_js:
         expose: true
     requirements:
         _format: js|json
-        domain: "[\\w]+"
+        domain: "[\\w+-]+"
+
