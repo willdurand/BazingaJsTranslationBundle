@@ -47,15 +47,16 @@ class TranslationResourceFilesPass implements CompilerPassInterface
     private function getTranslationFiles(ContainerBuilder $container)
     {
         $translationFiles = array();
-        $translator = $container->findDefinition('translator.default');
+        $translatorDef = $container->findDefinition('translator.default');
 
-        try {
-            $translatorOptions = $translator->getArgument(4);
-        } catch (OutOfBoundsException $e) {
-            $translatorOptions = array();
+        // Symfony 3.3 added the default locale as third argument, before the loader ids and the options
+        if (is_string($translatorDef->getArgument(2))) {
+            $optionsArgumentIndex = 4;
+        } else {
+            $optionsArgumentIndex = 3;
         }
 
-        $translatorOptions = array_merge($translatorOptions, $translator->getArgument(3));
+        $translatorOptions = $translatorDef->getArgument($optionsArgumentIndex);
         
         if (isset($translatorOptions['resource_files'])) {
             $translationFiles = $translatorOptions['resource_files'];
