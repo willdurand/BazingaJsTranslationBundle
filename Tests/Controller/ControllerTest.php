@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\JsTranslationBundle\Tests\Controller;
+namespace Bazinga\Bundle\JsTranslationBundle\Tests\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
 use Symfony\Component\HttpKernel\Kernel;
