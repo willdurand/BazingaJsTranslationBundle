@@ -49,14 +49,9 @@ class TranslationResourceFilesPass implements CompilerPassInterface
         $translationFiles = array();
         $translator = $container->findDefinition('translator.default');
 
-        try {
-            $translatorOptions = $translator->getArgument(4);
-        } catch (OutOfBoundsException $e) {
-            $translatorOptions = array();
-        }
 
-        $translatorOptions = array_merge($translatorOptions, $translator->getArgument(3));
-        
+        $translatorOptions = $translator->getArgument(4);
+
         if (isset($translatorOptions['resource_files'])) {
             $translationFiles = $translatorOptions['resource_files'];
         }
