@@ -1,9 +1,10 @@
 <?php
 
-namespace Bazinga\JsTranslationBundle\Tests\Finder;
+namespace Bazinga\Bundle\JsTranslationBundle\Tests\Dumper;
 
 use Bazinga\Bundle\JsTranslationBundle\Dumper\TranslationDumper;
 use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
@@ -153,7 +154,7 @@ JSON;
         $container = $this->getContainer();
 
         $this->target     = sys_get_temp_dir() . '/bazinga/js-translation-bundle';
-        $this->filesystem = $container->get('filesystem');
+        $this->filesystem = new Filesystem();
         $this->dumper     = $container->get('bazinga.jstranslation.translation_dumper');
 
         $this->filesystem->mkdir($this->target);
