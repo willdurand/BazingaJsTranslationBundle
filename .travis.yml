@@ -17,7 +17,7 @@ before_install:
 
 install:
     - composer install
-    - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION}; fi;
+    - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION} --with-all-dependencies; fi;
 
 script:
     - vendor/bin/phpunit --coverage-text
