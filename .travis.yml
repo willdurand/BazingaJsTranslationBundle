@@ -3,6 +3,8 @@ language: php
 php:
     - 7.1
     - 7.2
+    - 7.3
+    - 7.4
 
 sudo: false
 
@@ -27,8 +29,6 @@ script:
 matrix:
     fast_finish: true
     include:
-      - php: 7.2
-        env: SYMFONY_VERSION='^3.4'
       - php: 7.2
         env: SYMFONY_VERSION='^4.0'
       - php: 7.2
