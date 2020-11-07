@@ -8,8 +8,7 @@ Downloads](https://poser.pugx.org/willdurand/js-translation-bundle/downloads.png
 [![Latest Stable
 Version](https://poser.pugx.org/willdurand/js-translation-bundle/v/stable.png)](https://packagist.org/packages/willdurand/js-translation-bundle)
 
-A pretty nice way to expose your Symfony2 translation messages to your client
-applications.
+A pretty nice way to expose your Symfony translation messages to your client applications.
 
 
 ## Documentation
