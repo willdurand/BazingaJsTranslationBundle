@@ -10,7 +10,7 @@
         module.exports = factory(require('intl-messageformat'));
     }
     else if (typeof define === 'function' && define.amd) {
-        define(['IntlMessageFormat'], factory);
+        define(['intl-messageformat'], factory);
     }
     else {
         root.Translator = factory(root.IntlMessageFormat);
