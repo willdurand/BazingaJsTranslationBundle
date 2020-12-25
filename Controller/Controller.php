@@ -138,7 +138,10 @@ class Controller
 
                 foreach ($files as $filename) {
                     [$currentDomain] = Util::extractCatalogueInformationFromFilename($filename);
-                    $translations[$locale][$currentDomain] = array();
+
+                    if (!isset($translations[$locale][$currentDomain])) {
+                        $translations[$locale][$currentDomain] = array();
+                    }
 
                     $extension = pathinfo($filename, \PATHINFO_EXTENSION);
 
