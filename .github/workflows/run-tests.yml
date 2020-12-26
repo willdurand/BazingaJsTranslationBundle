@@ -50,7 +50,7 @@ jobs:
                   coverage: "none"
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2
-                  extensions: intl
+                  extensions: intl, xdebug
 
             - name: "Set composer cache directory"
               id: composer-cache
@@ -73,7 +73,7 @@ jobs:
               run: vendor/bin/simple-phpunit --version
 
             - name: "Run unit tests"
-              run: vendor/bin/phpunit --coverage-text
+              run: vendor/bin/phpunit --coverage-text --verbose
               
             - name: "Run phantomjs tests"  
               run: phantomjs Resources/js/run-qunit.js file://`pwd`/Resources/js/index.html
