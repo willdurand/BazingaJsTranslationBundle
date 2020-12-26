@@ -61,6 +61,12 @@ jobs:
             - name: Install variant
               if: matrix.variant != 'normal'
               run: composer require ${{ matrix.variant }} --no-update
+              
+            - name: "Install Composer dependencies (${{ matrix.dependencies }})"
+              uses: "ramsey/composer-install@v1"
+              with:
+                dependency-versions: "${{ matrix.dependencies }}"
+                composer-options: "--prefer-dist --prefer-stable"              
 
             - name: "Install PHPUnit"
               run: vendor/bin/simple-phpunit install
