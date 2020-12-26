@@ -19,7 +19,7 @@ jobs:
 
         strategy:
             matrix:
-                allow-failures: [true]
+                allowed-to-fail: [false]
                 php-version: ['7.2.5', '7.3', '7.4', '8.0']
                 variant: [normal]
                 include:
