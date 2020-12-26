@@ -13,4 +13,9 @@ EOT;
     exit(1);
 }
 
+
+if (\PHP_VERSION_ID >= 80000) {
+    libxml_disable_entity_loader(true);
+}
+
 $loader->add('Bazinga\Bundle\JsTranslationBundle\Tests', __DIR__);
