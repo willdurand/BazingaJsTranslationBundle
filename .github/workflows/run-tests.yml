@@ -14,13 +14,12 @@ env:
 jobs:
     test:
         name: PHP ${{ matrix.php-version }} + ${{ matrix.dependencies }} + ${{ matrix.variant }}
-        runs-on: ${{ matrix.operating-system }}
+        runs-on: 'ubuntu-latest'
         continue-on-error: ${{ matrix.allowed-to-fail }}
 
         strategy:
             matrix:
                 allow-failures: [false]
-                operating-system: ['ubuntu-latest']
                 php-version: ['7.2.5', '7.3', '7.4', '8.0']
                 variant: [normal]
                 include:
@@ -34,12 +33,12 @@ jobs:
                     variant: normal
                   - php-version: '7.4'
                     dependencies: highest
-                    allowed-to-fail: false
                     variant: 'symfony/symfony:"4.4.*"'
+                    allowed-to-fail: false
                   - php-version: '7.4'
                     dependencies: highest
+                    variant: 'symfony/symfony:"5.1"'
                     allowed-to-fail: false
-                    variant: 'symfony/symfony:"5.1"'                    
         steps:
             - name: "Checkout code"
               uses: actions/checkout@v2.3.3
