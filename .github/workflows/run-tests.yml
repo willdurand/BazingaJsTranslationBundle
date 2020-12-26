@@ -22,7 +22,7 @@ jobs:
                 php-version: ['7.2.5', '7.3', '7.4', '8.0']
                 variant: [normal]
                 dependencies: [highest]
-                allowed-to-fail: [false]
+                allowed-to-fail: [true]
                 include:
                   - php-version: 7.2.5
                     dependencies: lowest
