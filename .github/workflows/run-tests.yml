@@ -20,9 +20,25 @@ jobs:
         strategy:
             matrix:
                 allow-failures: [false]
-                operating-system: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+                operating-system: ['ubuntu-latest']
                 php-version: ['7.2.5', '7.3', '7.4', '8.0']
-
+                variant: [normal]
+                include:
+                  - php-version: 7.2.5
+                    dependencies: lowest
+                    variant: normal
+                  - php-version: '8.0'
+                    dependencies: highest
+                    allowed-to-fail: false
+                    variant: normal
+                  - php-version: '7.4'
+                    dependencies: highest
+                    allowed-to-fail: false
+                    variant: 'symfony/symfony:"4.4.*"'
+                  - php-version: '7.4'
+                    dependencies: highest
+                    allowed-to-fail: false
+                    variant: 'symfony/symfony:"5.1"'                    
         steps:
             - name: "Checkout code"
               uses: actions/checkout@v2.3.3
@@ -34,7 +50,7 @@ jobs:
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2
                   extensions: intl
-
+            
             - name: "Set composer cache directory"
               id: composer-cache
               run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -49,11 +65,9 @@ jobs:
             - name: "Require symfony/flex"
               run: composer global require --no-progress --no-scripts --no-plugins symfony/flex dev-main
 
-            - if: matrix.php-version != '8.0'
-              run: composer update
-
-            - if: matrix.php-version == '8.0'
-              run: composer update --ignore-platform-reqs
+            - name: Install variant
+              if: matrix.variant != 'normal'
+              run: composer require ${{ matrix.variant }} --no-update
 
             - name: "Install PHPUnit"
               run: vendor/bin/simple-phpunit install

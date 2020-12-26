@@ -17,7 +17,8 @@
         "symfony/console": "~4.4|~5.0",
         "symfony/intl": "~4.4|~5.0",
         "symfony/translation":  "~4.4|~5.0",
-        "symfony/twig-bundle": "~4.4|~5.0"
+        "symfony/twig-bundle": "~4.4|~5.0",
+        "symfony/symfony": "5.1"
     },
     "require-dev": {
         "symfony/asset": "~4.4|~5.0",
