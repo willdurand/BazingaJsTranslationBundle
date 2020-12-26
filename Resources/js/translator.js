@@ -304,6 +304,10 @@
             _additionalReturn.isICU = true;
             return _messages[_locale][_domain + INTL_DOMAIN_SUFFIX][id];
         }
+        
+        if (_domain.indexOf(INTL_DOMAIN_SUFFIX) !== -1) {
+            _additionalReturn.isICU = true;
+        }
 
         if (has_message(_locale, _domain, id)) {
             return _messages[_locale][_domain][id];
