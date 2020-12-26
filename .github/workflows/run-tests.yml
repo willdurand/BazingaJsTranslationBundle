@@ -13,9 +13,9 @@ env:
 
 jobs:
     test:
-        name: "${{ matrix.operating-system }} / PHP ${{ matrix.php-version }}"
+        name: PHP ${{ matrix.php-version }} + ${{ matrix.dependencies }} + ${{ matrix.variant }}
         runs-on: ${{ matrix.operating-system }}
-        continue-on-error: ${{ matrix.allow-failures }}
+        continue-on-error: ${{ matrix.allowed-to-fail }}
 
         strategy:
             matrix:
