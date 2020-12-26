@@ -13,7 +13,7 @@ env:
 
 jobs:
     test:
-        name: PHP ${{ matrix.php-version }} + ${{ matrix.symfony-version }}
+        name: PHP ${{ matrix.php-version }} + Symfony ${{ matrix.symfony-version }}
         runs-on: 'ubuntu-latest'
         continue-on-error: ${{ matrix.allowed-to-fail }}
 
