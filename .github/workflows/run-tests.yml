@@ -55,7 +55,7 @@ jobs:
                   coverage: "none"
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2
-                  extensions: intl, xdebug
+                  extensions: intl
 
             - name: "Set composer cache directory"
               id: composer-cache
