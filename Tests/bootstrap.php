@@ -13,8 +13,7 @@ EOT;
     exit(1);
 }
 
-
-if (\PHP_VERSION_ID >= 80000) {
+if (version_compare(PHP_VERSION, '8.0.0', '<')) {
     libxml_disable_entity_loader(true);
 }
 

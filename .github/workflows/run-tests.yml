@@ -52,10 +52,6 @@ jobs:
                   tools: composer:v2
                   extensions: intl
 
-            - name: Configuration required for PHP 8.0
-              if: matrix.php-version == '8.0'
-              run: composer config platform.php 7.4.99
-
             - name: "Set composer cache directory"
               id: composer-cache
               run: echo "::set-output name=dir::$(composer config cache-files-dir)"
