@@ -52,7 +52,7 @@ jobs:
             - name: "Install PHP with extensions"
               uses: shivammathur/setup-php@2.7.0
               with:
-                  coverage: pcov
+                  coverage: xdebug
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2
                   extensions: intl
