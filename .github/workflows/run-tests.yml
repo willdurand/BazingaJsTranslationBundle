@@ -27,6 +27,7 @@ jobs:
                   - php-version: 7.2.5
                     dependencies: lowest
                     variant: normal
+                    allowed-to-fail: false
                   - php-version: '8.0'
                     dependencies: highest
                     allowed-to-fail: false
@@ -50,7 +51,7 @@ jobs:
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2
                   extensions: intl
-            
+
             - name: "Set composer cache directory"
               id: composer-cache
               run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -61,9 +62,6 @@ jobs:
                   path: ${{ steps.composer-cache.outputs.dir }}
                   key: ${{ runner.os }}-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}-allow-failures-${{ matrix.allow-failures }}
                   restore-keys: ${{ runner.os }}-${{ matrix.php-version }}-composer-
-
-            - name: "Require symfony/flex"
-              run: composer global require --no-progress --no-scripts --no-plugins symfony/flex dev-main
 
             - name: Install variant
               if: matrix.variant != 'normal'
