@@ -13,7 +13,7 @@ env:
 
 jobs:
     test:
-        name: PHP ${{ matrix.php-version }} + ${{ matrix.variant }}
+        name: PHP ${{ matrix.php-version }} + ${{ matrix.symfony-version }}
         runs-on: 'ubuntu-latest'
         continue-on-error: ${{ matrix.allowed-to-fail }}
 
@@ -23,23 +23,28 @@ jobs:
                 variant: [normal]
                 dependencies: [highest]
                 allowed-to-fail: [true]
+                symfony-version: [latest]
                 include:
                   - php-version: 7.2.5
                     dependencies: highest
                     variant: normal
                     allowed-to-fail: false
+                    symfony-version: latest
                   - php-version: '8.0'
                     dependencies: highest
                     variant: normal
                     allowed-to-fail: true
+                    symfony-version: latest
                   - php-version: '7.4'
                     dependencies: highest
                     variant: 'symfony/symfony:"4.4.*"'
                     allowed-to-fail: false
+                    symfony-version: 4.4
                   - php-version: '7.4'
                     dependencies: highest
                     variant: 'symfony/symfony:"5.1"'
                     allowed-to-fail: false
+                    symfony-version: 5.1
         steps:
             - name: "Checkout code"
               uses: actions/checkout@v2.3.3
