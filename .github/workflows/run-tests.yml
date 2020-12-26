@@ -10,6 +10,7 @@ env:
     fail-fast: true
     PHPUNIT_FLAGS: "-v"
     SYMFONY_REQUIRE: ">=4.4"
+    XDEBUG_MODE: "coverage"
 
 jobs:
     test:
