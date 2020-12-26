@@ -59,7 +59,7 @@ jobs:
               uses: "ramsey/composer-install@v1"
               with:
                 dependency-versions: "${{ matrix.dependencies }}"
-                composer-options: "--prefer-dist --prefer-stable"              
+                composer-options: "--prefer-dist"              
 
             - name: "Install PHPUnit"
               run: vendor/bin/simple-phpunit install
