@@ -149,7 +149,7 @@ JSON;
 
     private $dumper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $container = $this->getContainer();
 
