@@ -18,7 +18,7 @@ class TranslationResourceFilesPass implements CompilerPassInterface
         }
 
         $translationFiles = $this->getTranslationFilesFromAddResourceCalls($container);
-        $translationFiles = array_merge($translationFiles, $this->getTranslationFiles($container));
+        $translationFiles = array_merge_recursive($translationFiles, $this->getTranslationFiles($container));
 
         $container->getDefinition('bazinga.jstranslation.translation_finder')->replaceArgument(0, $translationFiles);
     }
