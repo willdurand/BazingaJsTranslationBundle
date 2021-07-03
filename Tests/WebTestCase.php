@@ -3,6 +3,7 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 use Bazinga\Bundle\JsTranslationBundle\Tests\Fixtures\app\AppKernel;
@@ -19,10 +20,10 @@ abstract class WebTestCase extends BaseWebTestCase
         $fs->remove($dir);
     }
 
-    protected function getContainer(array $options = array())
+    protected static function getContainer(): ContainerInterface
     {
         if (!static::$kernel) {
-            static::$kernel = static::createKernel($options);
+            static::$kernel = static::createKernel();
         }
         static::$kernel->boot();
 
