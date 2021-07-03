@@ -21,7 +21,7 @@ test('add()', function() {
 });
 
 test('trans()', function() {
-    expect(14);
+    expect(17);
 
     Translator.add('foo', 'bar', 'Foo');
     Translator.add('foo.with.arg', 'This is Ba %arg%');
@@ -57,6 +57,11 @@ test('trans()', function() {
     equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 0 }, 'messages'), 'John has no projects.', 'Returns the ICU-formatted message with correct replaces.');
     equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 1 }, 'messages'), 'John has 1 project.', 'Returns the ICU-formatted message with correct replaces.');
     equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 4 }, 'messages'), 'John has 4 projects.', 'Returns the ICU-formatted message with correct replaces.');
+
+    equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 0 }), 'John has no projects.', 'Returns the ICU-formatted message with correct replaces.');
+    equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 1 }), 'John has 1 project.', 'Returns the ICU-formatted message with correct replaces.');
+    equal(Translator.trans('messages.with.args', { name: 'John', projectCount: 4 }), 'John has 4 projects.', 'Returns the ICU-formatted message with correct replaces.');
+
 });
 
 test('transChoice()', function() {
