@@ -291,7 +291,7 @@
                 if (has_message(_locale, _domains[i], id) ||
                     has_message(nationalLocaleFallback, _domains[i], id) ||
                     has_message(localeFallback, _domains[i], id)) {
-                    _domain = _domains[i];
+                    _domain = _domains[i].replace(INTL_DOMAIN_SUFFIX, '');
 
                     break;
                 }
