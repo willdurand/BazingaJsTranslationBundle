@@ -266,17 +266,17 @@ class TranslationDumper
                 $translations[$locale] = array();
             }
 
-            if (!isset($translations[$locale][$domain])) {
-                $translations[$locale][$domain] = array();
+            if (!isset($translations[$locale][$domainCleaned])) {
+                $translations[$locale][$domainCleaned] = array();
             }
 
             if (isset($this->loaders[$extension])) {
                 $catalogue = $this->loaders[$extension]
-                    ->load($filename, $locale, $domain);
+                    ->load($filename, $locale, $domainCleaned);
 
-                $translations[$locale][$domain] = array_replace_recursive(
-                    $translations[$locale][$domain],
-                    $catalogue->all($domain)
+                $translations[$locale][$domainCleaned] = array_replace_recursive(
+                    $translations[$locale][$domainCleaned],
+                    $catalogue->all($domainCleaned)
                 );
             }
         }
