@@ -550,6 +550,8 @@
             case 'bh':
             case 'fil':
             case 'fr':
+                return number % 1000000 === 0 ? 1 : (number < 2 ? 0 : 2);
+
             case 'gun':
             case 'hi':
             case 'ln':
