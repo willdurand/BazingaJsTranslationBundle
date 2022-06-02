@@ -1,8 +1,7 @@
 JsTranslationBundle
 ===================
 
-[![Build
-Status](https://secure.travis-ci.org/willdurand/BazingaJsTranslationBundle.png?branch=master)](https://travis-ci.org/willdurand/BazingaJsTranslationBundle)
+[![CI](https://github.com/willdurand/BazingaJsTranslationBundle/actions/workflows/run-tests.yml/badge.svg?branch=master)](https://github.com/willdurand/BazingaJsTranslationBundle/actions/workflows/run-tests.yml)
 [![Total
 Downloads](https://poser.pugx.org/willdurand/js-translation-bundle/downloads.png)](https://packagist.org/packages/willdurand/js-translation-bundle)
 [![Latest Stable
