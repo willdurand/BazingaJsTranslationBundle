@@ -202,7 +202,7 @@ class Controller
         }
 
         $locales = array_filter($locales, function ($locale) {
-            return 1 === preg_match('/^[a-z]{2,3}([-_]{1}[a-zA-Z]{2})?$/', $locale);
+            return 1 === preg_match('/^[a-z]{2,3}([-_][a-zA-Z]{2,4})?([-_][a-zA-Z]{2})?$/', $locale);
         });
 
         $locales = array_unique(array_map(function ($locale) {
