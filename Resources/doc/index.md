@@ -442,6 +442,9 @@ bazinga_js_translation:
                          # translator fallback.
 ```
 
+When a fallback locale is defined, that locale's translations will always
+be loaded.
+
 #### Default Domain
 
 You can define the default domain used when translation messages are added

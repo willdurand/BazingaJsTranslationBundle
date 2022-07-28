@@ -210,6 +210,10 @@ class Controller
             return trim($locale);
         }, $locales));
 
+		if ($this->localeFallback && !in_array($this->localeFallback, $locales)) {
+			$locales[] = $this->localeFallback;
+		}
+
         return $locales;
     }
 }
