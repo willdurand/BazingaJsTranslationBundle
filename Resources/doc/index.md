@@ -1,7 +1,7 @@
 JsTranslationBundle
 ===================
 
-A pretty nice way to expose your Symfony2 translation messages to your client
+A pretty nice way to expose your Symfony translation messages to your client
 applications.
 
 **Important:** This documentation has been written for version `2.0.0` and above
