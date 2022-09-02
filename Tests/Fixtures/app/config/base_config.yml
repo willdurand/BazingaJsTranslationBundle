@@ -4,6 +4,7 @@ framework:
     test:          ~
     translator:    { enabled: true }
     validation:    { enabled: false }
+    http_method_override: false
 
 # Twig Configuration
 twig:
