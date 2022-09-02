@@ -26,11 +26,6 @@ jobs:
                 allowed-to-fail: [true]
                 symfony-version: [latest]
                 include:
-                  - php-version: '7.2.5'
-                    dependencies: highest
-                    variant: 'symfony/symfony:"5.4.*"'
-                    allowed-to-fail: false
-                    symfony-version: 5.4>
                   - php-version: '7.4'
                     dependencies: highest
                     variant: normal
