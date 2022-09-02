@@ -39,12 +39,12 @@ jobs:
                   - php-version: '8.0'
                     dependencies: highest
                     variant: normal
-                    allowed-to-fail: true
+                    allowed-to-fail: false
                     symfony-version: latest
                   - php-version: '8.1'
                     dependencies: highest
                     variant: normal
-                    allowed-to-fail: true
+                    allowed-to-fail: false
                     symfony-version: latest                                      
         steps:
             - name: "Checkout code"
