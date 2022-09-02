@@ -40,7 +40,7 @@ jobs:
                     dependencies: highest
                     variant: normal
                     allowed-to-fail: false
-                    symfony-version: latest                                      
+                    symfony-version: latest
         steps:
             - name: "Checkout code"
               uses: actions/checkout@v2.3.3
