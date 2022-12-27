@@ -106,6 +106,21 @@
             return this;
         },
 
+        /**
+         * @param {String} message
+         * @param {Object} parameters
+         * @returns {String}
+         * @private
+         */
+        _intlFormat: function (message, parameters) {
+            if (typeof IntlMessageFormat === 'undefined') {
+                throw new Error('The dependency "IntlMessageFormat" is required to use ICU MessageFormat but it has not been found. Please read https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#using-icu-messageformat')
+            }
+
+            var mf = new IntlMessageFormat.IntlMessageFormat(message, undefined, undefined, {ignoreTag: true});
+
+            return mf.format(parameters || {});
+        },
 
         /**
          * Translates the given message.
@@ -129,17 +144,12 @@
             );
 
             if (_additionalReturn.isICU) {
-                if (typeof IntlMessageFormat === 'undefined') {
-                    throw new Error('The dependency "IntlMessageFormat" is required to use ICU MessageFormat but it has not been found. Please read https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#using-icu-messageformat')
-                }
-
-                var mf = new IntlMessageFormat.IntlMessageFormat(_message, undefined, undefined, {ignoreTag: true});
-
-                return mf.format(parameters || {});
+                return this._intlFormat(_message, parameters || {});
             }
 
             return replace_placeholders(_message, parameters || {});
         },
+
 
         /**
          * Translates the given choice message by choosing a translation according to a number.
@@ -179,13 +189,7 @@
             }
 
             if (_additionalReturn.isICU) {
-                if (typeof IntlMessageFormat === 'undefined') {
-                    throw new Error('The dependency "IntlMessageFormat" is required to use ICU MessageFormat but it has not been found. Please read https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md#using-icu-messageformat')
-                }
-
-                var mf = new IntlMessageFormat.IntlMessageFormat(_message, undefined, undefined, {ignoreTag: true});
-
-                return mf.format(parameters || {});
+                return this._intlFormat(_message, parameters);
             }
 
             return replace_placeholders(_message, parameters);
