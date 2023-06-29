@@ -32,7 +32,7 @@ class DumpCommand extends Command
 
     /**
      * @param TranslationDumper $dumper
-     * @param $kernelRootDir
+     * @param string $kernelRootDir
      */
     public function __construct(TranslationDumper $dumper, $projectDir)
     {
@@ -43,7 +43,7 @@ class DumpCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * @return void
      */
     protected function configure()
     {
@@ -80,7 +80,7 @@ class DumpCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * @return void
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -112,7 +112,7 @@ class DumpCommand extends Command
         ));
 
         $this->dumper->dump($this->targetPath, $input->getOption('pattern'), $formats, $merge);
-        
+
         return 0;
     }
 }

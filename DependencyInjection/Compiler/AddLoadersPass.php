@@ -11,6 +11,9 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class AddLoadersPass implements CompilerPassInterface
 {
+    /**
+     * @return void
+     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('bazinga.jstranslation.controller')) {
