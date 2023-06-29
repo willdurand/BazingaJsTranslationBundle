@@ -15,7 +15,8 @@ env:
 jobs:
     test:
         name: PHP ${{ matrix.php-version }} + Symfony ${{ matrix.symfony-version }}
-        runs-on: 'ubuntu-latest'
+        # TODO find a different setup for the JS testsuite as phantomjs is abandoned and is not available on newer runner images
+        runs-on: 'ubuntu-20.04'
         continue-on-error: ${{ matrix.allowed-to-fail }}
 
         strategy:
