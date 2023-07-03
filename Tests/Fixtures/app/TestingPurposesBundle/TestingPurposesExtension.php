@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class TestingPurposesExtension extends Extension
 {
-    public function load(array $config, ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container): void
     {
     }
 }

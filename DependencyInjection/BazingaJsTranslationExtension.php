@@ -16,6 +16,8 @@ class BazingaJsTranslationExtension extends Extension
 {
     /**
      * Load configuration.
+     *
+     * @return void
      */
     public function load(array $configs, ContainerBuilder $container)
     {

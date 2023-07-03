@@ -11,7 +11,7 @@ use Symfony\Component\Finder\Finder;
  */
 class GetTranslationWithMethodCallsFromDefinition implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $translationFile = __DIR__ .'/../../Resources/translations/bar.en.yml';
         $translator = $container->findDefinition('translator.default');
