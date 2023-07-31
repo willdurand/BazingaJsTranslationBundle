@@ -37,7 +37,7 @@ class DumpCommand extends Command
     public function __construct(TranslationDumper $dumper, $projectDir)
     {
         $this->dumper = $dumper;
-        $this->kernelRootDir = $projectDir . '/app';
+        $this->kernelRootDir = $projectDir;
 
         parent::__construct();
     }
@@ -86,7 +86,7 @@ class DumpCommand extends Command
     {
         parent::initialize($input, $output);
 
-        $this->targetPath = $input->getArgument('target') ?: sprintf('%s/../web/js', $this->kernelRootDir);
+        $this->targetPath = $input->getArgument('target') ?: sprintf('%s/web/js', $this->kernelRootDir);
     }
 
     /**
