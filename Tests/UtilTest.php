@@ -3,28 +3,22 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Tests;
 
 use Bazinga\Bundle\JsTranslationBundle\Util;
-use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class UtilTest extends TestCase
+class UtilTest extends WebTestCase
 {
+    private $dumper;
 
-    /**
-     * @dataProvider provideExtractCatalogueInformationFromFilename
-     */
-    public function testExtractCatalogueInformationFromFilename(string $filename, array $expectedInformation): void
+    public function setUp(): void
     {
-        [$domain, $locale, $extension] = Util::extractCatalogueInformationFromFilename($filename);
+        $container = $this->getContainer();
 
-        $this->assertSame($expectedInformation[0], $domain);
-        $this->assertSame($expectedInformation[1], $locale);
-        $this->assertSame($expectedInformation[2], $extension);
-    }
+        $this->target = sys_get_temp_dir() . '/bazinga/js-translation-bundle';
+        $this->filesystem = new Filesystem();
+        $this->dumper = $container->get('bazinga.jstranslation.translation_dumper');
 
-    public function provideExtractCatalogueInformationFromFilename(): iterable
-    {
-        yield ['messages.en.yml', ['messages', 'en', 'yml', null]];
-        yield ['messages.en.xliff', ['messages', 'en', 'xliff', null]];
-        yield ['messages+intl-icu.en.xliff', ['messages+intl-icu', 'en', 'xliff']];
+        $this->filesystem->mkdir($this->target);
     }
 
     /**
@@ -39,5 +33,28 @@ class UtilTest extends TestCase
     {
         yield ['messages', 'messages'];
         yield ['messages+intl-icu', 'messages'];
+    }
+
+    public function testGetMessagesFromTranslatorBag()
+    {
+        $translatorBag = $this->getContainer()->get('translator');
+
+        $expectedTranslations = [
+            'messages+intl-icu' => [
+                'hello_name' => 'bonjour {name} !'
+            ],
+            'messages' => [
+                'hello' => 'bonjour'
+            ]
+        ];
+
+        $this->assertEquals(
+            $expectedTranslations,
+            Util::getMessagesFromTranslatorBag($translatorBag, 'fr', 'messages')
+        );
+        $this->assertEquals(
+            $expectedTranslations,
+            Util::getMessagesFromTranslatorBag($translatorBag, 'fr', 'messages+intl-icu')
+        );
     }
 }

@@ -28,9 +28,9 @@ class BazingaJsTranslationExtension extends Extension
 
         $container
             ->getDefinition('bazinga.jstranslation.controller')
-            ->replaceArgument(5, $config['locale_fallback'])
-            ->replaceArgument(6, $config['default_domain'])
-            ->replaceArgument(7, $config['http_cache_time']);
+            ->replaceArgument(4, $config['locale_fallback'])
+            ->replaceArgument(5, $config['default_domain'])
+            ->replaceArgument(6, $config['http_cache_time']);
 
         // Add fallback locale to active locales if missing
         if ($config['active_locales'] && !in_array($config['locale_fallback'], $config['active_locales'])) {

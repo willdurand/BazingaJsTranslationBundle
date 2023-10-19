@@ -2,10 +2,9 @@
 
 namespace Bazinga\Bundle\JsTranslationBundle\Dumper;
 
-use Bazinga\Bundle\JsTranslationBundle\Finder\TranslationFinder;
 use Bazinga\Bundle\JsTranslationBundle\Util;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Translation\TranslatorBagInterface;
 use Twig\Environment;
 
 /**
@@ -24,14 +23,9 @@ class TranslationDumper
     private $twig;
 
     /**
-     * @var TranslationFinder
+     * @var TranslatorBagInterface
      */
-    private $finder;
-
-    /**
-     * @var array
-     */
-    private $loaders = array();
+    private $translatorBag;
 
     /**
      * @var Filesystem
@@ -60,14 +54,14 @@ class TranslationDumper
 
     /**
      * @param Environment                   $twig           The twig environment.
-     * @param TranslationFinder             $finder         The translation finder.
+     * @param TranslatorBagInterface        $translatorBag  The translator bag.
      * @param FileSystem                    $filesystem     The file system.
      * @param string                        $localeFallback
      * @param string                        $defaultDomain
      */
     public function __construct(
         Environment $twig,
-        TranslationFinder $finder,
+        TranslatorBagInterface  $translatorBag,
         Filesystem $filesystem,
         $localeFallback = '',
         $defaultDomain  = '',
@@ -75,7 +69,7 @@ class TranslationDumper
         array $activeDomains = array()
     ) {
         $this->twig           = $twig;
-        $this->finder         = $finder;
+        $this->translatorBag     = $translatorBag;
         $this->filesystem     = $filesystem;
         $this->localeFallback = $localeFallback;
         $this->defaultDomain  = $defaultDomain;
@@ -97,19 +91,6 @@ class TranslationDumper
     public function getActiveDomains()
     {
         return $this->activeDomains;
-    }
-
-    /**
-     * Add a translation loader if it does not exist.
-     *
-     * @param string          $id     The loader id.
-     * @param LoaderInterface $loader A translation loader.
-     */
-    public function addLoader($id, $loader)
-    {
-        if (!array_key_exists($id, $this->loaders)) {
-            $this->loaders[$id] = $loader;
-        }
     }
 
     /**
@@ -257,40 +238,22 @@ class TranslationDumper
         $translations = array();
         $activeLocales = $this->activeLocales;
         $activeDomains = $this->activeDomains;
-        foreach ($this->finder->all() as $filename) {
-            list($extension, $locale, $domain, $domainCleaned) = $this->getFileInfo($filename);
 
-            if ((count($activeLocales) > 0 && !in_array($locale, $activeLocales)) || (count($activeDomains) > 0 && !in_array($domainCleaned, $activeDomains))) {
-                continue;
-            }
+        sort($activeLocales);
+        sort($activeDomains);
 
-            if (!isset($translations[$locale])) {
-                $translations[$locale] = array();
-            }
+        foreach ($activeLocales as $locale) {
+            $translations[$locale] = array();
 
-            if (!isset($translations[$locale][$domain])) {
-                $translations[$locale][$domain] = array();
-            }
-
-            if (isset($this->loaders[$extension])) {
-                $catalogue = $this->loaders[$extension]
-                    ->load($filename, $locale, $domain);
-
-                $translations[$locale][$domain] = array_replace_recursive(
-                    $translations[$locale][$domain],
-                    $catalogue->all($domain)
+            foreach ($activeDomains as $domain) {
+                $translations[$locale] = array_merge(
+                    $translations[$locale],
+                    Util::getMessagesFromTranslatorBag($this->translatorBag, $locale, $domain)
                 );
             }
         }
 
         return $translations;
-    }
-
-    private function getFileInfo($filename)
-    {
-        list($domain, $locale, $extension) = Util::extractCatalogueInformationFromFilename($filename);
-
-        return array($extension, $locale, $domain, Util::cleanDomain($domain));
     }
 
     /**
