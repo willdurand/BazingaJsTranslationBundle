@@ -23,7 +23,7 @@ class Util
      * @param TranslatorBagInterface $translatorBag
      * @param string $locale
      * @param string $domain
-     * @return array 2D array, where first-level keys are domain without suffixes, and domain with '+intl-icu' suffix. Second level keys are translation keys.
+     * @return array<string, array<string, string>> 2D array, where first-level keys are domain without suffixes, and domain with '+intl-icu' suffix. Second level keys are translation keys.
      */
     public static function getMessagesFromTranslatorBag(TranslatorBagInterface $translatorBag, string $locale, string $domain): array
     {
