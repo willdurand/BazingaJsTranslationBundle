@@ -92,7 +92,7 @@ class DumpCommand extends Command
     /**
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $formats = $input->getOption('format');
         $merge = (object) array(
