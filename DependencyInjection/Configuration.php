@@ -7,15 +7,12 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
+ *
+ * @final
  */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * Generates the configuration tree builder.
-     *
-     * @return TreeBuilder The tree builder
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('bazinga_js_translation');
 

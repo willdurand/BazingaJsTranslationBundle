@@ -11,6 +11,8 @@ use Twig\Environment;
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
  * @author Hugo Monteiro <hugo.monteiro@gmail.com>
+ *
+ * @internal
  */
 class TranslationDumper
 {

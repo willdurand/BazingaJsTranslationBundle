@@ -9,13 +9,12 @@ use Bazinga\Bundle\JsTranslationBundle\DependencyInjection\Compiler\AddLoadersPa
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
+ *
+ * @final
  */
 class BazingaJsTranslationBundle extends Bundle
 {
-    /**
-     * @return void
-     */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 

@@ -8,6 +8,8 @@ use Bazinga\Bundle\JsTranslationBundle\Util;
  * @author William DURAND <william.durand1@gmail.com>
  * @author Markus Poerschke <markus@eluceo.de>
  * @author Hugo MONTEIRO <hugo.monteiro@gmail.com>
+ *
+ * @internal
  */
 class TranslationFinder
 {

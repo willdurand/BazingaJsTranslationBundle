@@ -17,6 +17,8 @@ use Twig\Loader\LoaderInterface;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
+ *
+ * @final
  */
 class Controller
 {
