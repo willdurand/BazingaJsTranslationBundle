@@ -8,13 +8,12 @@ use Symfony\Component\DependencyInjection\Exception\OutOfBoundsException;
 
 /**
  * @author Hugo MONTEIRO <hugo.monteiro@gmail.com>
+ *
+ * @internal
  */
 class TranslationResourceFilesPass implements CompilerPassInterface
 {
-    /**
-     * @return void
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->has('translator.default')) {
             return;

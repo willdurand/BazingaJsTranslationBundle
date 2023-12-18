@@ -11,15 +11,12 @@ use Symfony\Component\Config\Definition\Processor;
 /**
  * @author William DURAND <william.durand1@gmail.com>
  * @author Hugo Monteiro <hugo.monteiro@gmail.com>
+ *
+ * @final
  */
 class BazingaJsTranslationExtension extends Extension
 {
-    /**
-     * Load configuration.
-     *
-     * @return void
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $processor     = new Processor();
         $configuration = new Configuration($container->getParameter('kernel.debug'));

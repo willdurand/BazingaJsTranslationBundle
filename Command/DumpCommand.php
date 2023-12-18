@@ -12,6 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
  * @author Hugo Monteiro <hugo.monteiro@gmail.com>
+ *
+ * @final
  */
 class DumpCommand extends Command
 {
@@ -42,10 +44,7 @@ class DumpCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @return void
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('bazinga:js-translation:dump')
@@ -79,20 +78,14 @@ class DumpCommand extends Command
             );
     }
 
-    /**
-     * @return void
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
 
         $this->targetPath = $input->getArgument('target') ?: sprintf('%s/../web/js', $this->kernelRootDir);
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $formats = $input->getOption('format');
         $merge = (object) array(
