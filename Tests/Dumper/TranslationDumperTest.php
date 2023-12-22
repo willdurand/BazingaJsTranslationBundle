@@ -59,7 +59,7 @@ JS;
     const JS_FR_MERGED_TRANSLATIONS = <<<JS
 (function (t) {
 // fr
-t.add("hello_name", "bonjour {name} !", "messages\u002Bintl\u002Dicu", "fr");
+t.add("hello_name", "bonjour {name} !", "messages", "fr");
 t.add("hello", "bonjour", "messages", "fr");
 t.add(7, "Nos occasions", "numerics", "fr");
 t.add(8, "Nous contacter", "numerics", "fr");
@@ -74,7 +74,7 @@ JS;
     const JS_FR_MESSAGES_TRANSLATIONS = <<<JS
 (function (t) {
 // fr
-t.add("hello_name", "bonjour {name} !", "messages\u002Bintl\u002Dicu", "fr");
+t.add("hello_name", "bonjour {name} !", "messages", "fr");
 t.add("hello", "bonjour", "messages", "fr");
 })(Translator);
 
@@ -124,14 +124,14 @@ JSON;
 
     const JSON_FR_MERGED_TRANSLATIONS = <<<JSON
 {
-    "translations": {"fr":{"messages+intl-icu":{"hello_name":"bonjour {name} !"},"messages":{"hello":"bonjour"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
+    "translations": {"fr":{"messages":{"hello_name":"bonjour {name} !","hello":"bonjour"},"numerics":{"7":"Nos occasions","8":"Nous contacter","12":"pr\u00e9nom","13":"nom","14":"adresse","15":"code postal"}}}
 }
 
 JSON;
 
     const JSON_FR_MESSAGES_TRANSLATIONS = <<<JSON
 {
-    "translations": {"fr":{"messages+intl-icu":{"hello_name":"bonjour {name} !"},"messages":{"hello":"bonjour"}}}
+    "translations": {"fr":{"messages":{"hello_name":"bonjour {name} !","hello":"bonjour"}}}
 }
 
 JSON;
