@@ -26,5 +26,11 @@
             <argument>%kernel.project_dir%</argument>
             <tag name="console.command" command="bazinga:js-translation:dump" />
         </service>
+        <service id="bazinga.jstranslation.translation_frontend_extractor" class="Bazinga\Bundle\JsTranslationBundle\Extractor\FrontendExtractor">
+            <argument type="service" id="filesystem"></argument>
+            <tag name="translation.extractor" alias="frontend" />
+            <argument></argument> <!-- extensions -->
+            <argument></argument> <!-- sequence -->
+        </service>
     </services>
 </container>

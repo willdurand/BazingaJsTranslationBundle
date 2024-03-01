@@ -376,6 +376,13 @@ Translator.locale;
 By default, the `locale` is set to the value defined in the `lang` attribute of
 the `html` tag.
 
+#### Extractor
+
+BazingaJsTranslationBundle includes an **extractor** for assets:
+
+- FrontendExtractor
+
+This extractor allow Symfony to find translation keys used in ``.ts|.js|.jsx|.coffee`` files and thus, can be shown in ``translation:debug`` [command output](http://symfony.com/doc/current/book/translation.html#debugging-translations) or in the [translation profiler](http://symfony.com/blog/new-in-symfony-2-7-translation-profiler).
 
 Examples
 --------
@@ -485,7 +492,6 @@ bazinga_js_translation:
     locale_fallback:      en
     default_domain:       messages
 ```
-
 
 Testing
 -------
