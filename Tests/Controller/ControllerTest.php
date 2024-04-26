@@ -1,8 +1,9 @@
 <?php
 
-namespace Bazinga\JsTranslationBundle\Tests\Controller;
+namespace Bazinga\Bundle\JsTranslationBundle\Tests\Controller;
 
 use Bazinga\Bundle\JsTranslationBundle\Tests\WebTestCase;
+use Symfony\Component\HttpKernel\Kernel;
 
 class ControllerTest extends WebTestCase
 {
@@ -35,7 +36,7 @@ JSON
 {
     "fallback": "en",
     "defaultDomain": "messages",
-    "translations": {"en":{"messages":{"hello":"hello"}},"fr":{"messages":{"hello":"bonjour"}}}
+    "translations": {"en":{"messages":{"hello":"hello"}},"fr":{"messages+intl-icu":{"hello_name":"bonjour {name} !"},"messages":{"hello":"bonjour"}}}
 }
 
 JSON
@@ -86,11 +87,11 @@ JSON
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
-(function (Translator) {
-    Translator.fallback      = 'en';
-    Translator.defaultDomain = 'messages';
-    // en
-    Translator.add("hello", "hello", "messages", "en");
+(function (t) {
+t.fallback = 'en';
+t.defaultDomain = 'messages';
+// en
+t.add("hello", "hello", "messages", "en");
 })(Translator);
 
 JS
@@ -105,13 +106,14 @@ JS
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
-(function (Translator) {
-    Translator.fallback      = 'en';
-    Translator.defaultDomain = 'messages';
-    // en
-    Translator.add("hello", "hello", "messages", "en");
-    // fr
-    Translator.add("hello", "bonjour", "messages", "fr");
+(function (t) {
+t.fallback = 'en';
+t.defaultDomain = 'messages';
+// en
+t.add("hello", "hello", "messages", "en");
+// fr
+t.add("hello_name", "bonjour {name} !", "messages\u002Bintl\u002Dicu", "fr");
+t.add("hello", "bonjour", "messages", "fr");
 })(Translator);
 
 JS
@@ -126,10 +128,10 @@ JS
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
-(function (Translator) {
-    Translator.fallback      = 'en';
-    Translator.defaultDomain = 'messages';
-    // en
+(function (t) {
+t.fallback = 'en';
+t.defaultDomain = 'messages';
+// en
 })(Translator);
 
 JS
@@ -144,10 +146,10 @@ JS
         $response = $client->getResponse();
 
         $this->assertEquals(<<<JS
-(function (Translator) {
-    Translator.fallback      = 'en';
-    Translator.defaultDomain = 'messages';
-    // pt
+(function (t) {
+t.fallback = 'en';
+t.defaultDomain = 'messages';
+// pt
 })(Translator);
 
 JS
@@ -280,5 +282,66 @@ JSON
 
 JSON
         , $response->getContent());
+    }
+
+    public function testGetTranslationsOutsideResourcesFolder()
+    {
+        if (Kernel::VERSION_ID < 20800) {
+            $this->markTestSkipped('This Symfony version do not support framework.paths configuration');
+        }
+
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/outsider.json');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en":{"outsider":{"frontpage.hi":"hi"}}}
+}
+
+JSON
+            , $response->getContent());
+    }
+
+    /**
+     * Test the bar domain from another bundle using a compiler pass to add into the definition using a method call.
+     */
+    public function testGetTranslationsFromCompilerPassAnotherBundle()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/bar.json');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"en":{"bar":{"bye":"bye"}}}
+}
+
+JSON
+            , $response->getContent());
+    }
+
+    public function testGetTranslationsWithThreeLettersLocale()
+    {
+        $client  = static::createClient();
+
+        $crawler  = $client->request('GET', '/translations/messages.json?locales=ach_UG');
+        $response = $client->getResponse();
+
+        $this->assertEquals(<<<JSON
+{
+    "fallback": "en",
+    "defaultDomain": "messages",
+    "translations": {"ach_UG":{"messages":{"hello":"hello"}}}
+}
+
+JSON
+            , $response->getContent());
     }
 }

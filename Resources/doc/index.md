@@ -1,7 +1,7 @@
 JsTranslationBundle
 ===================
 
-A pretty nice way to expose your Symfony2 translation messages to your client
+A pretty nice way to expose your Symfony translation messages to your client
 applications.
 
 **Important:** This documentation has been written for version `2.0.0` and above
@@ -10,9 +10,28 @@ of this bundle. For version `1.x`, please read:
 Also, you might be interested in this [UPGRADE
 guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGRADE.md).
 
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Load Translations](#load-translations)
+        - [Domains](#domains)
+        - [Locales](#locales)
+        - [Loading via JSON](#loading-via-json)
+    - [The dump Command](#the-dump-command)
+        - [Assetic](#assetic)
+    - [The JS Translator](#the-js-translator)
+        - [Message Placeholders / Parameters](#message-placeholders--parameters)
+        - [Pluralization](#pluralization)
+        - [Using ICU MessageFormat](#using-icu-messageformat)
+        - [Get The Locale](#get-the-locale)
+- [Examples](#examples)
+- [More configuration](#more-configuration)
+- [Reference Configuration](#reference-configuration)
+- [Testing](#testing)
 
 Installation
 ------------
+
+### Require via Composer
 
 Install the bundle:
 
@@ -32,7 +51,7 @@ public function registerBundles()
 }
 ```
 
-Register the routing in `app/config/routing.yml`:
+Register the routing in `app/config/routing.yml` _(optional: Because the dump command does not depend on the router component)_:
 
 ``` yaml
 # app/config/routing.yml
@@ -42,27 +61,52 @@ _bazinga_jstranslation:
 
 Publish assets:
 
-    php app/console assets:install --symlink web
+    php bin/console assets:install --symlink
+
+### Require via NPM (optional)
+
+Install the package:
+
+    npm install bazinga-translator --save
+
+This step is optional because the files exposed by the npm package are also part of the composer bundle.
+Normally you would do this if you prefer to keep all your front-end dependencies in one place, or if you wish to include the `Translator` object as a module dependency in your JS files.
+
+**Important**: it is strongly recommended that you use the same version of the composer bundle and the npm package.
 
 
 Usage
 -----
 
-First, add the following line to your template. It will load the JS `Translator`:
+To use the `Translator` object in your JS files you can either load it globally or `require` / `import` it as a module.
+
+* To load it globally add the following line to your template:
 
 ``` html
 <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
+```
+
+* To load it as a module you must be using a module bundler, like `webpack` and it is recommended that you install the translator via `npm`. Then in your JS files you can do:
+
+``` js
+// ES2015
+import Translator from 'bazinga-translator';
+```
+
+``` js
+// ES5
+var Translator = require('bazinga-translator');
 ```
 
 Then add the current application's locale into your layout, by adding a `lang`
 attribute to the `html` tag:
 
 ```html
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.request.locale|split('_')[0] }}">
 ```
 
 Now, you are done with the basic setup, and you can specify the [translation
-files](http://symfony.com/doc/current/book/translation.html#translation-locations-and-naming-conventions)
+files](https://symfony.com/doc/current/translation.html#translation-resource-file-names-and-locations)
 you want to load.
 
 ### Load Translations
@@ -75,6 +119,35 @@ Loading translations is a matter of adding a new `script` tag as follows:
 
 This will use the current `locale` and will return the translated messages found
 in each `messages.CURRENT_LOCALE.*` files of your project.
+
+In case you do not want to expose an entire translation domain to your frontend,
+you can manually add translations to the translator collections. This simulates
+the way how the above script would add translations, but allows you to use any
+other renderer (like `Twig` or `php`) to make translations accessible
+
+```twig
+<script>
+/**
+ * Adds a translation entry.
+ *
+ * @param {String} id         The message id
+ * @param {String} message    The message to register for the given id
+ * @param {String} [domain]   The domain for the message or null to use the default
+ * @param {String} [locale]   The locale or null to use the default
+ * @return {Object}           Translator
+ * @api public
+ */
+Translator.add(
+    'translation_key',
+    '{{ 'translation_key'|trans }}',
+    'messages',
+    'en'
+);
+</script>
+```
+Manually adding single translations allows your translators to change the translation
+or placeholder ordering without the need of a separate translation domain, or without
+having to change the `Twig` or `js` view.
 
 #### Domains
 
@@ -94,14 +167,14 @@ You can use the `locales` **query parameter** to get translations in a specific
 language, or to load translation messages in several languages at once:
 
 ``` html
-<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME' }) }}?locales=MY_LOCALE"></script>
+<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME', 'locales': 'MY_LOCALE' }) }}"></script>
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.MY_LOCALE.*`
 files of your project.
 
 ``` html
-<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME' }) }}?locales=fr,en"></script>
+<script src="{{ url('bazinga_jstranslation_js', { 'domain': 'DOMAIN_NAME', 'locales': 'fr,en' }) }}"></script>
 ```
 
 This will return the translated messages found in each `DOMAIN_NAME.(fr|en).*`
@@ -110,7 +183,7 @@ file of your project.
 #### Loading via JSON
 
 Alternatively, you can load your translated messages via JSON (e.g. using
-jQuery's `ajax()` or RequireJS's text plugin). Just amend the above mentioned
+the `fetch` API, jQuery's `ajax()` or RequireJS's text plugin). Just amend the above mentioned
 URLs to also contain the `'_format': 'json'` parameter like so:
 
 ``` html
@@ -123,11 +196,19 @@ Then, feed the translator via `Translator.fromJSON(myRetrievedJSONString)`.
 
 This bundle provides a command to dump the translation files:
 
-    php app/console bazinga:js-translation:dump [target]
+    php bin/console bazinga:js-translation:dump [target] [--format=js|json] [--pattern=/translations/{domain}.{_format}] [--merge-domains]
 
 The optional `target` argument allows you to override the target directory to
-dump JS translation files in. By default, it generates files in the `web/js/`
+dump JS translation files in. By default, it generates files in the `public/js/`
 directory.
+
+The `--format` option allows you to specify which formats must be included in the output.
+If you only need JSON files in your project you can do `--format=json`.
+
+The `--pattern` option allows you to specify the url pattern that will be generated when generating the file with the routes (E.g: /translations/{domain}.{_format}). There is no dependency with the router component.
+
+The `--merge-domains` option when set will generate only one file per locale with all the domains in it.
+For cases where you prefer to load all language strings at once.
 
 You have to load a `config.js` file, which contains the configuration for the
 JS Translator, then you can load all translation files that have been dumped.
@@ -136,7 +217,7 @@ to the JS Translator.
 
 #### Assetic
 
-The command above is useful if you use
+The command below is useful if you use
 [Assetic](http://symfony.com/doc/current/cookbook/assetic/asset_management.html):
 
 ```twig
@@ -150,6 +231,10 @@ The command above is useful if you use
 
 In the example above, all translation files from your entire project will be
 loaded. Of course you can load specific domains: `js/translations/admin/*.js`.
+
+The default translation URLs let a controller dump the translations. If you
+make use of the Assetic, you need to manually dump the translations each time
+a translation changes because the Assetic links will point to a static file.
 
 ### The JS Translator
 
@@ -187,7 +272,7 @@ Translator.transChoice('key', 123, { "foo" : "bar" }, 'DOMAIN_NAME');
 ```
 
 > Read the official documentation about Symfony2 [message
-placeholders](http://symfony.com/doc/current/book/translation.html#message-placeholders).
+placeholders](https://symfony.com/doc/current/translation.html#message-placeholders).
 
 #### Pluralization
 
@@ -226,7 +311,58 @@ Translator.transChoice('apples', 100, {"count" : 100});
 ```
 
 For more information, read the official documentation  about
-[pluralization](http://symfony.com/doc/current/book/translation.html#pluralization).
+[pluralization](https://symfony.com/doc/current/translation.html#pluralization).
+
+#### Using ICU MessageFormat
+
+Like Symfony, the bundle supports [ICU MessageFormat](http://userguide.icu-project.org/formatparse/messages).
+It's a more advanced syntax that allows you to handle placeholders, singular/plural, number, date, time, conditions, etc... [see some examples](https://format-message.github.io/icu-message-format-for-translators/).
+
+##### Installation
+
+The bundle requires on an external library [`intl-messageformat`](https://formatjs.io/docs/intl-messageformat/).
+
+You can either load it globally, e.g. from a CDN:
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-messageformat/9.0.2/intl-messageformat.min.js" integrity="sha512-uGIOqaLIi8I30qAnPLfrEnecDDi08AcCrg7gzGp/XrDafLJl/NIilHwAm1Wl2FLiTSf10D5vM70108k3oMjK5Q==" crossorigin="anonymous"></script>
+<script src="{{ url('bazinga_jstranslation_js') }}"></script>
+```
+
+Or use NPM if you use an module bundler:
+
+    npm install intl-messageformat --save
+
+`intl-messageformat` depends of [`Intl`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl). If you targets old browser you will need to use a polyfill, for example [Andy Earnshaw's `Intl` polyfill](https://github.com/andyearnshaw/Intl.js/).
+
+##### Usage
+
+You must define your translations key in domain suffixed by `+intl-icu`, e.g.: `messages.en.yaml` becomes `messages+intl-icu.en.yaml`.
+
+Given the following translations file:
+```yaml
+# translations/messages+intl-icu.en.yaml
+hello_name: Hello {name}!
+name_has_x_projects: {name} has {projectCount, plural, =0 {no projects} one {# project} other {# projects}}
+```
+
+Then you can use the Translator like this:
+```javascript
+Translator.trans('hello_name', { name: 'John' }, 'messages');
+// will return "Hello John!"
+
+
+// equivalent to Translator.transChoice() with the "classic" translations format
+Translator.trans('name_has_x_projects', { name: 'John', projectCount: 0 }, 'messages');
+// will return "John has no projects."
+
+Translator.trans('name_has_x_projects', { name: 'John', projectCount: 1 }, 'messages');
+// will return "John has 1 project."
+
+Translator.trans('name_has_x_projects', { name: 'John', projectCount: 4 }, 'messages');
+// will return "John has 4 projects."
+```
+
+For more information, read the [Symfony documentation about ICU MessageFormat](https://symfony.com/doc/current/translation/message_format.html) or the [ICU User Guide](http://userguide.icu-project.org/formatparse/messages).
 
 #### Get The Locale
 
@@ -318,7 +454,7 @@ bazinga_js_translation:
 
 #### Active locales
 
-By default, all locales are dumped. 
+By default, all locales are dumped.
 You can define an array of active locales:
 
 ``` yaml
@@ -330,7 +466,7 @@ bazinga_js_translation:
 
 #### Active Domains
 
-By default, all domains are dumped. 
+By default, all domains are dumped.
 You can define an array of active domains:
 
 ``` yaml
@@ -356,7 +492,7 @@ Testing
 
 ### PHP
 
-Setup the test suite using [Composer](http://getcomposer.org/):
+Setup the test suite using [Composer](https://getcomposer.org/):
 
     $ composer install --dev
 

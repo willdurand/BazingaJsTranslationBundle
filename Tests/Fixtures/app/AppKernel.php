@@ -1,6 +1,6 @@
 <?php
 
-namespace Bazinga\Bundle\JsTranslationBundle\Tests;
+namespace Bazinga\Bundle\JsTranslationBundle\Tests\Fixtures\app;
 
 // get the autoload file
 $dir = __DIR__;
@@ -34,37 +34,45 @@ class AppKernel extends Kernel
         parent::__construct($environment, $debug);
     }
 
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         return array(
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
+            new \Bazinga\Bundle\JsTranslationBundle\Tests\Fixtures\app\TestingPurposesBundle\TestingPurposesBundle()
         );
     }
 
-    public function init()
-    {
-    }
-
-    public function getRootDir()
+    public function getRootDir(): string
     {
         return __DIR__;
     }
 
-    public function getCacheDir()
+    public function getProjectDir(): string
+    {
+        return __DIR__.'/../';
+    }
+
+    public function getCacheDir(): string
     {
         return sys_get_temp_dir().'/'.Kernel::VERSION.'/bazinga-js-translation/cache/'.$this->environment;
     }
 
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return sys_get_temp_dir().'/'.Kernel::VERSION.'/bazinga-js-translation/logs';
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(__DIR__.'/config/'.$this->environment.'.yml');
+        $loader->load(__DIR__.'/config/base_config.yml');
+        $loader->load(__DIR__.'/config/disable_annotations.yml');
+
+        if (self::VERSION_ID < 40200 && file_exists(__DIR__.'/Resources/translations') === false) {
+            self::recurseCopy(__DIR__.'/../translations', __DIR__.'/Resources/translations');
+        }
     }
 
     public function serialize()
@@ -75,5 +83,22 @@ class AppKernel extends Kernel
     public function unserialize($str)
     {
         call_user_func_array(array($this, '__construct'), unserialize($str));
+    }
+
+    private static function recurseCopy($src, $dst)
+    {
+        $dir = opendir($src);
+        @mkdir($dst, 0777, true);
+        while (false !== ($file = readdir($dir))) {
+            if (($file !== '.') && ($file !== '..')) {
+                if (is_dir($src.'/'.$file)) {
+                    self::recurseCopy($src.'/'.$file, $dst.'/'.$file);
+                } else {
+                    copy($src.'/'.$file, $dst.'/'.$file);
+                }
+            }
+        }
+
+        closedir($dir);
     }
 }

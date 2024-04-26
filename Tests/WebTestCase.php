@@ -3,8 +3,11 @@
 namespace Bazinga\Bundle\JsTranslationBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Bazinga\Bundle\JsTranslationBundle\Tests\Fixtures\app\AppKernel;
 
 abstract class WebTestCase extends BaseWebTestCase
 {
@@ -18,24 +21,22 @@ abstract class WebTestCase extends BaseWebTestCase
         $fs->remove($dir);
     }
 
-    protected function getContainer(array $options = array())
+    protected static function getContainer(): ContainerInterface
     {
         if (!static::$kernel) {
-            static::$kernel = static::createKernel($options);
+            static::$kernel = static::createKernel();
         }
         static::$kernel->boot();
 
         return static::$kernel->getContainer();
     }
 
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
-        require_once __DIR__.'/Fixtures/app/AppKernel.php';
-
-        return 'Bazinga\Bundle\JsTranslationBundle\Tests\AppKernel';
+        return AppKernel::class;
     }
 
-    protected static function createKernel(array $options = array())
+    protected static function createKernel(array $options = array()): KernelInterface
     {
         $class = self::getKernelClass();
 
@@ -45,7 +46,7 @@ abstract class WebTestCase extends BaseWebTestCase
         );
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->deleteTmpDir();

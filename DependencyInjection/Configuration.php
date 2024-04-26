@@ -7,19 +7,23 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
+ *
+ * @final
  */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * Generates the configuration tree builder.
-     *
-     * @return TreeBuilder The tree builder
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-        $builder = new TreeBuilder();
+        $treeBuilder = new TreeBuilder('bazinga_js_translation');
 
-        $builder->root('bazinga_js_translation')
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('bazinga_js_translation');
+        }
+
+        $rootNode
             ->fixXmlConfig('active_locale')
             ->fixXmlConfig('active_domain')
             ->children()
@@ -36,6 +40,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end();
 
-        return $builder;
+        return $treeBuilder;
     }
 }

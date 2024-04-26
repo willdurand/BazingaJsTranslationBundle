@@ -1,15 +1,13 @@
 JsTranslationBundle
 ===================
 
-[![Build
-Status](https://secure.travis-ci.org/willdurand/BazingaJsTranslationBundle.png?branch=master)](https://travis-ci.org/willdurand/BazingaJsTranslationBundle)
+[![CI](https://github.com/willdurand/BazingaJsTranslationBundle/actions/workflows/run-tests.yml/badge.svg?branch=master)](https://github.com/willdurand/BazingaJsTranslationBundle/actions/workflows/run-tests.yml)
 [![Total
 Downloads](https://poser.pugx.org/willdurand/js-translation-bundle/downloads.png)](https://packagist.org/packages/willdurand/js-translation-bundle)
 [![Latest Stable
 Version](https://poser.pugx.org/willdurand/js-translation-bundle/v/stable.png)](https://packagist.org/packages/willdurand/js-translation-bundle)
 
-A pretty nice way to expose your Symfony2 translation messages to your client
-applications.
+A pretty nice way to expose your Symfony translation messages to your client applications.
 
 
 ## Documentation
@@ -43,7 +41,5 @@ Credits
 License
 -------
 
-This bundle is released under the MIT license. See the complete license in the
-bundle:
-
-    Resources/meta/LICENSE
+This bundle is released under the MIT license. See the complete license [in the
+bundle](LICENSE).

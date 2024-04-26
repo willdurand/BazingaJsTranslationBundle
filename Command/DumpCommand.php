@@ -2,23 +2,49 @@
 
 namespace Bazinga\Bundle\JsTranslationBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Bazinga\Bundle\JsTranslationBundle\Dumper\TranslationDumper;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
 
 /**
  * @author Adrien Russo <adrien.russo.qc@gmail.com>
+ * @author Hugo Monteiro <hugo.monteiro@gmail.com>
+ *
+ * @final
  */
-class DumpCommand extends ContainerAwareCommand
+class DumpCommand extends Command
 {
+    /**
+     * @var TranslationDumper
+     */
+    private $dumper;
+
+    /**
+     * @var string
+     */
+    private $projectDir;
+
+    /**
+     * @var string
+     */
     private $targetPath;
 
     /**
-     * {@inheritDoc}
+     * @param TranslationDumper $dumper
+     * @param string $projectDir
      */
-    protected function configure()
+    public function __construct(TranslationDumper $dumper, $projectDir)
+    {
+        $this->dumper = $dumper;
+        $this->projectDir = $projectDir;
+
+        parent::__construct();
+    }
+
+    protected function configure(): void
     {
         $this
             ->setName('bazinga:js-translation:dump')
@@ -29,25 +55,43 @@ class DumpCommand extends ContainerAwareCommand
                     'Override the target directory to dump JS translation files in.'
                 ),
             ))
-            ->setDescription('Dumps all JS translation files to the filesystem');
+            ->setDescription('Dumps all JS translation files to the filesystem')
+            ->addOption(
+                'pattern',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The route pattern: e.g. "/translations/{domain}.{_format}"',
+                TranslationDumper::DEFAULT_TRANSLATION_PATTERN
+            )
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'If set, only the passed formats will be generated',
+                array()
+            )
+            ->addOption(
+                'merge-domains',
+                null,
+                InputOption::VALUE_NONE,
+                'If set, all domains will be merged into a single file per language'
+            );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
 
-        $this->targetPath = $input->getArgument('target') ?:
-            realpath(sprintf('%s/../web/js', $this->getContainer()->getParameter('kernel.root_dir')));
+        $this->targetPath = $input->getArgument('target') ?: sprintf('%s/web/js', $this->projectDir);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $formats = $input->getOption('format');
+        $merge = (object) array(
+            'domains' => $input->getOption('merge-domains')
+        );
+
         if (!is_dir($dir = dirname($this->targetPath))) {
             $output->writeln('<info>[dir+]</info>  ' . $dir);
             if (false === @mkdir($dir, 0777, true)) {
@@ -60,9 +104,8 @@ class DumpCommand extends ContainerAwareCommand
             $this->targetPath
         ));
 
-        $this
-            ->getContainer()
-            ->get('bazinga.jstranslation.translation_dumper')
-            ->dump($this->targetPath);
+        $this->dumper->dump($this->targetPath, $input->getOption('pattern'), $formats, $merge);
+
+        return 0;
     }
 }

@@ -10,13 +10,13 @@ use Symfony\Component\Config\Definition\Processor;
 
 /**
  * @author William DURAND <william.durand1@gmail.com>
+ * @author Hugo Monteiro <hugo.monteiro@gmail.com>
+ *
+ * @final
  */
 class BazingaJsTranslationExtension extends Extension
 {
-    /**
-     * Load configuration.
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $processor     = new Processor();
         $configuration = new Configuration($container->getParameter('kernel.debug'));
@@ -39,9 +39,9 @@ class BazingaJsTranslationExtension extends Extension
 
         $container
             ->getDefinition('bazinga.jstranslation.translation_dumper')
-            ->replaceArgument(4, $config['locale_fallback'])
-            ->replaceArgument(5, $config['default_domain'])
-            ->replaceArgument(6, $config['active_locales'])
-            ->replaceArgument(7, $config['active_domains']);
+            ->replaceArgument(3, $config['locale_fallback'])
+            ->replaceArgument(4, $config['default_domain'])
+            ->replaceArgument(5, $config['active_locales'])
+            ->replaceArgument(6, $config['active_domains']);
     }
 }
