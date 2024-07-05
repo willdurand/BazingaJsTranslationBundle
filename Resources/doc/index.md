@@ -239,7 +239,7 @@ a translation changes because the Assetic links will point to a static file.
 ### The JS Translator
 
 The `Translator` object implements the Symfony2
-[`TranslatorInterface`](https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Translation/TranslatorInterface.php)
+[`TranslatorInterface`](https://github.com/symfony/symfony/blob/7.0/src/Symfony/Contracts/Translation/TranslatorInterface.php)
 and provides the same `trans()` and `transChoice()` methods:
 
 ``` javascript
