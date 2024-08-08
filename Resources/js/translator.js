@@ -15,7 +15,7 @@
     else {
         root.Translator = factory(root.IntlMessageFormat);
     }
-}(this, function (IntlMessageFormat) {
+}(typeof self !== 'undefined' ? self : this, function (IntlMessageFormat) {
     "use strict";
 
     var _messages     = {},
