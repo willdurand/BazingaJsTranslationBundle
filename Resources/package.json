@@ -23,6 +23,8 @@
   ],
   "main": "js/translator.js",
   "devDependencies": {
+    "intl-messageformat": "^10.5.14",
+    "qunit": "^2.21.1",
     "uglify-js": "^2.7.3"
   },
   "scripts": {
