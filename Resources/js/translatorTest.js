@@ -242,6 +242,8 @@ QUnit.test('retry on fallback when locale exist but not the domain', function(as
 QUnit.test('gets the current locale using the `lang` attribute on the `html` tag', function(assert) {
     assert.expect(1);
 
+    document.documentElement.lang = 'fr';
+
     assert.equal(Translator.locale, 'fr');
 });
 

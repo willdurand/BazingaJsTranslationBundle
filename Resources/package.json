@@ -23,11 +23,14 @@
   ],
   "main": "js/translator.js",
   "devDependencies": {
+    "@web/test-runner": "^0.18.2",
     "intl-messageformat": "^10.5.14",
     "qunit": "^2.21.1",
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^2.7.3",
+    "web-test-runner-qunit": "^2.0.0"
   },
   "scripts": {
-    "build": "uglifyjs js/translator.js --comments --compress --mangle --output=public/js/translator.min.js"
+    "build": "uglifyjs js/translator.js --comments --compress --mangle --output=public/js/translator.min.js",
+    "test": "wtr js/translatorTest.js"
   }
 }
