@@ -19,27 +19,16 @@ jobs:
         continue-on-error: ${{ matrix.allowed-to-fail }}
 
         strategy:
+            fail-fast: false
             matrix:
-                php-version: ['7.4', '8.0', '8.1']
-                variant: [normal]
+                php-version: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
                 dependencies: [highest]
-                allowed-to-fail: [true]
+                allowed-to-fail: [false]
                 symfony-version: [latest]
                 include:
-                  - php-version: '7.4'
+                  - php-version: nightly
                     dependencies: highest
-                    variant: normal
-                    allowed-to-fail: false
-                    symfony-version: latest
-                  - php-version: '8.0'
-                    dependencies: highest
-                    variant: normal
-                    allowed-to-fail: false
-                    symfony-version: latest
-                  - php-version: '8.1'
-                    dependencies: highest
-                    variant: normal
-                    allowed-to-fail: false
+                    allowed-to-fail: true
                     symfony-version: latest
         steps:
             - name: "Checkout code"
@@ -53,16 +42,8 @@ jobs:
                   tools: composer:v2
                   extensions: intl, xdebug
 
-            - name: "Set composer cache directory"
-              id: composer-cache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            - name: Install variant
-              if: matrix.variant != 'normal'
-              run: composer require ${{ matrix.variant }} --no-update
-
             - name: "Install Composer dependencies (${{ matrix.dependencies }})"
-              uses: "ramsey/composer-install@v1"
+              uses: "ramsey/composer-install@v3"
               with:
                 dependency-versions: "${{ matrix.dependencies }}"
                 composer-options: "--prefer-dist"
