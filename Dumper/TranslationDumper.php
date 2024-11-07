@@ -79,6 +79,10 @@ class TranslationDumper
         $this->filesystem     = $filesystem;
         $this->localeFallback = $localeFallback;
         $this->defaultDomain  = $defaultDomain;
+        // Add fallback locale to active locales if missing
+        if ($activeLocales && !in_array($localeFallback, $activeLocales)) {
+            array_push($activeLocales, $localeFallback);
+        }
         $this->activeLocales  = $activeLocales;
         $this->activeDomains  = $activeDomains;
     }
