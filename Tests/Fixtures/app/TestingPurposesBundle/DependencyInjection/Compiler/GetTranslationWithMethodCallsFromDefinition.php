@@ -16,7 +16,7 @@ class GetTranslationWithMethodCallsFromDefinition implements CompilerPassInterfa
         $translationFile = __DIR__ .'/../../Resources/translations/bar.en.yml';
         $translator = $container->findDefinition('translator.default');
 
-        list($domain, $locale, $format) = explode('.', $translationFile, 3);
+        list($domain, $locale, $format) = explode('.', basename($translationFile), 3);
         $translator->addMethodCall(
             'addResource',
             array($format, $translationFile, $locale , $domain)
