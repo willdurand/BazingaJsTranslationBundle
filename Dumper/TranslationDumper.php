@@ -118,13 +118,13 @@ class TranslationDumper
      * @param string $target Target directory.
      * @param string $pattern route path
      * @param string[] $formats Formats to generate.
-     * @param \stdClass $merge Merge options.
+     * @param \stdClass|null $merge Merge options.
      */
     public function dump(
         $target = 'web/js',
         $pattern = self::DEFAULT_TRANSLATION_PATTERN,
         array $formats = array(),
-        \stdClass $merge = null
+        ?\stdClass $merge = null
     ) {
         $availableFormats  = array('js', 'json');
 
