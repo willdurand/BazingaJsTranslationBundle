@@ -15,7 +15,7 @@ twig:
 bazinga_js_translation:
     active_locales:
         - fr
-        - en
+    locale_fallback: en
     active_domains:
         - messages
         - numerics
