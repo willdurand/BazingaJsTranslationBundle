@@ -199,7 +199,7 @@ This bundle provides a command to dump the translation files:
     php bin/console bazinga:js-translation:dump [target] [--format=js|json] [--pattern=/translations/{domain}.{_format}] [--merge-domains]
 
 The optional `target` argument allows you to override the target directory to
-dump JS translation files in. By default, it generates files in the `public/js/`
+dump JS translation files in. By default, it generates files in the `web/js/`
 directory.
 
 The `--format` option allows you to specify which formats must be included in the output.
