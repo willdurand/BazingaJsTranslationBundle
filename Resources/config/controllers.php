@@ -15,8 +15,8 @@ return static function (ContainerConfigurator $container) {
             service('bazinga.jstranslation.translation_finder'),
             '%kernel.cache_dir%/bazinga-js-translation',
             '%kernel.debug%',
-            '', // fallback (locale)
-            '', // default domain
-            '', // http cache time
+            abstract_arg('fallback (locale)'),
+            abstract_arg('default domain'),
+            abstract_arg('http cache time')
         ]);
 };

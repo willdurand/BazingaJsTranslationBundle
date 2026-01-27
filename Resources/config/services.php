@@ -18,10 +18,10 @@ return static function (ContainerConfigurator $container) {
             service('twig'),
             service('bazinga.jstranslation.translation_finder'),
             service('filesystem'),
-            '', // fallback (locale)
-            '', // default domain
-            '', // active locales
-            '', // active domains
+            abstract_arg('fallback (locale)'),
+            abstract_arg('default domain'),
+            abstract_arg('active locales'),
+            abstract_arg('active domains')
         ]);
 
     $services->set('bazinga.jstranslation.dump_command', \Bazinga\Bundle\JsTranslationBundle\Command\DumpCommand::class)
