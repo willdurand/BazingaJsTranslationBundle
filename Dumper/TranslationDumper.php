@@ -125,7 +125,7 @@ class TranslationDumper
      * @param \stdClass|null $merge Merge options.
      */
     public function dump(
-        $target = 'web/js',
+        $target = 'public/js',
         $pattern = self::DEFAULT_TRANSLATION_PATTERN,
         array $formats = array(),
         ?\stdClass $merge = null
