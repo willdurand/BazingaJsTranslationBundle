@@ -9,7 +9,6 @@ on:
 env:
     fail-fast: true
     PHPUNIT_FLAGS: "-v"
-    SYMFONY_REQUIRE: ">=5.4"
     XDEBUG_MODE: "coverage"
 
 jobs:
@@ -21,7 +20,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
+                php-version: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
                 dependencies: [highest]
                 allowed-to-fail: [false]
                 symfony-version: [latest]
@@ -32,7 +31,7 @@ jobs:
                     symfony-version: latest
         steps:
             - name: "Checkout code"
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: "Install PHP with extensions"
               uses: shivammathur/setup-php@v2
@@ -63,7 +62,7 @@ jobs:
 
         steps:
             - name: "Checkout code"
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: "Setup node"
               uses: actions/setup-node@v4
