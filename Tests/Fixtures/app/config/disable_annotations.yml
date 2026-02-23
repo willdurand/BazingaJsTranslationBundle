@@ -1,2 +1,1 @@
-framework:
-    annotations:   { enabled: false }
+# annotations config was removed in Symfony 8
