@@ -68,7 +68,9 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/'.$this->environment.'.yml');
         $loader->load(__DIR__.'/config/base_config.yml');
-        $loader->load(__DIR__.'/config/disable_annotations.yml');
+        if (self::VERSION_ID < 80000) {
+            $loader->load(__DIR__.'/config/disable_annotations.yml');
+        }
 
         if (self::VERSION_ID < 40200 && file_exists(__DIR__.'/Resources/translations') === false) {
             self::recurseCopy(__DIR__.'/../translations', __DIR__.'/Resources/translations');
