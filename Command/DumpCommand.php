@@ -82,7 +82,7 @@ class DumpCommand extends Command
     {
         parent::initialize($input, $output);
 
-        $this->targetPath = $input->getArgument('target') ?: sprintf('%s/web/js', $this->projectDir);
+        $this->targetPath = $input->getArgument('target') ?: sprintf('%s/public/js', $this->projectDir);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
