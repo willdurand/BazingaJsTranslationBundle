@@ -25,7 +25,7 @@ jobs:
                 allowed-to-fail: [false]
                 symfony-version: [latest]
                 include:
-                  - php-version: '8.5'
+                  - php-version: nightly
                     dependencies: highest
                     allowed-to-fail: true
                     symfony-version: latest
