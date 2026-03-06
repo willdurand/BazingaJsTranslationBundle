@@ -314,3 +314,90 @@ QUnit.test('searches in country fallback, if not exists in full domain', functio
     Translator.locale = 'de_CH';
     assert.equal(Translator.trans('symfony2.great'), 'Symfony2 ist groß');
 });
+
+
+QUnit.module('ICU MessageFormat with locale fallback', hooks => {
+    hooks.beforeEach(() => {
+        Translator.reset();
+        Translator.locale = 'nl';
+        Translator.fallback = 'en';
+    });
+
+    QUnit.test('should use ICU format from the global fallback locale when current locale has no translation', assert => {
+        Translator.add('hello_name', 'Hello {name}!', 'messages+intl-icu', 'en');
+
+        assert.strictEqual(Translator.trans('hello_name', { name: 'John' }, 'messages'), 'Hello John!');
+    });
+
+    QUnit.test('should use ICU plural format from the global fallback locale', assert => {
+        Translator.add(
+            'apples',
+            '{count, plural, =0 {no apples} one {one apple} other {# apples}}',
+            'messages+intl-icu',
+            'en'
+        );
+
+        assert.strictEqual(Translator.trans('apples', { count: 0 }, 'messages'), 'no apples');
+        assert.strictEqual(Translator.trans('apples', { count: 1 }, 'messages'), 'one apple');
+        assert.strictEqual(Translator.trans('apples', { count: 5 }, 'messages'), '5 apples');
+    });
+
+    QUnit.test('should prefer current locale ICU translation over fallback locale ICU translation', assert => {
+        Translator.add('hello_name', 'Hello {name}!', 'messages+intl-icu', 'en');
+        Translator.add('hello_name', 'Hallo {name}!', 'messages+intl-icu', 'nl');
+
+        assert.strictEqual(Translator.trans('hello_name', { name: 'John' }, 'messages'), 'Hallo John!');
+    });
+
+    QUnit.test('should fall back to plain (non-ICU) translation in the fallback locale', assert => {
+        // Regression: existing plain-domain fallback should still work unchanged
+        Translator.add('simple_key', 'Hello!', 'messages', 'en');
+
+        assert.strictEqual(Translator.trans('simple_key', {}, 'messages'), 'Hello!');
+    });
+
+    QUnit.test('should prefer current locale plain translation over fallback locale ICU translation', assert => {
+        Translator.add('hello_name', 'Hello {name}!', 'messages+intl-icu', 'en');
+        Translator.add('hello_name', 'Hallo %name%!', 'messages', 'nl');
+
+        assert.strictEqual(Translator.trans('hello_name', { name: 'John' }, 'messages'), 'Hallo John!');
+    });
+});
+
+QUnit.module('ICU MessageFormat with sub-locale fallback (nl_NL -> nl -> en)', hooks => {
+    hooks.beforeEach(() => {
+        Translator.reset();
+        Translator.locale = 'nl_NL';
+        Translator.fallback = 'en';
+    });
+
+    QUnit.test('should use ICU format from parent locale (nl) when nl_NL has no translation', assert => {
+        Translator.add('hello_name', 'Hallo {name}!', 'messages+intl-icu', 'nl');
+
+        assert.strictEqual(Translator.trans('hello_name', { name: 'Jan' }, 'messages'), 'Hallo Jan!');
+    });
+
+    QUnit.test('should use ICU format from global fallback (en) when both nl_NL and nl have no translation', assert => {
+        Translator.add('hello_name', 'Hello {name}!', 'messages+intl-icu', 'en');
+
+        assert.strictEqual(Translator.trans('hello_name', { name: 'Jan' }, 'messages'), 'Hello Jan!');
+    });
+
+    QUnit.test('should prefer nl_NL ICU translation over nl ICU translation', assert => {
+        Translator.add('hello_name', 'Hallo {name}!', 'messages+intl-icu', 'nl');
+        Translator.add('hello_name', 'Hallo {name} uit NL!', 'messages+intl-icu', 'nl_NL');
+
+        assert.strictEqual(Translator.trans('hello_name', { name: 'Jan' }, 'messages'), 'Hallo Jan uit NL!');
+    });
+
+    QUnit.test('should use ICU plural format from global fallback when no locale-specific translation exists', assert => {
+        Translator.add(
+            'apples',
+            '{count, plural, =0 {no apples} one {one apple} other {# apples}}',
+            'messages+intl-icu',
+            'en'
+        );
+
+        assert.strictEqual(Translator.trans('apples', { count: 3 }, 'messages'), '3 apples');
+    });
+});

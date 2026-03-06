@@ -321,11 +321,19 @@
 
             _locale = _locale.substring(0, _length - (_lastLength + 1));
 
+            if (has_message(_locale, _domain + INTL_DOMAIN_SUFFIX, id)) {
+                _additionalReturn.isICU = true;
+                return _messages[_locale][_domain + INTL_DOMAIN_SUFFIX][id];
+            }
             if (has_message(_locale, _domain, id)) {
                 return _messages[_locale][_domain][id];
             }
         }
 
+        if (has_message(localeFallback, _domain + INTL_DOMAIN_SUFFIX, id)) {
+            _additionalReturn.isICU = true;
+            return _messages[localeFallback][_domain + INTL_DOMAIN_SUFFIX][id];
+        }
         if (has_message(localeFallback, _domain, id)) {
             return _messages[localeFallback][_domain][id];
         }
