@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 use Twig\Environment;
 use Twig\Loader\LoaderInterface;
 
@@ -20,7 +21,7 @@ use Twig\Loader\LoaderInterface;
  *
  * @final
  */
-class Controller
+class Controller implements CacheWarmerInterface
 {
     /**
      * @var TranslatorInterface
@@ -67,6 +68,16 @@ class Controller
     private $httpCacheTime;
 
     /**
+     * @var array
+     */
+    private $activeLocales;
+
+    /**
+     * @var array
+     */
+    private $activeDomains;
+
+    /**
      * @param TranslatorInterface           $translator        The translator.
      * @param Environment                   $twig              The twig environment.
      * @param TranslationFinder             $translationFinder The translation finder.
@@ -75,6 +86,8 @@ class Controller
      * @param string                        $localeFallback
      * @param string                        $defaultDomain
      * @param int                           $httpCacheTime
+     * @param array                         $activeLocales
+     * @param array                         $activeDomains
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -85,7 +98,9 @@ class Controller
         $debug          = false,
         $localeFallback = '',
         $defaultDomain  = '',
-        $httpCacheTime  = 86400
+        $httpCacheTime  = 86400,
+        array $activeLocales = array(),
+        array $activeDomains = array()
     ) {
         if (!$translator instanceof TranslatorInterface && !$translator instanceof LegacyTranslatorInterface) {
             throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as translator is not supported.', get_class($translator)));
@@ -99,6 +114,8 @@ class Controller
         $this->localeFallback    = $localeFallback;
         $this->defaultDomain     = $defaultDomain;
         $this->httpCacheTime     = $httpCacheTime;
+        $this->activeLocales     = $activeLocales;
+        $this->activeDomains     = $activeDomains;
     }
 
     /**
@@ -122,11 +139,78 @@ class Controller
             throw new NotFoundHttpException();
         }
 
+        $cache = $this->generateCache($domain, $locales, $_format);
+
+        if (method_exists($cache, 'getPath')) {
+            $cachePath = $cache->getPath();
+        } else {
+            $cachePath = (string) $cache;
+        }
+
+        $expirationTime = new \DateTime();
+        $expirationTime->modify('+' . $this->httpCacheTime . ' seconds');
+        $response = new Response(
+            file_get_contents($cachePath),
+            200,
+            array('Content-Type' => $request->getMimeType($_format))
+        );
+        $response->prepare($request);
+        $response->setPublic();
+        $response->setETag(md5($response->getContent()));
+        $response->isNotModified($request);
+        $response->setExpires($expirationTime);
+
+        return $response;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function warmUp($cacheDir, $buildDir = null): array
+    {
+        $locales = $this->activeLocales;
+        $domains = $this->activeDomains;
+
+        if (empty($locales)) {
+            return array();
+        }
+
+        if (empty($domains)) {
+            $domains = array($this->defaultDomain ?: 'messages');
+        }
+
+        foreach ($domains as $domain) {
+            foreach ($locales as $locale) {
+                $this->generateCache($domain, (array) $locale, 'js');
+                $this->generateCache($domain, (array) $locale, 'json');
+            }
+        }
+
+        return array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isOptional(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @param string $domain
+     * @param array  $locales
+     * @param string $format
+     *
+     * @return ConfigCache
+     */
+    private function generateCache($domain, array $locales, $format)
+    {
         $cache = new ConfigCache(sprintf('%s/%s.%s.%s',
             $this->cacheDir,
             $domain,
             implode('-', $locales),
-            $_format
+            $format
         ), $this->debug);
 
         if (!$cache->isFresh()) {
@@ -160,7 +244,7 @@ class Controller
                 }
             }
 
-            $content = $this->twig->render('@BazingaJsTranslation/getTranslations.' . $_format . '.twig', array(
+            $content = $this->twig->render('@BazingaJsTranslation/getTranslations.' . $format . '.twig', array(
                 'fallback'       => $this->localeFallback,
                 'defaultDomain'  => $this->defaultDomain,
                 'translations'   => $translations,
@@ -174,26 +258,7 @@ class Controller
             }
         }
 
-        if (method_exists($cache, 'getPath')) {
-            $cachePath = $cache->getPath();
-        } else {
-            $cachePath = (string) $cache;
-        }
-
-        $expirationTime = new \DateTime();
-        $expirationTime->modify('+' . $this->httpCacheTime . ' seconds');
-        $response = new Response(
-            file_get_contents($cachePath),
-            200,
-            array('Content-Type' => $request->getMimeType($_format))
-        );
-        $response->prepare($request);
-        $response->setPublic();
-        $response->setETag(md5($response->getContent()));
-        $response->isNotModified($request);
-        $response->setExpires($expirationTime);
-
-        return $response;
+        return $cache;
     }
 
     private function getLocales(Request $request)

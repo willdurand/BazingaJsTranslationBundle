@@ -19,5 +19,8 @@ return static function (ContainerConfigurator $container) {
             abstract_arg('fallback locale'),
             abstract_arg('default domain'),
             abstract_arg('http cache time'),
-        ]);
+            abstract_arg('active locales'),
+            abstract_arg('active domains'),
+        ])
+        ->tag('kernel.cache_warmer');
 };

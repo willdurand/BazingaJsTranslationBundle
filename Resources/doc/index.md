@@ -23,6 +23,7 @@ guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGR
         - [Pluralization](#pluralization)
         - [Using ICU MessageFormat](#using-icu-messageformat)
         - [Get The Locale](#get-the-locale)
+    - [Cache Warmup](#cache-warmup)
 - [Examples](#examples)
 - [More configuration](#more-configuration)
 - [Reference Configuration](#reference-configuration)
@@ -377,6 +378,32 @@ By default, the `locale` is set to the value defined in the `lang` attribute of
 the `html` tag.
 
 
+Cache Warmup
+------------
+
+This bundle implements Symfony's `CacheWarmerInterface`, which means it can pre-generate translation cache files
+during the `cache:warmup` command. This improves performance by avoiding on-the-fly generation during the first request.
+
+By default, the cache warmer is enabled if you have configured `framework.enabled_locales` (available since Symfony 5.1).
+If you are using an older version of Symfony or want to restrict the locales and domains to be warmed up, you can
+configure them explicitly:
+
+``` yaml
+# app/config/config.yml
+bazinga_js_translation:
+    active_locales:
+        - fr
+        - en
+    active_domains:
+        - messages
+        - validators
+```
+
+If `active_locales` is not set, the bundle will try to use `kernel.enabled_locales`.
+If `active_domains` is not set, it defaults to the `messages` domain.
+If no locales are found, the cache warmer will do nothing.
+
+
 Examples
 --------
 
@@ -484,6 +511,9 @@ Reference Configuration
 bazinga_js_translation:
     locale_fallback:      en
     default_domain:       messages
+    http_cache_time:      86400
+    active_locales:       []
+    active_domains:       []
 ```
 
 
