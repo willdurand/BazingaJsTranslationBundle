@@ -557,7 +557,6 @@
             case 'am':
             case 'bh':
             case 'fil':
-            case 'fr':
             case 'gun':
             case 'hi':
             case 'ln':
@@ -567,6 +566,9 @@
             case 'ti':
             case 'wa':
                 return ((number === 0) || (number == 1)) ? 0 : 1;
+
+            case 'fr':
+                return (number != 0 && number % 1000000 == 0) ? 1 : (((number === 0) || (number == 1)) ? 0 : 2);
 
             case 'be':
             case 'bs':

@@ -65,18 +65,20 @@ QUnit.test('trans()', function(assert) {
 });
 
 QUnit.test('transChoice()', function(assert) {
-    assert.expect(31);
+    assert.expect(38);
 
     Translator.add('foo.plural', '{0} Nothing|[1,Inf[ Many things', 'Foo');
     Translator.add('foo.plural.with.args', '{0} Nothing|{1} One thing|[2,Inf[ %count% things', 'Foo');
     Translator.add('foo.plural.with.inf', ']-Inf,0[ Underground|{0} Ground 0|{1} First level|[2,Inf[ High level', 'Foo');
     Translator.add('complex.plural', '{0} There is no apples|[20,Inf] There are many apples|There is one apple|a_few: There are %count% apples', 'Foo');
+    Translator.add('complex.plural', '{0} There is no apples|[20,Inf] There are many apples|There is one apple|a_few: There are %count% apples', 'Foo', 'en');
     Translator.add('foo.plural.space.before.interval', ' {0} Nothing| [1,Inf[ Many things', 'Foo');
     Translator.add('foo.plural.without.space', '{0}Nothing|[1,Inf[Many things', 'Foo');
     Translator.add('foo.single', 'Things', 'Foo');
     Translator.add('foo.count.parameter', '[0,1]%count% item|]1,Inf[%count% items', 'Foo');
     Translator.add('foo.count.parameter.additional', '[0,Inf[%count% items of %foo%', 'Foo');
     Translator.add('foo.count.parameter.overriden', '[0,Inf[%count% items', 'Foo');
+    Translator.add('french.million.plural', '%count% jour|%count% de jours|%count% jours', 'Foo', 'fr');
 
     // Basic
     assert.equal(Translator.transChoice('foo.plural', null, {}, 'Foo'), '{0} Nothing|[1,Inf[ Many things', 'Returns the correct message for the given key');
@@ -97,10 +99,10 @@ QUnit.test('transChoice()', function(assert) {
     assert.equal(Translator.transChoice('foo.plural.with.inf', 1, {}, 'Foo'), 'First level', 'number = 1 returns the {1} part of the message');
     assert.equal(Translator.transChoice('foo.plural.with.inf', 10000, {}, 'Foo'), 'High level', 'number = 1000 returns the [2,Inf[ part of the message');
 
-    assert.equal(Translator.transChoice('complex.plural', 0, {}, 'Foo'), 'There is no apples', 'number = 0 returns the {0} part of the message');
-    assert.equal(Translator.transChoice('complex.plural', 1, {}, 'Foo'), 'There is one apple', 'number = 1 returns the standard rule');
-    assert.equal(Translator.transChoice('complex.plural', 9, { count: 9 }, 'Foo'), 'There are 9 apples', 'number = 10 returns the "a_few" part of the message');
-    assert.equal(Translator.transChoice('complex.plural', 20, {}, 'Foo'), 'There are many apples', 'number = 20 returns the [20,Inf] part of the message');
+    assert.equal(Translator.transChoice('complex.plural', 0, {}, 'Foo', 'en'), 'There is no apples', 'number = 0 returns the {0} part of the message');
+    assert.equal(Translator.transChoice('complex.plural', 1, {}, 'Foo', 'en'), 'There is one apple', 'number = 1 returns the standard rule');
+    assert.equal(Translator.transChoice('complex.plural', 9, { count: 9 }, 'Foo', 'en'), 'There are 9 apples', 'number = 10 returns the "a_few" part of the message');
+    assert.equal(Translator.transChoice('complex.plural', 20, {}, 'Foo', 'en'), 'There are many apples', 'number = 20 returns the [20,Inf] part of the message');
 
     // Translations with spaces before intervals
     assert.equal(Translator.transChoice('foo.plural.space.before.interval', 0, {}, 'Foo'), 'Nothing', 'number = 0 returns the {0} part of the message');
@@ -111,6 +113,15 @@ QUnit.test('transChoice()', function(assert) {
     assert.equal(Translator.transChoice('foo.plural.without.space', 0, {}, 'Foo'), 'Nothing', 'number = 0 returns the {0} part of the message');
     assert.equal(Translator.transChoice('foo.plural.without.space', 1, {}, 'Foo'), 'Many things', 'number = 1 returns the [1,Inf[ part of the message');
     assert.equal(Translator.transChoice('foo.plural.without.space', 100, {}, 'Foo'), 'Many things', 'number = 100 returns the [1,Inf[ part of the message');
+
+    // French pluralization
+    assert.equal(Translator.transChoice('french.million.plural', 0, { count: 0 }, 'Foo', 'fr'), '0 jour', 'French number = 0 returns the one form');
+    assert.equal(Translator.transChoice('french.million.plural', 1, { count: 1 }, 'Foo', 'fr'), '1 jour', 'French number = 1 returns the one form');
+    assert.equal(Translator.transChoice('french.million.plural', 2, { count: 2 }, 'Foo', 'fr'), '2 jours', 'French number = 2 returns the other form');
+    assert.equal(Translator.transChoice('french.million.plural', 999999, { count: 999999 }, 'Foo', 'fr'), '999999 jours', 'French number = 999999 returns the other form');
+    assert.equal(Translator.transChoice('french.million.plural', 1000000, { count: 1000000 }, 'Foo', 'fr'), '1000000 de jours', 'French number = 1000000 returns the many form');
+    assert.equal(Translator.transChoice('french.million.plural', 1000001, { count: 1000001 }, 'Foo', 'fr'), '1000001 jours', 'French number = 1000001 returns the other form');
+    assert.equal(Translator.transChoice('french.million.plural', 2000000, { count: 2000000 }, 'Foo', 'fr'), '2000000 de jours', 'French number = 2000000 returns the many form');
 
     // Fallback to default translation
     assert.equal(Translator.transChoice('foo.single', 1, {}, 'Foo'), 'Things', 'number = 1 returns the single available translation');
