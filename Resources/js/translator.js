@@ -441,7 +441,7 @@
             }
         }
 
-        return _standardRules[plural_position(number, locale)] || _standardRules[0] || undefined;
+        return _standardRules[plural_position(number, locale, _standardRules.length)] || _standardRules[0] || undefined;
     }
 
     /**
@@ -471,10 +471,11 @@
      *
      * @param {Number} number  The number to use to find the indice of the message
      * @param {String} locale  The locale
+     * @param {Number} numberOfForms The number of standard message forms
      * @return {Number}        The plural position
      * @api private
      */
-    function plural_position(number, locale) {
+    function plural_position(number, locale, numberOfForms) {
         var _locale = locale;
 
         if ('pt_BR' === _locale) {
@@ -568,6 +569,10 @@
                 return ((number === 0) || (number == 1)) ? 0 : 1;
 
             case 'fr':
+                // Keep existing one/other messages compatible with the legacy rules.
+                if (numberOfForms < 3) {
+                    return ((number === 0) || (number == 1)) ? 0 : 1;
+                }
                 return (number != 0 && number % 1000000 == 0) ? 1 : (((number === 0) || (number == 1)) ? 0 : 2);
 
             case 'be':

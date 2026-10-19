@@ -71,7 +71,6 @@ QUnit.test('transChoice()', function(assert) {
     Translator.add('foo.plural.with.args', '{0} Nothing|{1} One thing|[2,Inf[ %count% things', 'Foo');
     Translator.add('foo.plural.with.inf', ']-Inf,0[ Underground|{0} Ground 0|{1} First level|[2,Inf[ High level', 'Foo');
     Translator.add('complex.plural', '{0} There is no apples|[20,Inf] There are many apples|There is one apple|a_few: There are %count% apples', 'Foo');
-    Translator.add('complex.plural', '{0} There is no apples|[20,Inf] There are many apples|There is one apple|a_few: There are %count% apples', 'Foo', 'en');
     Translator.add('foo.plural.space.before.interval', ' {0} Nothing| [1,Inf[ Many things', 'Foo');
     Translator.add('foo.plural.without.space', '{0}Nothing|[1,Inf[Many things', 'Foo');
     Translator.add('foo.single', 'Things', 'Foo');
@@ -99,10 +98,10 @@ QUnit.test('transChoice()', function(assert) {
     assert.equal(Translator.transChoice('foo.plural.with.inf', 1, {}, 'Foo'), 'First level', 'number = 1 returns the {1} part of the message');
     assert.equal(Translator.transChoice('foo.plural.with.inf', 10000, {}, 'Foo'), 'High level', 'number = 1000 returns the [2,Inf[ part of the message');
 
-    assert.equal(Translator.transChoice('complex.plural', 0, {}, 'Foo', 'en'), 'There is no apples', 'number = 0 returns the {0} part of the message');
-    assert.equal(Translator.transChoice('complex.plural', 1, {}, 'Foo', 'en'), 'There is one apple', 'number = 1 returns the standard rule');
-    assert.equal(Translator.transChoice('complex.plural', 9, { count: 9 }, 'Foo', 'en'), 'There are 9 apples', 'number = 10 returns the "a_few" part of the message');
-    assert.equal(Translator.transChoice('complex.plural', 20, {}, 'Foo', 'en'), 'There are many apples', 'number = 20 returns the [20,Inf] part of the message');
+    assert.equal(Translator.transChoice('complex.plural', 0, {}, 'Foo'), 'There is no apples', 'number = 0 returns the {0} part of the message');
+    assert.equal(Translator.transChoice('complex.plural', 1, {}, 'Foo'), 'There is one apple', 'number = 1 returns the standard rule');
+    assert.equal(Translator.transChoice('complex.plural', 9, { count: 9 }, 'Foo'), 'There are 9 apples', 'number = 10 returns the "a_few" part of the message');
+    assert.equal(Translator.transChoice('complex.plural', 20, {}, 'Foo'), 'There are many apples', 'number = 20 returns the [20,Inf] part of the message');
 
     // Translations with spaces before intervals
     assert.equal(Translator.transChoice('foo.plural.space.before.interval', 0, {}, 'Foo'), 'Nothing', 'number = 0 returns the {0} part of the message');
@@ -140,6 +139,23 @@ QUnit.test('transChoice()', function(assert) {
 
     // Do not override given count parameter
     assert.equal(Translator.transChoice('foo.count.parameter.overriden', 10, { count: 5 }, 'Foo'), '5 items', 'number = 10 returns the [0,Inf[ part of the message');
+});
+
+QUnit.test('French pluralization preserves two-form messages', function(assert) {
+    Translator.add('days', '%count% jour|%count% jours', 'messages', 'fr');
+    Translator.add('days', '%count% jour|%count% jours', 'messages', 'fr_CA');
+    Translator.add('explicit.days', '{0} Aucun jour|%count% jour|%count% jours', 'messages', 'fr');
+    Translator.add('million.days', '%count% jour|%count% de jours|%count% jours', 'messages', 'fr_CA');
+
+    [0, 1, 2, 9, 999999, 1000000, 1000001, 2000000].forEach(function(number) {
+        var expected = number + (number < 2 ? ' jour' : ' jours');
+        assert.equal(Translator.transChoice('days', number, {}, 'messages', 'fr'), expected);
+        assert.equal(Translator.transChoice('days', number, {}, 'messages', 'fr_CA'), expected);
+        assert.equal(Translator.transChoice('explicit.days', number, {}, 'messages', 'fr'), number === 0 ? 'Aucun jour' : expected);
+    });
+
+    assert.equal(Translator.transChoice('million.days', 2, {}, 'messages', 'fr_CA'), '2 jours');
+    assert.equal(Translator.transChoice('million.days', 1000000, {}, 'messages', 'fr_CA'), '1000000 de jours');
 });
 
 QUnit.test('guesses domains if not specified', function(assert) {
