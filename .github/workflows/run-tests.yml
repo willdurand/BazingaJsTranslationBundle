@@ -23,12 +23,17 @@ jobs:
                 php-version: ['8.2', '8.3', '8.4', '8.5']
                 dependencies: [highest]
                 allowed-to-fail: [false]
-                symfony-version: [latest]
+                symfony-version: ['6.4', '7.4', '8.1']
+                exclude:
+                  - php-version: '8.2'
+                    symfony-version: '8.1'
+                  - php-version: '8.3'
+                    symfony-version: '8.1'
                 include:
                   - php-version: nightly
                     dependencies: highest
                     allowed-to-fail: true
-                    symfony-version: latest
+                    symfony-version: '8.1'
         steps:
             - name: "Checkout code"
               uses: actions/checkout@v6
@@ -41,11 +46,31 @@ jobs:
                   tools: composer:v2
                   extensions: intl, xdebug
 
+            - name: "Select Symfony ${{ matrix.symfony-version }} components"
+              env:
+                  SYMFONY_VERSION: ${{ matrix.symfony-version }}
+              run: |
+                  php <<'PHP'
+                  <?php
+                  $composer = json_decode(file_get_contents('composer.json'), true, 512, JSON_THROW_ON_ERROR);
+                  foreach (['require', 'require-dev'] as $section) {
+                      foreach ($composer[$section] as $package => $constraint) {
+                          if (str_starts_with($package, 'symfony/')) {
+                              $composer[$section][$package] = getenv('SYMFONY_VERSION').'.*';
+                          }
+                      }
+                  }
+                  file_put_contents('composer.json', json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
+                  PHP
+
             - name: "Install Composer dependencies (${{ matrix.dependencies }})"
               uses: "ramsey/composer-install@v3"
               with:
                 dependency-versions: "${{ matrix.dependencies }}"
                 composer-options: "--prefer-dist"
+
+            - name: "Show installed Symfony versions"
+              run: composer show 'symfony/*'
 
             - name: "Install PHPUnit"
               run: vendor/bin/simple-phpunit install

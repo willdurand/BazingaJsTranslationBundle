@@ -11,8 +11,13 @@ A pretty nice way to expose your Symfony translation messages to your client app
 
 ## Requirements
 
-PHP 8.2 or higher is required. Projects using PHP 7.4, 8.0 or 8.1 must upgrade
-PHP before installing the next release of this bundle.
+PHP 8.2 or higher and Symfony 6.4 or higher (within Symfony 6.x, 7.x or 8.x) are
+required. Projects using older PHP or Symfony versions must upgrade before
+installing the next release of this bundle.
+
+CI explicitly tests Symfony 6.4 and 7.4 on PHP 8.2–8.5, and Symfony 8.1 on
+PHP 8.4–8.5. Symfony 8.1 requires PHP 8.4 or higher even though the bundle's
+minimum PHP version remains 8.2.
 
 
 ## Documentation
