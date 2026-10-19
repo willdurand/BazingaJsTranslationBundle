@@ -9,6 +9,11 @@ Version](https://poser.pugx.org/willdurand/js-translation-bundle/v/stable.png)](
 
 A pretty nice way to expose your Symfony translation messages to your client applications.
 
+## Requirements
+
+PHP 8.2 or higher is required. Projects using PHP 7.4, 8.0 or 8.1 must upgrade
+PHP before installing the next release of this bundle.
+
 
 ## Documentation
 
