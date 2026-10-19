@@ -23,6 +23,7 @@ guide](https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/UPGR
         - [Pluralization](#pluralization)
         - [Using ICU MessageFormat](#using-icu-messageformat)
         - [Get The Locale](#get-the-locale)
+    - [Cache Warmup](#cache-warmup)
 - [Examples](#examples)
 - [More configuration](#more-configuration)
 - [Reference Configuration](#reference-configuration)
@@ -377,6 +378,42 @@ By default, the `locale` is set to the value defined in the `lang` attribute of
 the `html` tag.
 
 
+Cache Warmup
+------------
+
+The controller can pre-generate translation cache files during Symfony's
+`cache:warmup` command. This avoids generating them during the first request.
+Warmup is disabled by default. Enable it explicitly if your application uses the
+translation controller:
+
+``` yaml
+# app/config/config.yml
+bazinga_js_translation:
+    cache_warmer:
+        enabled: true
+        formats: [js] # js, json, or both; defaults to [js, json]
+    active_locales:
+        - fr
+        - en
+    active_domains:
+        - messages
+        - validators
+```
+
+Set `cache_warmer: false` to disable warmup, for example when deploying static
+translations with `bazinga:js-translation:dump`. Symfony's
+`cache:warmup --no-optional-warmers` also skips this warmer.
+
+If `active_locales` is empty, only the warmer uses `kernel.enabled_locales`.
+This does not change which locales the static dump command exports.
+If `active_domains` is empty, the warmer uses `default_domain` (`messages` by
+default). If no locales are configured, it does nothing.
+
+Warmup generates a separate cache entry for each locale and domain. Requests
+combining locales, such as `?locales=en,fr`, still generate their own cache on
+the first request.
+
+
 Examples
 --------
 
@@ -484,6 +521,12 @@ Reference Configuration
 bazinga_js_translation:
     locale_fallback:      en
     default_domain:       messages
+    http_cache_time:      86400
+    active_locales:       []
+    active_domains:       []
+    cache_warmer:
+        enabled:         false
+        formats:         [js, json]
 ```
 
 

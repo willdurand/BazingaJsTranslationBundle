@@ -22,6 +22,11 @@ class BazingaJsTranslationExtension extends Extension
         $configuration = new Configuration($container->getParameter('kernel.debug'));
         $config = $processor->processConfiguration($configuration, $configs);
 
+        $activeLocales = $config['active_locales'];
+        if (empty($activeLocales) && $container->hasParameter('kernel.enabled_locales')) {
+            $activeLocales = $container->getParameter('kernel.enabled_locales');
+        }
+
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.php');
         $loader->load('controllers.php');
@@ -30,7 +35,14 @@ class BazingaJsTranslationExtension extends Extension
             ->getDefinition('bazinga.jstranslation.controller')
             ->replaceArgument(5, $config['locale_fallback'])
             ->replaceArgument(6, $config['default_domain'])
-            ->replaceArgument(7, $config['http_cache_time']);
+            ->replaceArgument(7, $config['http_cache_time'])
+            ->replaceArgument(8, $activeLocales)
+            ->replaceArgument(9, $config['active_domains'])
+            ->replaceArgument(10, $config['cache_warmer']['formats']);
+
+        if ($config['cache_warmer']['enabled']) {
+            $container->getDefinition('bazinga.jstranslation.controller')->addTag('kernel.cache_warmer');
+        }
 
         $container
             ->getDefinition('bazinga.jstranslation.translation_dumper')

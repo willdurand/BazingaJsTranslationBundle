@@ -38,6 +38,16 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')
                     ->end()
                 ->end()
+                ->arrayNode('cache_warmer')
+                    ->canBeEnabled()
+                    ->children()
+                        ->arrayNode('formats')
+                            ->defaultValue(array('js', 'json'))
+                            ->requiresAtLeastOneElement()
+                            ->enumPrototype()->values(array('js', 'json'))->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;
