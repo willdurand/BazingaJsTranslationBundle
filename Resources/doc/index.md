@@ -311,6 +311,17 @@ Translator.transChoice('apples', 100, {"count" : 100});
 // will return "There are many apples"
 ```
 
+French messages may use two forms (`one|other`) or three forms (`one|many|other`).
+With three forms, nonzero exact multiples of 1,000,000 select `many`:
+
+``` yaml
+# app/Resources/messages.fr.yml
+days: "%count% jour|%count% de jours|%count% jours"
+```
+
+Existing two-form French messages keep their original behavior. Explicit count
+and interval rules still take precedence and do not count as standard forms.
+
 For more information, read the official documentation  about
 [pluralization](https://symfony.com/doc/current/translation.html#pluralization).
 

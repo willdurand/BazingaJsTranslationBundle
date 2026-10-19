@@ -65,7 +65,7 @@ QUnit.test('trans()', function(assert) {
 });
 
 QUnit.test('transChoice()', function(assert) {
-    assert.expect(31);
+    assert.expect(38);
 
     Translator.add('foo.plural', '{0} Nothing|[1,Inf[ Many things', 'Foo');
     Translator.add('foo.plural.with.args', '{0} Nothing|{1} One thing|[2,Inf[ %count% things', 'Foo');
@@ -77,6 +77,7 @@ QUnit.test('transChoice()', function(assert) {
     Translator.add('foo.count.parameter', '[0,1]%count% item|]1,Inf[%count% items', 'Foo');
     Translator.add('foo.count.parameter.additional', '[0,Inf[%count% items of %foo%', 'Foo');
     Translator.add('foo.count.parameter.overriden', '[0,Inf[%count% items', 'Foo');
+    Translator.add('french.million.plural', '%count% jour|%count% de jours|%count% jours', 'Foo', 'fr');
 
     // Basic
     assert.equal(Translator.transChoice('foo.plural', null, {}, 'Foo'), '{0} Nothing|[1,Inf[ Many things', 'Returns the correct message for the given key');
@@ -112,6 +113,15 @@ QUnit.test('transChoice()', function(assert) {
     assert.equal(Translator.transChoice('foo.plural.without.space', 1, {}, 'Foo'), 'Many things', 'number = 1 returns the [1,Inf[ part of the message');
     assert.equal(Translator.transChoice('foo.plural.without.space', 100, {}, 'Foo'), 'Many things', 'number = 100 returns the [1,Inf[ part of the message');
 
+    // French pluralization
+    assert.equal(Translator.transChoice('french.million.plural', 0, { count: 0 }, 'Foo', 'fr'), '0 jour', 'French number = 0 returns the one form');
+    assert.equal(Translator.transChoice('french.million.plural', 1, { count: 1 }, 'Foo', 'fr'), '1 jour', 'French number = 1 returns the one form');
+    assert.equal(Translator.transChoice('french.million.plural', 2, { count: 2 }, 'Foo', 'fr'), '2 jours', 'French number = 2 returns the other form');
+    assert.equal(Translator.transChoice('french.million.plural', 999999, { count: 999999 }, 'Foo', 'fr'), '999999 jours', 'French number = 999999 returns the other form');
+    assert.equal(Translator.transChoice('french.million.plural', 1000000, { count: 1000000 }, 'Foo', 'fr'), '1000000 de jours', 'French number = 1000000 returns the many form');
+    assert.equal(Translator.transChoice('french.million.plural', 1000001, { count: 1000001 }, 'Foo', 'fr'), '1000001 jours', 'French number = 1000001 returns the other form');
+    assert.equal(Translator.transChoice('french.million.plural', 2000000, { count: 2000000 }, 'Foo', 'fr'), '2000000 de jours', 'French number = 2000000 returns the many form');
+
     // Fallback to default translation
     assert.equal(Translator.transChoice('foo.single', 1, {}, 'Foo'), 'Things', 'number = 1 returns the single available translation');
     assert.equal(Translator.transChoice('foo.single', 2, {}, 'Foo'), 'Things', 'number = 2 returns the single available translation');
@@ -129,6 +139,23 @@ QUnit.test('transChoice()', function(assert) {
 
     // Do not override given count parameter
     assert.equal(Translator.transChoice('foo.count.parameter.overriden', 10, { count: 5 }, 'Foo'), '5 items', 'number = 10 returns the [0,Inf[ part of the message');
+});
+
+QUnit.test('French pluralization preserves two-form messages', function(assert) {
+    Translator.add('days', '%count% jour|%count% jours', 'messages', 'fr');
+    Translator.add('days', '%count% jour|%count% jours', 'messages', 'fr_CA');
+    Translator.add('explicit.days', '{0} Aucun jour|%count% jour|%count% jours', 'messages', 'fr');
+    Translator.add('million.days', '%count% jour|%count% de jours|%count% jours', 'messages', 'fr_CA');
+
+    [0, 1, 2, 9, 999999, 1000000, 1000001, 2000000].forEach(function(number) {
+        var expected = number + (number < 2 ? ' jour' : ' jours');
+        assert.equal(Translator.transChoice('days', number, {}, 'messages', 'fr'), expected);
+        assert.equal(Translator.transChoice('days', number, {}, 'messages', 'fr_CA'), expected);
+        assert.equal(Translator.transChoice('explicit.days', number, {}, 'messages', 'fr'), number === 0 ? 'Aucun jour' : expected);
+    });
+
+    assert.equal(Translator.transChoice('million.days', 2, {}, 'messages', 'fr_CA'), '2 jours');
+    assert.equal(Translator.transChoice('million.days', 1000000, {}, 'messages', 'fr_CA'), '1000000 de jours');
 });
 
 QUnit.test('guesses domains if not specified', function(assert) {
