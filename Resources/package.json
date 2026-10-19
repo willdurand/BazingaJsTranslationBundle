@@ -7,6 +7,10 @@
     "symfony"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/willdurand/BazingaJsTranslationBundle.git"
+  },
   "author": {
     "name": "William Durand",
     "email": "will+git@drnd.me"
@@ -17,11 +21,23 @@
       "email": "bens.sampaio@gmail.com"
     }
   ],
+  "bugs": {
+    "url": "https://github.com/willdurand/BazingaJsTranslationBundle/issues"
+  },
+  "homepage": "https://github.com/willdurand/BazingaJsTranslationBundle",
   "files": [
     "js/translator.js",
     "public/js/translator.min.js"
   ],
   "main": "js/translator.js",
+  "peerDependencies": {
+    "intl-messageformat": "^10.5.14"
+  },
+  "peerDependenciesMeta": {
+    "intl-messageformat": {
+      "optional": false
+    }
+  },
   "devDependencies": {
     "@web/test-runner": "^0.18.2",
     "intl-messageformat": "^10.5.14",
