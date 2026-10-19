@@ -381,16 +381,17 @@ the `html` tag.
 Cache Warmup
 ------------
 
-This bundle implements Symfony's `CacheWarmerInterface`, which means it can pre-generate translation cache files
-during the `cache:warmup` command. This improves performance by avoiding on-the-fly generation during the first request.
-
-By default, the cache warmer is enabled if you have configured `framework.enabled_locales` (available since Symfony 5.1).
-If you are using an older version of Symfony or want to restrict the locales and domains to be warmed up, you can
-configure them explicitly:
+The controller can pre-generate translation cache files during Symfony's
+`cache:warmup` command. This avoids generating them during the first request.
+Warmup is disabled by default. Enable it explicitly if your application uses the
+translation controller:
 
 ``` yaml
 # app/config/config.yml
 bazinga_js_translation:
+    cache_warmer:
+        enabled: true
+        formats: [js] # js, json, or both; defaults to [js, json]
     active_locales:
         - fr
         - en
@@ -399,9 +400,18 @@ bazinga_js_translation:
         - validators
 ```
 
-If `active_locales` is not set, the bundle will try to use `kernel.enabled_locales`.
-If `active_domains` is not set, it defaults to the `messages` domain.
-If no locales are found, the cache warmer will do nothing.
+Set `cache_warmer: false` to disable warmup, for example when deploying static
+translations with `bazinga:js-translation:dump`. Symfony's
+`cache:warmup --no-optional-warmers` also skips this warmer.
+
+If `active_locales` is empty, only the warmer uses `kernel.enabled_locales`.
+This does not change which locales the static dump command exports.
+If `active_domains` is empty, the warmer uses `default_domain` (`messages` by
+default). If no locales are configured, it does nothing.
+
+Warmup generates a separate cache entry for each locale and domain. Requests
+combining locales, such as `?locales=en,fr`, still generate their own cache on
+the first request.
 
 
 Examples
@@ -514,6 +524,9 @@ bazinga_js_translation:
     http_cache_time:      86400
     active_locales:       []
     active_domains:       []
+    cache_warmer:
+        enabled:         false
+        formats:         [js, json]
 ```
 
 

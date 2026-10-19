@@ -78,6 +78,11 @@ class Controller implements CacheWarmerInterface
     private $activeDomains;
 
     /**
+     * @var string[]
+     */
+    private $cacheFormats;
+
+    /**
      * @param TranslatorInterface           $translator        The translator.
      * @param Environment                   $twig              The twig environment.
      * @param TranslationFinder             $translationFinder The translation finder.
@@ -88,6 +93,7 @@ class Controller implements CacheWarmerInterface
      * @param int                           $httpCacheTime
      * @param array                         $activeLocales
      * @param array                         $activeDomains
+     * @param string[]                      $cacheFormats
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -100,7 +106,8 @@ class Controller implements CacheWarmerInterface
         $defaultDomain  = '',
         $httpCacheTime  = 86400,
         array $activeLocales = array(),
-        array $activeDomains = array()
+        array $activeDomains = array(),
+        array $cacheFormats = array('js', 'json')
     ) {
         if (!$translator instanceof TranslatorInterface && !$translator instanceof LegacyTranslatorInterface) {
             throw new \InvalidArgumentException(sprintf('Providing an instance of "%s" as translator is not supported.', get_class($translator)));
@@ -116,6 +123,7 @@ class Controller implements CacheWarmerInterface
         $this->httpCacheTime     = $httpCacheTime;
         $this->activeLocales     = $activeLocales;
         $this->activeDomains     = $activeDomains;
+        $this->cacheFormats      = $cacheFormats;
     }
 
     /**
@@ -139,18 +147,10 @@ class Controller implements CacheWarmerInterface
             throw new NotFoundHttpException();
         }
 
-        $cache = $this->generateCache($domain, $locales, $_format);
-
-        if (method_exists($cache, 'getPath')) {
-            $cachePath = $cache->getPath();
-        } else {
-            $cachePath = (string) $cache;
-        }
-
         $expirationTime = new \DateTime();
         $expirationTime->modify('+' . $this->httpCacheTime . ' seconds');
         $response = new Response(
-            file_get_contents($cachePath),
+            $this->generateContent($domain, $locales, $_format),
             200,
             array('Content-Type' => $request->getMimeType($_format))
         );
@@ -181,8 +181,9 @@ class Controller implements CacheWarmerInterface
 
         foreach ($domains as $domain) {
             foreach ($locales as $locale) {
-                $this->generateCache($domain, (array) $locale, 'js');
-                $this->generateCache($domain, (array) $locale, 'json');
+                foreach ($this->cacheFormats as $format) {
+                    $this->generateContent($domain, array($locale), $format, $cacheDir.'/bazinga-js-translation');
+                }
             }
         }
 
@@ -198,16 +199,15 @@ class Controller implements CacheWarmerInterface
     }
 
     /**
-     * @param string $domain
-     * @param array  $locales
-     * @param string $format
-     *
-     * @return ConfigCache
+     * @param string      $domain
+     * @param array       $locales
+     * @param string      $format
+     * @param string|null $cacheDir
      */
-    private function generateCache($domain, array $locales, $format)
+    private function generateContent(string $domain, array $locales, string $format, ?string $cacheDir = null): string
     {
         $cache = new ConfigCache(sprintf('%s/%s.%s.%s',
-            $this->cacheDir,
+            $cacheDir ?? $this->cacheDir,
             $domain,
             implode('-', $locales),
             $format
@@ -258,7 +258,7 @@ class Controller implements CacheWarmerInterface
             }
         }
 
-        return $cache;
+        return file_get_contents($cache->getPath());
     }
 
     private function getLocales(Request $request)

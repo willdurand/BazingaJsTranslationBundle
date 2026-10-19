@@ -1,0 +1,4 @@
+bazinga_js_translation:
+    cache_warmer:
+        enabled: true
+        formats: [json]
