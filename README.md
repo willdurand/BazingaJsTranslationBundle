@@ -18,6 +18,8 @@ installing the next release of this bundle.
 CI explicitly tests Symfony 6.4 and 7.4 on PHP 8.2–8.5, and Symfony 8.1 on
 PHP 8.4–8.5. Symfony 8.1 requires PHP 8.4 or higher even though the bundle's
 minimum PHP version remains 8.2.
+An optional CI job tests Symfony 8.2 development versions on PHP 8.5 to catch
+compatibility issues before its stable release.
 
 
 ## Documentation

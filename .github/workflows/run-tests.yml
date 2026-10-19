@@ -34,6 +34,10 @@ jobs:
                     dependencies: highest
                     allowed-to-fail: true
                     symfony-version: '8.1'
+                  - php-version: '8.5'
+                    dependencies: highest
+                    allowed-to-fail: true
+                    symfony-version: '8.2.x-dev'
         steps:
             - name: "Checkout code"
               uses: actions/checkout@v6
@@ -53,10 +57,17 @@ jobs:
                   php <<'PHP'
                   <?php
                   $composer = json_decode(file_get_contents('composer.json'), true, 512, JSON_THROW_ON_ERROR);
+                  $symfonyVersion = getenv('SYMFONY_VERSION');
+                  $isDevelopmentVersion = str_ends_with($symfonyVersion, '-dev');
+                  $symfonyConstraint = $isDevelopmentVersion ? $symfonyVersion : $symfonyVersion.'.*';
+                  if ($isDevelopmentVersion) {
+                      $composer['minimum-stability'] = 'dev';
+                      $composer['prefer-stable'] = true;
+                  }
                   foreach (['require', 'require-dev'] as $section) {
                       foreach ($composer[$section] as $package => $constraint) {
                           if (str_starts_with($package, 'symfony/')) {
-                              $composer[$section][$package] = getenv('SYMFONY_VERSION').'.*';
+                              $composer[$section][$package] = $symfonyConstraint;
                           }
                       }
                   }
