@@ -13,7 +13,7 @@ env:
 
 jobs:
     test:
-        name: PHP ${{ matrix.php-version }} + Symfony ${{ matrix.symfony-version }}
+        name: PHP ${{ matrix.php-version }} + Symfony ${{ matrix.symfony-version || 'unfiltered' }}
         runs-on: 'ubuntu-latest'
         continue-on-error: ${{ matrix.allowed-to-fail }}
 
@@ -23,7 +23,7 @@ jobs:
                 php-version: ['8.2', '8.3', '8.4', '8.5']
                 dependencies: [highest]
                 allowed-to-fail: [false]
-                symfony-version: ['6.4', '7.4', '8.1']
+                symfony-version: ['', '6.4', '7.4', '8.1']
                 exclude:
                   - php-version: '8.2'
                     symfony-version: '8.1'
@@ -33,7 +33,7 @@ jobs:
                   - php-version: nightly
                     dependencies: highest
                     allowed-to-fail: true
-                    symfony-version: '8.1'
+                    symfony-version: ''
                   - php-version: '8.5'
                     dependencies: highest
                     allowed-to-fail: true
@@ -50,35 +50,37 @@ jobs:
                   tools: composer:v2
                   extensions: intl, xdebug
 
-            - name: "Select Symfony ${{ matrix.symfony-version }} components"
+            - name: "Add Symfony ${{ matrix.symfony-version }} update filters"
+              if: matrix.symfony-version != ''
+              id: symfony
               env:
                   SYMFONY_VERSION: ${{ matrix.symfony-version }}
               run: |
-                  php <<'PHP'
+                  if [[ "$SYMFONY_VERSION" == *-dev ]]; then
+                      composer config minimum-stability dev
+                  fi
+                  php <<'PHP' >> "$GITHUB_OUTPUT"
                   <?php
                   $composer = json_decode(file_get_contents('composer.json'), true, 512, JSON_THROW_ON_ERROR);
                   $symfonyVersion = getenv('SYMFONY_VERSION');
                   $isDevelopmentVersion = str_ends_with($symfonyVersion, '-dev');
                   $symfonyConstraint = $isDevelopmentVersion ? $symfonyVersion : $symfonyVersion.'.*';
-                  if ($isDevelopmentVersion) {
-                      $composer['minimum-stability'] = 'dev';
-                      $composer['prefer-stable'] = true;
-                  }
+                  $options = $isDevelopmentVersion ? ['--prefer-stable'] : [];
                   foreach (['require', 'require-dev'] as $section) {
                       foreach ($composer[$section] as $package => $constraint) {
                           if (str_starts_with($package, 'symfony/')) {
-                              $composer[$section][$package] = $symfonyConstraint;
+                              $options[] = '--with='.$package.':'.$symfonyConstraint;
                           }
                       }
                   }
-                  file_put_contents('composer.json', json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
+                  echo 'composer-options='.implode(' ', $options)."\n";
                   PHP
 
             - name: "Install Composer dependencies (${{ matrix.dependencies }})"
               uses: "ramsey/composer-install@v3"
               with:
                 dependency-versions: "${{ matrix.dependencies }}"
-                composer-options: "--prefer-dist"
+                composer-options: "--prefer-dist ${{ steps.symfony.outputs.composer-options }}"
 
             - name: "Show installed Symfony versions"
               run: composer show 'symfony/*'

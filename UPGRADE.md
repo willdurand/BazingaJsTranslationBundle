@@ -7,7 +7,10 @@ Unreleased
 * The minimum supported Symfony version is now `6.4`. Upgrade projects using
   Symfony `5.4` or `6.0`–`6.3` before installing this release.
 * CI explicitly tests Symfony `6.4` and `7.4` on PHP `8.2`–`8.5`, and Symfony
-  `8.1` on PHP `8.4`–`8.5`. An optional nightly PHP job tests Symfony `8.1`.
+  `8.1` on PHP `8.4`–`8.5`, using additional Composer update constraints.
+  Jobs on PHP `8.2`–`8.5` and an optional nightly PHP job also test the published
+  requirements without additional Symfony filters. An optional PHP `8.5` job
+  tests Symfony `8.2.x-dev`, enabling development stability only for that job.
   The bundle still requires PHP `8.2` or higher; Symfony `8.1` itself requires
   PHP `8.4` or higher. Composer's security advisory blocking remains enabled.
 
