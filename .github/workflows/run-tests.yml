@@ -81,6 +81,7 @@ jobs:
               with:
                 dependency-versions: "${{ matrix.dependencies }}"
                 composer-options: "--prefer-dist ${{ steps.symfony.outputs.composer-options }}"
+                custom-cache-key: "${{ runner.os }}-php-${{ matrix.php-version }}-symfony-${{ matrix.symfony-version || 'unfiltered' }}-${{ matrix.dependencies }}-${{ hashFiles('composer.json', '.github/workflows/run-tests.yml') }}"
 
             - name: "Show installed Symfony versions"
               run: composer show 'symfony/*'
